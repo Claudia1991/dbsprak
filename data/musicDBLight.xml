@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE ItemSearchResponse SYSTEM "musicDBLight.dtd">
+<ItemSearchResponse>
+	<Items>
+		<Item>
+			<ASIN>B000002BBY</ASIN>
+			<ItemAttributes>
+				<Artist>Oasis</Artist>
+				<Label>Sony</Label>
+				<NumberOfDiscs>1</NumberOfDiscs>
+				<Title>(What's The Story) Morning Glory?</Title>
+			</ItemAttributes>
+			<OfferSummary>
+				<LowestNewPrice>
+					<Amount>700</Amount>
+				</LowestNewPrice>
+				<LowestUsedPrice>
+					<Amount>345</Amount>
+				</LowestUsedPrice>
+			</OfferSummary>
+			<Tracks>
+				<Disc Number="1">
+					<Track Number="1">Hello</Track>
+					<Track Number="2">Roll With It</Track>
+					<Track Number="3">Wonderwall</Track>
+					<Track Number="4">Don't Look Back In Anger</Track>
+					<Track Number="5">Hey Now!</Track>
+					<Track Number="6">Untitled</Track>
+					<Track Number="7">Some Might Say</Track>
+					<Track Number="8">Cast No Shadow</Track>
+					<Track Number="9">She's Electric</Track>
+					<Track Number="10">Morning Glory</Track>
+					<Track Number="11">Untitled</Track>
+					<Track Number="12">Champagne Supernova</Track>
+				</Disc>
+			</Tracks>
+		</Item>
+		<Item>
+			<ASIN>B000002AS3</ASIN>
+			<ItemAttributes>
+				<Author>Oasis</Author>
+				<Label>Sony</Label>
+				<NumberOfDiscs>1</NumberOfDiscs>
+				<Title>Definitely Maybe</Title>
+			</ItemAttributes>
+			<OfferSummary>
+				<LowestNewPrice>
+					<Amount>695</Amount>
+				</LowestNewPrice>
+				<LowestUsedPrice>
+					<Amount>343</Amount>
+				</LowestUsedPrice>
+			</OfferSummary>
+			<Tracks>
+				<Disc Number="1">
+					<Track Number="1">Rock 'n' Roll Star</Track>
+					<Track Number="2">Shakermaker</Track>
+					<Track Number="3">Live Forever</Track>
+					<Track Number="4">Up In The Sky</Track>
+					<Track Number="5">Columbia</Track>
+					<Track Number="6">Supersonic</Track>
+					<Track Number="7">Bring It On Down</Track>
+					<Track Number="8">Cigarettes &amp; Alcohol</Track>
+					<Track Number="9">Digsy's Diner</Track>
+					<Track Number="10">Slide Away</Track>
+					<Track Number="11">Married With Children</Track>
+				</Disc>
+			</Tracks>
+		</Item>
+		<Item>
+			<ASIN>B000051Y0E</ASIN>
+				<ItemAttributes>
+				<Artist>Oasis</Artist>
+				<Label>Sony</Label>
+				<NumberOfDiscs>2</NumberOfDiscs>
+				<Title>Familiar to Millions</Title>
+			</ItemAttributes>
+			<OfferSummary>
+				<LowestNewPrice>
+					<Amount>1348</Amount>
+				</LowestNewPrice>
+				<LowestUsedPrice>
+					<Amount>700</Amount>
+				</LowestUsedPrice>
+			</OfferSummary>
+			<Tracks>
+				<Disc Number="1">
+					<Track Number="1">Fucking in the Bushes</Track>
+					<Track Number="2">Go Let it Out</Track>
+					<Track Number="3">Who Feels Love</Track>
+					<Track Number="4">Supersonic</Track>
+					<Track Number="5">ShakerMaker</Track>
+					<Track Number="6">Acquiesce</Track>
+					<Track Number="7">Step Out</Track>
+					<Track Number="8">Gas Panic!</Track>
+					<Track Number="9">Roll With It</Track>
+					<Track Number="10">Stand By Me</Track>
+				</Disc>
+				<Disc Number="2">
+					<Track Number="1">Wonderwall</Track>
+					<Track Number="2">Cigarettes &amp; Alcohol</Track>
+					<Track Number="3">Don't Look Back in Anger</Track>
+					<Track Number="4">Live Forever</Track>
+					<Track Number="5">Hey Hey, My My</Track>
+					<Track Number="6">Champagne Supernova</Track>
+					<Track Number="7">Rock 'n' Roll Star</Track>
+					<Track Number="8">Helter Skelter</Track>
+				</Disc>
+			</Tracks>
+		</Item>
+	</Items>
+</ItemSearchResponse>

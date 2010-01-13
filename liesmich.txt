@@ -1,0 +1,27 @@
+MusicDB unter Windows für Zuhause
+---------------------------------
+
+1) DB2 installieren
+2) Datenbank DBPrak erstellen
+3) Tabellen erstellen: db2 -tvf createMusicRelation.sql
+4) Bibliotheken kopieren: setenv.bat
+5) Eclipse installieren und Projekt importieren 
+6) VM-Argumente für MusicDBGraphicUI.java: -Djava.library.path=${workspace_loc:MusicDB}\lib\win;C:\Programme\IBM\SQLLIB\bin
+7) MusicDB starten: MusicDBGraphicUI oder MusicDBTextUI
+
+
+MusicDB unter Linux, Sun
+------------------------
+
+Zuhause:
+1a) DB2 installieren
+2a) Datenbank DBPrak erstellen
+
+Studentenpools:
+1-2b) Umgebung setzen: source ~db2lehre/sqllib/db2profile (nur in den Studentenpools)
+
+3) Tabellen erstellen: db2 -tvf createMusicRelation.sql
+4) Bibliotheken kopieren + Umgebung setzen: source setenv.sh
+5) Eclipse installieren und Projekt importieren
+6) MusicDB kompileren: build.sh
+7) MusicDB starten: runGUI.sh oder runTUI.sh
