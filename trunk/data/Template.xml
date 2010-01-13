@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ItemSearchResponse xmlns="http://webservices.amazon.com/AWSECommerceService/2005-10-13">
+    <OperationRequest>
+        <HTTPHeaders>
+            <Header Name="UserAgent" Value="LWP::Simple/5.805"></Header>
+        </HTTPHeaders>
+        <RequestId>XXXXXXXXXXXXXXXXXXXX</RequestId>
+        <Arguments>
+            <Argument Name="Keywords" Value="alanis"></Argument>
+            <Argument Name="ResponseGroup" Value="Request,Large"></Argument>
+            <Argument Name="Operation" Value="ItemSearch"></Argument>
+            <Argument Name="Service" Value="AWSECommerceService"></Argument>
+            <Argument Name="AWSAccessKeyId" Value="XXXXXXXXXXXXXXXXXX"></Argument>
+            <Argument Name="SearchIndex" Value="Music"></Argument>
+            <Argument Name="Version" Value="2005-10-13"></Argument>
+        </Arguments>
+        <RequestProcessingTime>0.714735984802246</RequestProcessingTime>
+    </OperationRequest>
+    <Items>
+        <Request>
+            <IsValid>True</IsValid>
+            <ItemSearchRequest>
+                <Keywords>alanis</Keywords>
+                <ResponseGroup>Request</ResponseGroup>
+                <ResponseGroup>Large</ResponseGroup>
+                <SearchIndex>Music</SearchIndex>
+            </ItemSearchRequest>
+        </Request>
+        <TotalResults>178</TotalResults>
+        <TotalPages>18</TotalPages>
+        <Item>
+            <ASIN>B000002MY3</ASIN>
+            <ItemAttributes>
+                <Artist>Alanis Morissette</Artist>
+                <EAN>0093624590125</EAN>
+                <Label>Maverick</Label>
+                <NumberOfDiscs>1</NumberOfDiscs>
+                <ProductGroup>Music</ProductGroup>
+                <Publisher>Maverick</Publisher>
+                <Title>Jagged Little Pill</Title>
+                <UPC>093624590125</UPC>
+            </ItemAttributes>
+            <OfferSummary>
+                <LowestNewPrice>
+                    <Amount>400</Amount>
+                    <CurrencyCode>USD</CurrencyCode>
+                    <FormattedPrice>$4.00</FormattedPrice>
+                </LowestNewPrice>
+                <LowestUsedPrice>
+                    <Amount>88</Amount>
+                    <CurrencyCode>USD</CurrencyCode>
+                    <FormattedPrice>$0.88</FormattedPrice>
+                </LowestUsedPrice>
+            </OfferSummary>
+            <Tracks>
+                <Disc Number="1">
+                    <Track Number="1">All I Really Want</Track>
+                    <Track Number="2">You Oughta Know</Track>
+                    <Track Number="3">Perfect</Track>
+                    <Track Number="4">Hand In My Pocket</Track>
+                    <Track Number="5">Right Through You</Track>
+                    <Track Number="6">Forgiven</Track>
+                    <Track Number="7">You Learn</Track>
+                    <Track Number="8">Head Over Feet</Track>
+                    <Track Number="9">Mary Jane</Track>
+                    <Track Number="10">Ironic</Track>
+                    <Track Number="11">Not The Doctor</Track>
+                    <Track Number="12">Wake Up</Track>
+                    <Track Number="13">You Oughta Know (Alternate Take)</Track>
+                </Disc>
+            </Tracks>
+        </Item>
+    </Items>
+</ItemSearchResponse>

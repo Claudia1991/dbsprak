@@ -1,0 +1,24 @@
+<!ELEMENT ASIN (#PCDATA)>
+<!ELEMENT Artist (#PCDATA)>
+<!ELEMENT Author (#PCDATA)>
+<!ELEMENT Label (#PCDATA)>
+<!ELEMENT NumberOfDiscs (#PCDATA)>
+<!ELEMENT Title (#PCDATA)>
+<!ELEMENT Amount (#PCDATA)>
+
+<!ELEMENT Track (#PCDATA)>
+<!ATTLIST Track Number CDATA #REQUIRED >
+<!ELEMENT Disc (Track+)>
+<!ATTLIST Disc Number CDATA #REQUIRED >
+<!ELEMENT Tracks (Disc+)>
+
+<!ELEMENT ItemAttributes ((Artist|Author),Label,NumberOfDiscs,Title)>
+
+<!ELEMENT LowestNewPrice (Amount)>
+<!ELEMENT LowestUsedPrice (Amount)>
+<!ELEMENT OfferSummary (LowestNewPrice,LowestUsedPrice)>
+<!ELEMENT Item (ASIN,ItemAttributes,OfferSummary,Tracks)>
+<!ELEMENT Items (Item+)>
+<!ELEMENT ItemSearchResponse (Items)>
+
+
