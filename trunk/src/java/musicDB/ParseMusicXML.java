@@ -24,6 +24,8 @@ public class ParseMusicXML {
 	private NodeList	itemList = null;
 	private NodeList	trackList = null;
 	private NodeList	discList = null;
+	/*itemattrList damit man gleich in den Attributen des Items ist*/
+	private NodeList	itemattrList=null;
 	private XPath		xpath = null;
 	private Node        actItem = null;
 	private int			actItemNum = -1;
@@ -52,6 +54,19 @@ public class ParseMusicXML {
 			 * Benutzen von XPath::evaluate(...)
 			 */
 			/* BEGIN */
+			
+			itemList  =(NodeList)xpath.evaluate("/ItemSearchResponse/Items",document,XPathConstants.NODESET);
+			
+			/*
+			 * dtd Validation:
+			 * z.B: 
+			 * http://javaxden.blogspot.com/2007/08/xml-validation-with-dtd-in-java.html
+			 * ich weiß noch nicht wo Sie sonst hin sollte, aber der code wäre geklaut,
+			 * und ich weiß nicht wie sensibel freitag darauf reagiert
+			 * 
+			  	int position=0;			 		
+				Node actItem = itemList.item(position);
+			*/
 /* HIER muss Code eingefuegt werden */
 			/* END */
 			logger.debug("ItemListLength: " + itemList.getLength());
@@ -90,6 +105,11 @@ public class ParseMusicXML {
 				try{
 					/* BEGIN */
 /* HIER muss Code eingefuegt werden */
+					/* bin mir aber nicht sicher ob er Disc Number findet, wegen
+					 * dem Leerzeichen und der Zuweisung bei Disc Number*/
+					
+					discList= (NodeList)xpath.evaluate("Disc Number",itemList,XPathConstants.NODESET);
+					itemattrList =(NodeList)xpath.evaluate("ItemAttributes",itemList,XPathConstants.NODESET);
 					/* END */
 					actDiscNum = -1;
 					rc = nextDisc();
@@ -127,6 +147,8 @@ public class ParseMusicXML {
 			try{
 				/* BEGIN */
 /* HIER muss Code eingefuegt werden */
+				/* Track Number unter Umstaenden das gleiche Problem wie bei Disc Number*/
+				trackList= (NodeList)xpath.evaluate("Track Number",discList,XPathConstants.NODESET);			
 				/* END */
 				actTrackNum = -1;
 				rc = nextTrack();
@@ -189,6 +211,11 @@ public class ParseMusicXML {
 	public String getASIN() {
 		/* BEGIN */
 /* HIER muss Code eingefuegt werden */
+		String s;
+		/*david damit es einen returnwert gibt*/
+		Node AsinNode=itemList.item(0);
+		s=AsinNode.getTextContent();
+		return s;
 		/* END */
 	}
 	
@@ -200,7 +227,19 @@ public class ParseMusicXML {
 	 */
 	public String getArtistOrAuthor() {
 		/* BEGIN */
-/* HIER muss Code eingefuegt werden */
+		
+		/* HIER muss Code eingefuegt werden */
+		/*Die Frage ist ob Autor/Artist immer Attribut1 ist ??*/
+		String s;
+		Node AorANode=itemattrList.item(0);
+		s=AorANode.getTextContent();
+		
+		/*vielleicvht muesste man alles noch durch 
+		 * getStringforXpath jagen
+		 * s=getStringForXPath(AorANode.getTextContent();
+		*/
+		
+		return s;
 		/* END */
 	}
 
@@ -213,6 +252,11 @@ public class ParseMusicXML {
 	public String getLabel() {
 		/* BEGIN */
 /* HIER muss Code eingefuegt werden */
+		/*david damit es einen returnwert gibt*/
+		String s;
+		Node labelNode=itemattrList.item(1);
+		s=labelNode.getTextContent();
+		return s;
 		/* END */
 	}
 
@@ -243,7 +287,11 @@ public class ParseMusicXML {
 	public String getTitle() {
 		/* BEGIN */
 /* HIER muss Code eingefuegt werden */
-		/* END */
+		String s;
+		Node titleNode=itemattrList.item(3);
+		s=titleNode.getTextContent();
+		return s;
+		/* END */ 
 	}
 
 	/**
@@ -276,6 +324,10 @@ public class ParseMusicXML {
 	public float getLowNewPrice() {
 		/* BEGIN */
 /* HIER muss Code eingefuegt werden */
+		/*david damit es einen returnwert gibt*/
+		float f=0;
+		return f;
+		
 		/* END */
 	}
 
@@ -288,6 +340,9 @@ public class ParseMusicXML {
 	public float getLowUsedPrice() {
 		/* BEGIN */
 /* HIER muss Code eingefuegt werden */
+		/*david damit es einen returnwert gibt*/
+		float f=0;
+		return f;
 		/* END */
 	}
 
