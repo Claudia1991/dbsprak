@@ -69,16 +69,23 @@ public class MusicDB {
  	 * 4 Punkte
 	 */
 	private int printResult(ResultSet rs, PrintWriter writer) throws SQLException {
-		// TODO
 		int cnt = 0;
-		writer.println("      ASIN");
-		writer.println("----------");
+		ResultSetMetaData meta = rs.getMetaData();
+		int i;
+		for (i=1; i<=meta.getColumnCount(); i++){
+			writer.print(meta.getColumnLabel(i)+"\t");
+		}
+		writer.println();
 		while (rs.next()) {
-			writer.println(rs.getString(1));
+			for (i=1; i<=meta.getColumnCount(); i++){
+				writer.print(rs.getString(i)+"\t");
+			}
+			writer.println();
 			cnt++;
 		}
 		writer.println();
 		writer.println(cnt+" record(s) selected.");
+		writer.println();
 		return cnt;
 	}
 
@@ -97,7 +104,8 @@ public class MusicDB {
 		try{
 			PreparedStatement stmt = co.prepareStatement("SELECT * FROM CDs");
 			ResultSet rs = stmt.executeQuery();
-			cnt = printResult(rs, writer);
+			printResult(rs, writer);
+			cnt++;
 		} catch(SQLException se) {
 			System.out.println("Error:" + se);
 		}
@@ -118,9 +126,33 @@ public class MusicDB {
 	 */
 	public int showSingleCD(String asinCode, PrintWriter writer) {
 		int cnt = 0;
-		/* BEGIN */
-/* HIER muss Code eingefuegt werden */
-		/* END */
+		int discNumber = 0;
+		try{
+			PreparedStatement stmt = co.prepareStatement("SELECT * FROM CDs WHERE ASIN = ?");
+			stmt.setString(1, asinCode);
+			ResultSet rs = stmt.executeQuery();
+			printResult(rs, writer);
+			//rs.first();
+			//discNumber = rs.getInt(7);
+			discNumber = 1;
+			cnt++;
+		} catch(SQLException se) {
+			System.out.println("Error:" + se);
+		}
+		try{
+			int i = 1;
+			while (i <= discNumber) {
+				PreparedStatement stmt = co.prepareStatement("SELECT * FROM Tracks WHERE ASIN = ? AND DiscNumber = ?");
+				stmt.setString(1, asinCode);
+				stmt.setInt(2, discNumber);
+				ResultSet rs = stmt.executeQuery();
+				printResult(rs, writer);
+				i++;
+				cnt++;
+			}
+		} catch(SQLException se) {
+			System.out.println("Error:" + se);
+		}
 		return cnt;
 	}
 	
