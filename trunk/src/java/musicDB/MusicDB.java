@@ -75,7 +75,10 @@ public class MusicDB {
 		writer.println("----------");
 		while (rs.next()) {
 			writer.println(rs.getString(1));
+			cnt++;
 		}
+		writer.println();
+		writer.println(cnt+" record(s) selected.");
 		return cnt;
 	}
 
@@ -94,11 +97,10 @@ public class MusicDB {
 		try{
 			PreparedStatement stmt = co.prepareStatement("SELECT * FROM CDs");
 			ResultSet rs = stmt.executeQuery();
-			printResult(rs, writer);
+			cnt = printResult(rs, writer);
 		} catch(SQLException se) {
 			System.out.println("Error:" + se);
 		}
-		
 		return cnt;
 	}
 
