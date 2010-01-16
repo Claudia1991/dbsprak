@@ -18,9 +18,9 @@ CREATE TABLE CDs(
   Artist            VARCHAR(25)     NOT NULL,
   Title             VARCHAR(50)     NOT NULL,
   Label             VARCHAR(25)     NOT NULL,
-  NumberOfDiscs     INT             NOT NULL,
   LowestNewPrice    NUMERIC(5,2)    NOT NULL,
-  LowestUsedPrice   NUMERIC(5,2)    NOT NULL
+  LowestUsedPrice   NUMERIC(5,2)    NOT NULL,
+  NumberOfDiscs     INT             NOT NULL
 );
 CREATE TABLE Tracks(
   ASIN              CHAR(10)        NOT NULL,

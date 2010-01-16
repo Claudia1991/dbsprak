@@ -69,10 +69,13 @@ public class MusicDB {
  	 * 4 Punkte
 	 */
 	private int printResult(ResultSet rs, PrintWriter writer) throws SQLException {
+		// TODO
 		int cnt = 0;
-		/* BEGIN */
-/* HIER muss Code eingefuegt werden */
-		/* END */
+		writer.println("      ASIN");
+		writer.println("----------");
+		while (rs.next()) {
+			writer.println(rs.getString(1));
+		}
 		return cnt;
 	}
 
@@ -88,9 +91,14 @@ public class MusicDB {
 	 */
 	public int showAllCDs(PrintWriter writer) {
 		int cnt = 0;
-		/* BEGIN */
-/* HIER muss Code eingefuegt werden */
-		/* END */
+		try{
+			PreparedStatement stmt = co.prepareStatement("SELECT * FROM CDs");
+			ResultSet rs = stmt.executeQuery();
+			printResult(rs, writer);
+		} catch(SQLException se) {
+			System.out.println("Error:" + se);
+		}
+		
 		return cnt;
 	}
 
