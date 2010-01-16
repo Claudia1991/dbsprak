@@ -132,9 +132,11 @@ public class MusicDB {
 			stmt.setString(1, asinCode);
 			ResultSet rs = stmt.executeQuery();
 			printResult(rs, writer);
-			//rs.first();
-			//discNumber = rs.getInt(7);
-			discNumber = 1;
+			stmt = co.prepareStatement("SELECT NumberOfDiscs FROM CDs WHERE ASIN = ?");
+			stmt.setString(1, asinCode);
+			rs = stmt.executeQuery();
+			rs.next();
+			discNumber = rs.getInt(1);
 			cnt++;
 		} catch(SQLException se) {
 			System.out.println("Error:" + se);
@@ -144,7 +146,7 @@ public class MusicDB {
 			while (i <= discNumber) {
 				PreparedStatement stmt = co.prepareStatement("SELECT * FROM Tracks WHERE ASIN = ? AND DiscNumber = ?");
 				stmt.setString(1, asinCode);
-				stmt.setInt(2, discNumber);
+				stmt.setInt(2, i);
 				ResultSet rs = stmt.executeQuery();
 				printResult(rs, writer);
 				i++;
