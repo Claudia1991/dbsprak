@@ -28,7 +28,7 @@ public class MusicDB {
 	public void finalize(){
 		closeDBConnection();
 	}
-	
+
 	/**
 	 * Verbindung zum Datenbank-Server aufnehmen
 	 * @param dbName datenbank name
@@ -36,9 +36,12 @@ public class MusicDB {
 	 * 4 Punkte
 	 */
 	private void createDBConnection(String dbName) {
-		/* BEGIN */  
-/* HIER muss Code eingefuegt werden */
-		/* END */
+		try {
+			Class.forName("COM.ibm.db2.jdbc.app.DB2Driver").newInstance();
+			co = DriverManager.getConnection("jdbc:db2:"+dbName);
+		} catch(Exception e) {
+			System.out.println("Error:" + e);
+		}
 	}
 	
 	/**
@@ -47,9 +50,11 @@ public class MusicDB {
 	 * 2 Punkte
 	 */ 
 	private void closeDBConnection() {
-		/* BEGIN */  
-/* HIER muss Code eingefuegt werden */
-		/* END */
+		try {
+			if (co != null) co.close();
+		} catch(SQLException se) {
+			System.out.println("Error:" + se);
+		}
 	}
 	
 	/**
