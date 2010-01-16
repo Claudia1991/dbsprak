@@ -24,8 +24,6 @@ public class ParseMusicXML {
 	private NodeList	itemList = null;
 	private NodeList	trackList = null;
 	private NodeList	discList = null;
-	/*itemattrList damit man gleich in den Attributen des Items ist*/
-	private NodeList	itemattrList=null;
 	private XPath		xpath = null;
 	private Node        actItem = null;
 	private int			actItemNum = -1;
@@ -53,22 +51,7 @@ public class ParseMusicXML {
 			 * Erzeugen einer Knotenliste aller Item Elemente aus dem Dokument,
 			 * Benutzen von XPath::evaluate(...)
 			 */
-			/* BEGIN */
-			
-			itemList  =(NodeList)xpath.evaluate("/ItemSearchResponse/Items",document,XPathConstants.NODESET);
-			
-			/*
-			 * dtd Validation:
-			 * z.B: 
-			 * http://javaxden.blogspot.com/2007/08/xml-validation-with-dtd-in-java.html
-			 * ich weiß noch nicht wo Sie sonst hin sollte, aber der code wäre geklaut,
-			 * und ich weiß nicht wie sensibel freitag darauf reagiert
-			 * 
-			  	int position=0;			 		
-				Node actItem = itemList.item(position);
-			*/
-/* HIER muss Code eingefuegt werden */
-			/* END */
+			itemList = (NodeList)xpath.evaluate("/ItemSearchResponse/Items/Item",document,XPathConstants.NODESET);
 			logger.debug("ItemListLength: " + itemList.getLength());
 			if(!next())
 				throw new IOException("no Items found");
@@ -103,14 +86,7 @@ public class ParseMusicXML {
 				logger.debug("actItem: "+ actItem);
 				rc = true;
 				try{
-					/* BEGIN */
-/* HIER muss Code eingefuegt werden */
-					/* bin mir aber nicht sicher ob er Disc Number findet, wegen
-					 * dem Leerzeichen und der Zuweisung bei Disc Number*/
-					
-					discList= (NodeList)xpath.evaluate("Disc Number",itemList,XPathConstants.NODESET);
-					itemattrList =(NodeList)xpath.evaluate("ItemAttributes",itemList,XPathConstants.NODESET);
-					/* END */
+					discList = (NodeList)xpath.evaluate("/Tracks/Disc",actItem,XPathConstants.NODESET);
 					actDiscNum = -1;
 					rc = nextDisc();
 				}catch(XPathExpressionException e) {
@@ -145,11 +121,7 @@ public class ParseMusicXML {
 		if(actDisc != null){
 			rc = true;
 			try{
-				/* BEGIN */
-/* HIER muss Code eingefuegt werden */
-				/* Track Number unter Umstaenden das gleiche Problem wie bei Disc Number*/
-				trackList= (NodeList)xpath.evaluate("Track Number",discList,XPathConstants.NODESET);			
-				/* END */
+				trackList = (NodeList)xpath.evaluate("/Track",actDisc,XPathConstants.NODESET);
 				actTrackNum = -1;
 				rc = nextTrack();
 			}catch(XPathExpressionException e) {
@@ -192,9 +164,13 @@ public class ParseMusicXML {
 	private String getStringForXPath(String xpathStr) {
 		String rc = null;
 		logger.debug("ActItem: " + actItem);
-		/* BEGIN */
-/* HIER muss Code eingefuegt werden */
-		/* END */
+		Node activeNode = null;
+		try {
+			activeNode = (Node)xpath.evaluate(xpathStr,actItem,XPathConstants.NODESET);
+		} catch(XPathExpressionException e) {
+			logger.error(e.getMessage());
+		}
+		rc = activeNode.getTextContent().trim();
 		if(rc!=null && rc.length() == 0){
 			logger.error("Error in getStringForXPath: " + xpathStr);
 			throw new NullPointerException("getStringForXPath" + xpathStr);
@@ -209,14 +185,7 @@ public class ParseMusicXML {
 	 * Punkte: 1
 	 */
 	public String getASIN() {
-		/* BEGIN */
-/* HIER muss Code eingefuegt werden */
-		String s;
-		/*david damit es einen returnwert gibt*/
-		Node AsinNode=itemList.item(0);
-		s=AsinNode.getTextContent();
-		return s;
-		/* END */
+		return getStringForXPath("/ASIN");
 	}
 	
 	/**
@@ -226,21 +195,11 @@ public class ParseMusicXML {
 	 * Punkte: 2
 	 */
 	public String getArtistOrAuthor() {
-		/* BEGIN */
-		
-		/* HIER muss Code eingefuegt werden */
-		/*Die Frage ist ob Autor/Artist immer Attribut1 ist ??*/
-		String s;
-		Node AorANode=itemattrList.item(0);
-		s=AorANode.getTextContent();
-		
-		/*vielleicvht muesste man alles noch durch 
-		 * getStringforXpath jagen
-		 * s=getStringForXPath(AorANode.getTextContent();
-		*/
-		
-		return s;
-		/* END */
+		String rc = null;
+		String artist = getStringForXPath("/ItemAttributes/Artist");
+		String author = getStringForXPath("/ItemAttributes/Author");
+		rc = artist==null ? author : artist;
+		return rc;
 	}
 
 	/**
@@ -250,14 +209,7 @@ public class ParseMusicXML {
 	 * Punkte: 1
 	 */
 	public String getLabel() {
-		/* BEGIN */
-/* HIER muss Code eingefuegt werden */
-		/*david damit es einen returnwert gibt*/
-		String s;
-		Node labelNode=itemattrList.item(1);
-		s=labelNode.getTextContent();
-		return s;
-		/* END */
+		return getStringForXPath("/ItemAttributes/Label");
 	}
 
 	/**
@@ -267,15 +219,7 @@ public class ParseMusicXML {
 	 * Punkte: 1
 	 */
 	public int getNumDiscs() {
-		String val = null;
-		/* BEGIN */
-/* HIER muss Code eingefuegt werden */
-		/* END */
-		if(val == null || val.length() == 0){
-			logger.error("Error in getNumDiscs");
-			throw new NullPointerException("getNumDiscs");
-		}
-		return Integer.parseInt(val);
+		return Integer.parseInt(getStringForXPath("/ItemAttributes/NumberOfDiscs"));
 	}
 
 	/**
@@ -285,13 +229,7 @@ public class ParseMusicXML {
 	 * Punkte: 1
 	 */
 	public String getTitle() {
-		/* BEGIN */
-/* HIER muss Code eingefuegt werden */
-		String s;
-		Node titleNode=itemattrList.item(3);
-		s=titleNode.getTextContent();
-		return s;
-		/* END */ 
+		return getStringForXPath("/ItemAttributes/Title");
 	}
 
 	/**
@@ -322,13 +260,7 @@ public class ParseMusicXML {
 	 * Punkte: 1
 	 */
 	public float getLowNewPrice() {
-		/* BEGIN */
-/* HIER muss Code eingefuegt werden */
-		/*david damit es einen returnwert gibt*/
-		float f=0;
-		return f;
-		
-		/* END */
+		return getPrice("/OfferSummary/LowestNewPrice/Amount");
 	}
 
 	/**
@@ -338,12 +270,7 @@ public class ParseMusicXML {
 	 * Punkte: 1
 	 */
 	public float getLowUsedPrice() {
-		/* BEGIN */
-/* HIER muss Code eingefuegt werden */
-		/*david damit es einen returnwert gibt*/
-		float f=0;
-		return f;
-		/* END */
+		return getPrice("/OfferSummary/LowestUsedPrice/Amount");
 	}
 
 	/**
@@ -358,9 +285,7 @@ public class ParseMusicXML {
 		if(actN == null)
 			return -1;
 		String num = null;
-		/* BEGIN */
-/* HIER muss Code eingefuegt werden */
-		/* END */
+		num = actN.getAttributes().getNamedItem("Number").getNodeValue();
 		logger.debug("Num: " + num);
 		if(num==null || num.length()==0){
 			logger.error("Error in getAttributeNumber");
@@ -386,9 +311,7 @@ public class ParseMusicXML {
 	public String getTrackTitle() {
 		logger.debug("ActTrack: " + actTrack);
 		String rc = null;
-		/* BEGIN */
-/* HIER muss Code eingefuegt werden */
-		/* END */
+		rc = actTrack.getTextContent().trim();
 		if(rc == null || rc.length()==0){
 			logger.error("Error in getTrackTitle");
 			throw new NullPointerException("getTrackTitle");
@@ -467,24 +390,27 @@ public class ParseMusicXML {
 	 * @param argv definiert die Operation bei -p print, bei -l load.
 	 */
 	public static void main(String[] argv) {
-		if(argv.length == 2){
-			if(argv[0].compareTo("-p")==0){
-				if(argv[1].indexOf("/")<0){
-					printXMLMusicContent(Config.getProperty("paths.dataDir")+argv[1]);
-				}else{
-					printXMLMusicContent(argv[1]);
-				}
-			}else if(argv[0].compareTo("-l")==0){
-				if(argv[1].indexOf("/")<0){
-					loadXMLMusicContentIntoDB(Config.getProperty("paths.dataDir")+argv[1],Config.getProperty("database","dbprak"));
-				}else{
-					loadXMLMusicContentIntoDB(argv[1],Config.getProperty("database","dbprak"));
-				}
-			}else{
-				printUsage();
-			}
-		}else{
-			printUsage();
-		}
+		printXMLMusicContent("data/musicDBLight.xml");
 	}
+//	public static void main(String[] argv) {
+//		if(argv.length == 2){
+//			if(argv[0].compareTo("-p")==0){
+//				if(argv[1].indexOf("/")<0){
+//					printXMLMusicContent(Config.getProperty("paths.dataDir")+argv[1]);
+//				}else{
+//					printXMLMusicContent(argv[1]);
+//				}
+//			}else if(argv[0].compareTo("-l")==0){
+//				if(argv[1].indexOf("/")<0){
+//					loadXMLMusicContentIntoDB(Config.getProperty("paths.dataDir")+argv[1],Config.getProperty("database","dbprak"));
+//				}else{
+//					loadXMLMusicContentIntoDB(argv[1],Config.getProperty("database","dbprak"));
+//				}
+//			}else{
+//				printUsage();
+//			}
+//		}else{
+//			printUsage();
+//		}
+//	}
 }
