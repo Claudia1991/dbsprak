@@ -42,7 +42,7 @@ ALTER TABLE Tracks ADD CONSTRAINT minTrack CHECK TrackNumber > 0;
 ALTER TABLE CDs ADD CONSTRAINT minNew CHECK LowestNewPrice >= 0;
 ALTER TABLE CDs ADD CONSTRAINT minUsed CHECK LowestUsedPrice >= 0;
 -- Trigger
-CREATE TRIGGER updatePrice BEFORE UPDATE OF LowestNewPrice ON CDs REFERENCING NEW AS newtab, OLD AS oldtab FOR EACH ROW UPDATE CDs SET newtab.LowestUsedPrice=oldtab.LowestUsedPrice*(newtab.LowestNewPrice/oldtab.LowestUsedPrice)
+CREATE TRIGGER updatePrice BEFORE UPDATE OF LowestNewPrice ON CDs REFERENCING NEW AS newtab, OLD AS oldtab FOR EACH ROW UPDATE CDs SET newtab.LowestUsedPrice=oldtab.LowestUsedPrice*(newtab.LowestNewPrice/oldtab.LowestUsedPrice);
 -- evtl. Views
 
 CONNECT RESET;
