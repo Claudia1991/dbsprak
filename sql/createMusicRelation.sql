@@ -15,18 +15,18 @@ CONNECT TO DBPrak;
 --------------------------------------------------------------------
 CREATE TABLE CDs(
   ASIN              CHAR(10)        NOT NULL,
-  Artist            VARCHAR(25),
-  Title             VARCHAR(50),
-  Label             VARCHAR(25),
-  NumberOfDiscs     INT,
-  LowestNewPrice    NUMERIC(5,2),
-  LowestUsedPrice   NUMERIC(5,2)
+  Artist            VARCHAR(25)     NOT NULL,
+  Title             VARCHAR(50)     NOT NULL,
+  Label             VARCHAR(25)     NOT NULL,
+  NumberOfDiscs     INT             NOT NULL,
+  LowestNewPrice    NUMERIC(5,2)    NOT NULL,
+  LowestUsedPrice   NUMERIC(5,2)    NOT NULL
 );
 CREATE TABLE Tracks(
   ASIN              CHAR(10)        NOT NULL,
   DiscNumber        INT             NOT NULL,
   TrackNumber       INT             NOT NULL,
-  Title             VARCHAR(50)
+  Title             VARCHAR(50)     NOT NULL
 );
 -- Aufgabe 1.2 -----------------------------------------------------
 -- Erstellen von Primaer-/Fremdschluesseln, Contraints, Triggern ---
