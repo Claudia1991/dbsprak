@@ -104,8 +104,7 @@ public class MusicDB {
 		try{
 			PreparedStatement stmt = co.prepareStatement("SELECT * FROM CDs");
 			ResultSet rs = stmt.executeQuery();
-			printResult(rs, writer);
-			cnt++;
+			cnt = printResult(rs, writer);
 		} catch(SQLException se) {
 			System.out.println("Error:" + se);
 		}
@@ -128,29 +127,28 @@ public class MusicDB {
 		int cnt = 0;
 		int discNumber = 0;
 		try{
-			PreparedStatement stmt = co.prepareStatement("SELECT * FROM CDs WHERE ASIN = ?");
+			PreparedStatement stmt = co.prepareStatement("SELECT * FROM CDs WHERE ASIN=?");
 			stmt.setString(1, asinCode);
 			ResultSet rs = stmt.executeQuery();
-			printResult(rs, writer);
-			stmt = co.prepareStatement("SELECT NumberOfDiscs FROM CDs WHERE ASIN = ?");
+			cnt = printResult(rs, writer);
+			stmt = co.prepareStatement("SELECT NumberOfDiscs FROM CDs WHERE ASIN=?");
 			stmt.setString(1, asinCode);
 			rs = stmt.executeQuery();
-			rs.next();
-			discNumber = rs.getInt(1);
-			cnt++;
+			if(rs.next()) {
+				discNumber = rs.getInt(1);
+			}
 		} catch(SQLException se) {
 			System.out.println("Error:" + se);
 		}
 		try{
 			int i = 1;
 			while (i <= discNumber) {
-				PreparedStatement stmt = co.prepareStatement("SELECT * FROM Tracks WHERE ASIN = ? AND DiscNumber = ?");
+				PreparedStatement stmt = co.prepareStatement("SELECT * FROM Tracks WHERE ASIN=? AND DiscNumber=?");
 				stmt.setString(1, asinCode);
 				stmt.setInt(2, i);
 				ResultSet rs = stmt.executeQuery();
-				printResult(rs, writer);
+				cnt += printResult(rs, writer);
 				i++;
-				cnt++;
 			}
 		} catch(SQLException se) {
 			System.out.println("Error:" + se);
@@ -168,9 +166,13 @@ public class MusicDB {
 	 */
 	public int showGroupAllPrices(PrintWriter writer) {
 		int cnt = 0;
-		/* BEGIN */
-/* HIER muss Code eingefuegt werden */
-		/* END */
+		try{
+			PreparedStatement stmt = co.prepareStatement("SELECT AVG(LowestNewPrice) AVG_New, AVG(LowestUsedPrice) AVG_Used, MIN(LowestNewPrice) MIN_New, MIN(LowestUsedPrice) MIN_Used, MAX(LowestNewPrice) MAX_New, MAX(LowestUsedPrice) MAX_Used FROM CDs");
+			ResultSet rs = stmt.executeQuery();
+			cnt = printResult(rs, writer);
+		} catch(SQLException se) {
+			System.out.println("Error:" + se);
+		}
 		return cnt;
 	}
 
@@ -185,9 +187,14 @@ public class MusicDB {
 	 */
 	public int showGroupPricesArtist(String artist, PrintWriter writer) {
 		int cnt = 0;
-		/* BEGIN */
-/* HIER muss Code eingefuegt werden */
-		/* END */
+		try{
+			PreparedStatement stmt = co.prepareStatement("SELECT AVG(LowestNewPrice) AVG_New, AVG(LowestUsedPrice) AVG_Used, MIN(LowestNewPrice) MIN_New, MIN(LowestUsedPrice) MIN_Used, MAX(LowestNewPrice) MAX_New, MAX(LowestUsedPrice) MAX_Used FROM CDs WHERE Artist=?");
+			stmt.setString(1, artist);
+			ResultSet rs = stmt.executeQuery();
+			cnt = printResult(rs, writer);
+		} catch(SQLException se) {
+			System.out.println("Error:" + se);
+		}
 		return cnt;
 	}
 
@@ -199,9 +206,14 @@ public class MusicDB {
 	 * 2 Punkte
 	 */
 	public void updateNewPrice(String asin, float price)	{
-		/* BEGIN */
-/* HIER muss Code eingefuegt werden */
-		/* END */
+		try{
+			PreparedStatement stmt = co.prepareStatement("UPDATE CDs SET LowestNewPrice=? WHERE ASIN=?");
+			stmt.setFloat(1, price);
+			stmt.setString(2, asin);
+			stmt.execute();
+		} catch(SQLException se) {
+			System.out.println("Error:" + se);
+		}
 	}
 
 	/**
@@ -211,8 +223,15 @@ public class MusicDB {
 	 * 3 Punkte
 	 */
 	public void deleteSingleCD(String asin)	{
-		/* BEGIN */
-/* HIER muss Code eingefuegt werden */
-		/* END */
+		try{
+			PreparedStatement stmt = co.prepareStatement("DELETE FROM Tracks WHERE ASIN=?");
+			stmt.setString(1, asin);
+			stmt.execute();
+			stmt = co.prepareStatement("DELETE FROM CDs WHERE ASIN=?");
+			stmt.setString(1, asin);
+			stmt.execute();
+		} catch(SQLException se) {
+			System.out.println("Error:" + se);
+		}
 	}
 }	
