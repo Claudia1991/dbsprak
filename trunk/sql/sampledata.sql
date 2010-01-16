@@ -1,0 +1,11 @@
+CONNECT TO DBPrak;
+INSERT INTO CDs VALUES('ASIN000001', 'Artist1', 'Title1', 'Label1', 16, 8, 1);
+INSERT INTO CDs VALUES('ASIN000002', 'Artist1', 'Title2', 'Label1', 32, 16, 1);
+INSERT INTO CDs VALUES('ASIN000003', 'Artist2', 'Title3', 'Label2', 16, 8, 1);
+INSERT INTO CDs VALUES('ASIN000004', 'Artist2', 'Title4', 'Label2', 32, 16, 1);
+INSERT INTO CDs VALUES('ASIN000005', 'Artist3', 'Title5', 'Label3', 16, 8, 1);
+INSERT INTO CDs VALUES('ASIN000006', 'Artist3', 'Title6', 'Label3', 32, 16, 1);
+INSERT INTO CDs VALUES('ASIN000007', 'Artist4', 'Title7', 'Label4', 16, 8, 1);
+INSERT INTO CDs VALUES('ASIN000008', 'Artist4', 'Title8', 'Label4', 32, 16, 1);
+INSERT INTO CDs VALUES('ASIN000009', 'Artist4', 'Title9', 'Label4', 64, 32, 2);
+CONNECT RESET;
