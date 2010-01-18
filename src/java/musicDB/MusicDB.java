@@ -224,12 +224,12 @@ public class MusicDB {
 	 */
 	public void deleteSingleCD(String asin)	{
 		try{
-			PreparedStatement stmt = co.prepareStatement("DELETE FROM Tracks WHERE ASIN=?");
-			stmt.setString(1, asin);
-			stmt.execute();
-			stmt = co.prepareStatement("DELETE FROM CDs WHERE ASIN=?");
-			stmt.setString(1, asin);
-			stmt.execute();
+			PreparedStatement stmt1 = co.prepareStatement("DELETE FROM Tracks WHERE ASIN=?");
+			stmt1.setString(1, asin);
+			stmt1.execute();
+			PreparedStatement stmt2 = co.prepareStatement("DELETE FROM CDs WHERE ASIN=?");
+			stmt2.setString(1, asin);
+			stmt2.execute();
 		} catch(SQLException se) {
 			System.out.println("Error:" + se);
 		}
