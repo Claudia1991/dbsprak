@@ -193,8 +193,13 @@ public class ParseMusicXML {
 	 * Punkte: 2
 	 */
 	public String getArtistOrAuthor() {
-		// TODO
-		return "Artist/Author";
+		String rc = null;
+		try {
+			rc = getStringForXPath("ItemAttributes/Artist");
+		} catch(NullPointerException e) {
+			rc = getStringForXPath("ItemAttributes/Author");
+		}
+		return rc;
 	}
 
 	/**
