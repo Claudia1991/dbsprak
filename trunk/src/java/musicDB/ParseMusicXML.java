@@ -86,7 +86,7 @@ public class ParseMusicXML {
 				logger.debug("actItem: "+ actItem);
 				rc = true;
 				try{
-					discList = (NodeList)xpath.evaluate("/Tracks/Disc",actItem,XPathConstants.NODESET);
+					discList = (NodeList)xpath.evaluate("Tracks/Disc",actItem,XPathConstants.NODESET);
 					actDiscNum = -1;
 					rc = nextDisc();
 				}catch(XPathExpressionException e) {
@@ -121,7 +121,7 @@ public class ParseMusicXML {
 		if(actDisc != null){
 			rc = true;
 			try{
-				trackList = (NodeList)xpath.evaluate("/Track",actDisc,XPathConstants.NODESET);
+				trackList = (NodeList)xpath.evaluate("Track",actDisc,XPathConstants.NODESET);
 				actTrackNum = -1;
 				rc = nextTrack();
 			}catch(XPathExpressionException e) {
@@ -185,7 +185,7 @@ public class ParseMusicXML {
 	 * Punkte: 1
 	 */
 	public String getASIN() {
-		return getStringForXPath("/ASIN");
+		return getStringForXPath("ASIN");
 	}
 	
 	/**
@@ -196,8 +196,8 @@ public class ParseMusicXML {
 	 */
 	public String getArtistOrAuthor() {
 		String rc = null;
-		String artist = getStringForXPath("/ItemAttributes/Artist");
-		String author = getStringForXPath("/ItemAttributes/Author");
+		String artist = getStringForXPath("ItemAttributes/Artist");
+		String author = getStringForXPath("ItemAttributes/Author");
 		rc = artist==null ? author : artist;
 		return rc;
 	}
@@ -209,7 +209,7 @@ public class ParseMusicXML {
 	 * Punkte: 1
 	 */
 	public String getLabel() {
-		return getStringForXPath("/ItemAttributes/Label");
+		return getStringForXPath("ItemAttributes/Label");
 	}
 
 	/**
@@ -219,7 +219,7 @@ public class ParseMusicXML {
 	 * Punkte: 1
 	 */
 	public int getNumDiscs() {
-		return Integer.parseInt(getStringForXPath("/ItemAttributes/NumberOfDiscs"));
+		return Integer.parseInt(getStringForXPath("ItemAttributes/NumberOfDiscs"));
 	}
 
 	/**
@@ -229,7 +229,7 @@ public class ParseMusicXML {
 	 * Punkte: 1
 	 */
 	public String getTitle() {
-		return getStringForXPath("/ItemAttributes/Title");
+		return getStringForXPath("ItemAttributes/Title");
 	}
 
 	/**
@@ -260,7 +260,7 @@ public class ParseMusicXML {
 	 * Punkte: 1
 	 */
 	public float getLowNewPrice() {
-		return getPrice("/OfferSummary/LowestNewPrice/Amount");
+		return getPrice("OfferSummary/LowestNewPrice/Amount");
 	}
 
 	/**
@@ -270,7 +270,7 @@ public class ParseMusicXML {
 	 * Punkte: 1
 	 */
 	public float getLowUsedPrice() {
-		return getPrice("/OfferSummary/LowestUsedPrice/Amount");
+		return getPrice("OfferSummary/LowestUsedPrice/Amount");
 	}
 
 	/**
