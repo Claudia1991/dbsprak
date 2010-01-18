@@ -370,9 +370,81 @@ public class ParseMusicXML {
 	 * 8 Punkte
 	 */
 	public static void loadXMLMusicContentIntoDB(String fileName,String dbName){
-		/* BEGIN */		
-/* HIER muss Code eingefuegt werden */
-		/* END */
+		Connection con = null;
+		PreparedStatement addCD = null, addTrack = null;
+		String asin = null, artist = null, title = null, label = null, track = null;
+		float priceNew = 0, priceUsed = 0;
+		int discs = 0, discnumber = 0, tracknumber = 0;
+		// connect to db
+		try {
+			Class.forName("COM.ibm.db2.jdbc.app.DB2Driver").newInstance();
+			con = DriverManager.getConnection("jdbc:db2:"+dbName);
+			con.setAutoCommit(false);
+		} catch(Exception e) {
+			logger.error(e.getMessage());
+		}
+		// prepare insert statements
+		try{
+			addCD = con.prepareStatement("INSERT INTO CDs VALUES(?, ?, ?, ?, ?, ?, ?)");
+			addTrack = con.prepareStatement("INSERT INTO Tracks VALUES(?, ?, ?, ?)");
+		} catch(SQLException se) {
+			logger.error(se.getMessage());
+		}
+		try {
+			ParseMusicXML xml = new ParseMusicXML(fileName);
+			// CD
+			do{
+				try {
+					asin = xml.getASIN();
+					artist = xml.getArtistOrAuthor();
+					title = xml.getTitle();
+					label = xml.getLabel();
+					priceNew = xml.getLowNewPrice();
+					priceUsed = xml.getLowUsedPrice();
+					discs = xml.getNumDiscs();
+					try {
+						addCD.setString(1, asin);
+						addCD.setString(2, artist);
+						addCD.setString(3, title);
+						addCD.setString(4, label);
+						addCD.setFloat(5, priceNew);
+						addCD.setFloat(6, priceUsed);
+						addCD.setInt(7, discs);
+						addCD.execute();
+					} catch(SQLException se) {
+						logger.error(se.getMessage());
+					}
+					// Disc
+					do{
+						discnumber = xml.getDiscNumber();
+						// Track
+						do{
+							tracknumber = xml.getTrackNumber();
+							track = xml.getTrackTitle();
+							try {
+								addTrack.setString(1, asin);
+								addTrack.setInt(2, discnumber);
+								addTrack.setInt(3, tracknumber);
+								addTrack.setString(4, track);
+								addTrack.execute();
+							} catch(SQLException se) {
+								logger.error(se.getMessage());
+							}
+						}while(xml.nextTrack());
+					}while(xml.nextDisc());
+				} catch(NullPointerException e){
+					System.out.println("Error invalid field in " + e.getMessage());
+				}
+				// commit SQL-Statements (complete CD)
+				try {
+					con.commit();
+				} catch(SQLException se) {
+					logger.error(se.getMessage());
+				}
+			}while(xml.next());
+		}catch(IOException e){
+			logger.error(e.getMessage());
+		}
 	}
 	
 	/**
@@ -390,6 +462,7 @@ public class ParseMusicXML {
 	 * @param argv definiert die Operation bei -p print, bei -l load.
 	 */
 	public static void main(String[] argv) {
+//		loadXMLMusicContentIntoDB("data/musicDBLight.xml", "dbPrak");
 		printXMLMusicContent("data/musicDBLight.xml");
 	}
 //	public static void main(String[] argv) {
