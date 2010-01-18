@@ -164,13 +164,11 @@ public class ParseMusicXML {
 	private String getStringForXPath(String xpathStr) {
 		String rc = null;
 		logger.debug("ActItem: " + actItem);
-		Node activeNode = null;
 		try {
-			activeNode = (Node)xpath.evaluate(xpathStr,actItem,XPathConstants.NODESET);
+			rc = xpath.evaluate(xpathStr,actItem).trim();
 		} catch(XPathExpressionException e) {
 			logger.error(e.getMessage());
 		}
-		rc = activeNode.getTextContent().trim();
 		if(rc!=null && rc.length() == 0){
 			logger.error("Error in getStringForXPath: " + xpathStr);
 			throw new NullPointerException("getStringForXPath" + xpathStr);
@@ -195,11 +193,8 @@ public class ParseMusicXML {
 	 * Punkte: 2
 	 */
 	public String getArtistOrAuthor() {
-		String rc = null;
-		String artist = getStringForXPath("ItemAttributes/Artist");
-		String author = getStringForXPath("ItemAttributes/Author");
-		rc = artist==null ? author : artist;
-		return rc;
+		// TODO
+		return "Artist/Author";
 	}
 
 	/**
