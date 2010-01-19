@@ -193,14 +193,24 @@ public class ParseMusicXML {
 	 * Punkte: 2
 	 */
 	public String getArtistOrAuthor() {
-		String rc = null;
-		try {
-			rc = getStringForXPath("ItemAttributes/Artist");
-		} catch(NullPointerException e) {
+		String rc = null;		
+		
+	try{
+		rc=xpath.evaluate("ItemAttributes/Artist",actItem).trim();			
+		} catch(XPathExpressionException e) {
+			logger.error(e.getMessage());
+		}
+		
+		if(rc!=null && rc.length() == 0){
 			rc = getStringForXPath("ItemAttributes/Author");
+			
+		}
+		else{
+			rc = getStringForXPath("ItemAttributes/Artist");
 		}
 		return rc;
 	}
+		
 
 	/**
 	 * Liefert das aktuelle Label.
