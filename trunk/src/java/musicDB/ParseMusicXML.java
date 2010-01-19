@@ -141,13 +141,8 @@ public class ParseMusicXML {
 	 * 		   false, sonst
 	 */
 	public boolean nextTrack() {
-		boolean rc = true;
-		int tmpNL=trackList.getLength();
-		int tmpTN=++actTrackNum;
-		if (tmpTN>=tmpNL){
-			return false;
-		}		
-		actTrack = trackList.item(actTrackNum);
+		boolean rc = false;
+		actTrack = trackList.item(++actTrackNum);
 		logger.debug("ActTrackNum: " + actTrackNum + "TrackListLength: "  + trackList.getLength());
 		logger.debug("actTrack: "+ actTrack);
 		if(actTrack != null){
