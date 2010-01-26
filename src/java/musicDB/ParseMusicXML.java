@@ -194,20 +194,21 @@ public class ParseMusicXML {
 	 */
 	public String getArtistOrAuthor() {
 		String rc = null;		
-		
-	try{
-		rc=xpath.evaluate("ItemAttributes/Artist",actItem).trim();			
+		Node node=null;
+
+		try{
+		node=(Node)xpath.evaluate("ItemAttributes/Artist",actItem,XPathConstants.NODE);
 		} catch(XPathExpressionException e) {
 			logger.error(e.getMessage());
 		}
 		
-		if(rc!=null && rc.length() == 0){
+		if (node==null) {
 			rc = getStringForXPath("ItemAttributes/Author");
-			
-		}
-		else{
+		} 
+		else {
 			rc = getStringForXPath("ItemAttributes/Artist");
-		}
+		}		
+		
 		return rc;
 	}
 		
