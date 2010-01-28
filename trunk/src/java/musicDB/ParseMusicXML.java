@@ -193,23 +193,15 @@ public class ParseMusicXML {
 	 * Punkte: 2
 	 */
 	public String getArtistOrAuthor() {
-		String rc = null;		
-		Node node=null;
-
-		try{
-		node=(Node)xpath.evaluate("ItemAttributes/Artist",actItem,XPathConstants.NODE);
-		} catch(XPathExpressionException e) {
+		String rc = null;
+		try {
+			if(xpath.evaluate("ItemAttributes/Artist", actItem, XPathConstants.NODE) != null){
+				return getStringForXPath("ItemAttributes/Artist");
+			} else return getStringForXPath("ItemAttributes/Author");
+		} catch (XPathExpressionException e) {
 			logger.error(e.getMessage());
 		}
-		
-		if (node==null) {
-			rc = getStringForXPath("ItemAttributes/Author");
-		} 
-		else {
-			rc = getStringForXPath("ItemAttributes/Artist");
-		}		
-		
-		return rc;
+		return (rc==null)?"":rc;
 	}
 		
 
@@ -231,6 +223,16 @@ public class ParseMusicXML {
 	 */
 	public int getNumDiscs() {
 		return Integer.parseInt(getStringForXPath("ItemAttributes/NumberOfDiscs"));
+
+		// TODO: Warum wurde der folgende Code entfernt?!?!?
+		// 		 Das geht doch auch?!: val = getStringForXPath("ItemAttributes/NumberOfDiscs");
+		/*
+		if(val == null || val.length() == 0){
+			logger.error("Error in getNumDiscs");
+			throw new NullPointerException("getNumDiscs");
+		}
+		return Integer.parseInt(val);
+		*/
 	}
 
 	/**
@@ -386,6 +388,11 @@ public class ParseMusicXML {
 		String asin = null, artist = null, title = null, label = null, track = null;
 		float priceNew = 0, priceUsed = 0;
 		int discs = 0, discnumber = 0, tracknumber = 0;
+		
+		//TODO: Wie funktioniert ein try-catch-Block? 
+		// Was passiert, wenn der Fehler abgefangen wurde und anschließend mit dem 'Rest' weitergemacht wird??
+		// -> Dann wird mit null-Elementen gearbeitet! Ist das richtig/gut????
+
 		// connect to db
 		try {
 			Class.forName("COM.ibm.db2.jdbc.app.DB2Driver").newInstance();
@@ -472,29 +479,32 @@ public class ParseMusicXML {
 	 * bzw. gibt die geparsten Informationen aus. 
 	 * @param argv definiert die Operation bei -p print, bei -l load.
 	 */
+	// TODO: best. Grund, warum auskommentiert??
+	
 	public static void main(String[] argv) {
 //		loadXMLMusicContentIntoDB("data/musicDBLight.xml", "dbPrak");
 		printXMLMusicContent("data/musicDBLight.xml");
 	}
-//	public static void main(String[] argv) {
-//		if(argv.length == 2){
-//			if(argv[0].compareTo("-p")==0){
-//				if(argv[1].indexOf("/")<0){
-//					printXMLMusicContent(Config.getProperty("paths.dataDir")+argv[1]);
-//				}else{
-//					printXMLMusicContent(argv[1]);
-//				}
-//			}else if(argv[0].compareTo("-l")==0){
-//				if(argv[1].indexOf("/")<0){
-//					loadXMLMusicContentIntoDB(Config.getProperty("paths.dataDir")+argv[1],Config.getProperty("database","dbprak"));
-//				}else{
-//					loadXMLMusicContentIntoDB(argv[1],Config.getProperty("database","dbprak"));
-//				}
-//			}else{
-//				printUsage();
-//			}
-//		}else{
-//			printUsage();
-//		}
-//	}
+	
+/*	public static void main(String[] argv) {
+		if(argv.length == 2){
+			if(argv[0].compareTo("-p")==0){
+				if(argv[1].indexOf("/")<0){
+					printXMLMusicContent(Config.getProperty("paths.dataDir")+argv[1]);
+				}else{
+					printXMLMusicContent(argv[1]);
+				}
+			}else if(argv[0].compareTo("-l")==0){
+				if(argv[1].indexOf("/")<0){
+					loadXMLMusicContentIntoDB(Config.getProperty("paths.dataDir")+argv[1],Config.getProperty("database","dbprak"));
+				}else{
+					loadXMLMusicContentIntoDB(argv[1],Config.getProperty("database","dbprak"));
+				}
+			}else{
+				printUsage();
+			}
+		}else{
+			printUsage();
+		}
+	}*/
 }
