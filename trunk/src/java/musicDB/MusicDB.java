@@ -10,6 +10,7 @@ public class MusicDB {
 	//	A connection (session) with a specific database
 	private Connection co 	  = null;
 	private static Log logger = LogFactory.getLog(MusicDB.class);
+	//TODO: Fragen, ob "logger" verwendet werden soll!?!
 
 	/**
 	 * Konstructor fuer MusicDB
@@ -71,20 +72,24 @@ public class MusicDB {
 	private int printResult(ResultSet rs, PrintWriter writer) throws SQLException {
 		int cnt = 0;
 		ResultSetMetaData meta = rs.getMetaData();
-		int i;
-		for (i=1; i<=meta.getColumnCount(); i++){
+		for (int i = 1; i <= meta.getColumnCount(); i++){
 			writer.print(meta.getColumnLabel(i)+"\t");
 		}
+		
 		writer.println();
+		writer.println("-------------------------------------------------------------------------------");
+		
 		while (rs.next()) {
-			for (i=1; i<=meta.getColumnCount(); i++){
-				writer.print(rs.getString(i)+"\t");
+			for (int i = 1; i <= meta.getColumnCount(); i++){
+				if(meta.getColumnType(i) == 12 || meta.getColumnType(i) == 1) writer.print("'"+rs.getString(i)+"'\t");
+				else writer.print(rs.getString(i)+"\t");
 			}
 			writer.println();
+			writer.flush();
 			cnt++;
 		}
 		writer.println();
-		writer.println(cnt+" record(s) selected.");
+		writer.println("\t"+cnt+" record(s) selected.");
 		writer.println();
 		return cnt;
 	}
@@ -127,6 +132,7 @@ public class MusicDB {
 		int cnt = 0;
 		int discNumber = 0;
 		try{
+			//TODO: Spalten in die 'richtige' Reihenfolge bringen?!?
 			PreparedStatement stmt = co.prepareStatement("SELECT * FROM CDs WHERE ASIN=?");
 			stmt.setString(1, asinCode);
 			ResultSet rs = stmt.executeQuery();
@@ -143,10 +149,11 @@ public class MusicDB {
 		try{
 			int i = 1;
 			while (i <= discNumber) {
-				PreparedStatement stmt = co.prepareStatement("SELECT * FROM Tracks WHERE ASIN=? AND DiscNumber=?");
+				PreparedStatement stmt = co.prepareStatement("SELECT * FROM Tracks WHERE ASIN=? AND DiscNumber=? ORDER BY TRACKNUMBER");
 				stmt.setString(1, asinCode);
 				stmt.setInt(2, i);
 				ResultSet rs = stmt.executeQuery();
+				writer.println("DiscNum: " + i);
 				cnt += printResult(rs, writer);
 				i++;
 			}
@@ -167,6 +174,7 @@ public class MusicDB {
 	public int showGroupAllPrices(PrintWriter writer) {
 		int cnt = 0;
 		try{
+			//TODO: Zahlen runden?? - per SQL...
 			PreparedStatement stmt = co.prepareStatement("SELECT AVG(LowestNewPrice) AVG_New, AVG(LowestUsedPrice) AVG_Used, MIN(LowestNewPrice) MIN_New, MIN(LowestUsedPrice) MIN_Used, MAX(LowestNewPrice) MAX_New, MAX(LowestUsedPrice) MAX_Used FROM CDs");
 			ResultSet rs = stmt.executeQuery();
 			cnt = printResult(rs, writer);
@@ -188,6 +196,7 @@ public class MusicDB {
 	public int showGroupPricesArtist(String artist, PrintWriter writer) {
 		int cnt = 0;
 		try{
+			//TODO: Zahlen runden?? - per SQL...
 			PreparedStatement stmt = co.prepareStatement("SELECT AVG(LowestNewPrice) AVG_New, AVG(LowestUsedPrice) AVG_Used, MIN(LowestNewPrice) MIN_New, MIN(LowestUsedPrice) MIN_Used, MAX(LowestNewPrice) MAX_New, MAX(LowestUsedPrice) MAX_Used FROM CDs WHERE Artist=?");
 			stmt.setString(1, artist);
 			ResultSet rs = stmt.executeQuery();
