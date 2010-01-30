@@ -74,16 +74,15 @@ public class MusicDB {
 		int cnt = 0;
 		ResultSetMetaData meta = rs.getMetaData();
 		for (int i = 1; i <= meta.getColumnCount(); i++){
-			writer.print(meta.getColumnLabel(i)+"\t");
+			writer.format("%20s",meta.getColumnLabel(i)+"\t");
 		}
-		
 		writer.println();
-		writer.println("-------------------------------------------------------------------------------");
+		writer.println("--------------------------------------------------------------------------------");
 		
 		while (rs.next()) {
 			for (int i = 1; i <= meta.getColumnCount(); i++){
-				if(meta.getColumnType(i) == 12 || meta.getColumnType(i) == 1) writer.print("'"+rs.getString(i)+"'\t");
-				else writer.print(rs.getString(i)+"\t");
+				if(meta.getColumnType(i) == 12 || meta.getColumnType(i) == 1) writer.format("%20s","'"+rs.getString(i)+"'\t");
+				else writer.format("%20s",rs.getString(i)+"\t");
 			}
 			writer.println();
 			writer.flush();
