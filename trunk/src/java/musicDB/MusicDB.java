@@ -10,7 +10,6 @@ public class MusicDB {
 	//	A connection (session) with a specific database
 	private Connection co 	  = null;
 	private static Log logger = LogFactory.getLog(MusicDB.class);
-	//TODO: Fragen, ob "logger" verwendet werden soll!?!
 
 	/**
 	 * Konstructor fuer MusicDB
@@ -41,7 +40,9 @@ public class MusicDB {
 			Class.forName("COM.ibm.db2.jdbc.app.DB2Driver").newInstance();
 			co = DriverManager.getConnection("jdbc:db2:"+dbName);
 		} catch(Exception e) {
-			System.out.println("Error:" + e);
+			logger.error("Error: "+e.getMessage());
+			System.err.println("Es konnte keine Verbindung zu Datenbank hergestellt werden!\nProgramm wird beendet...");
+			System.exit(-1);
 		}
 	}
 	
@@ -54,7 +55,7 @@ public class MusicDB {
 		try {
 			if (co != null) co.close();
 		} catch(SQLException se) {
-			System.out.println("Error:" + se);
+			logger.error("Error: "+se.getMessage());
 		}
 	}
 	
@@ -107,11 +108,16 @@ public class MusicDB {
 	public int showAllCDs(PrintWriter writer) {
 		int cnt = 0;
 		try{
-			PreparedStatement stmt = co.prepareStatement("SELECT * FROM CDs");
+			PreparedStatement stmt = co
+					.prepareStatement("SELECT ASIN,  " +
+													 "ARTIST, TITLE,  LABEL, " +
+													 "DEC(ROUND(LOWESTNEWPRICE,2),8,2) AS LOWESTNEWPRICE, " +
+													 "DEC(ROUND(LOWESTUSEDPRICE,2),8,2) AS LOWESTUSEDPRICE," +
+													 "NUMBEROFDISCS FROM CDS ORDER BY ARTIST, TITLE");
 			ResultSet rs = stmt.executeQuery();
 			cnt = printResult(rs, writer);
 		} catch(SQLException se) {
-			System.out.println("Error:" + se);
+			logger.error("Error: "+se.getMessage());
 		}
 		return cnt;
 	}
@@ -132,7 +138,6 @@ public class MusicDB {
 		int cnt = 0;
 		int discNumber = 0;
 		try{
-			//TODO: Spalten in die 'richtige' Reihenfolge bringen?!?
 			PreparedStatement stmt = co.prepareStatement("SELECT * FROM CDs WHERE ASIN=?");
 			stmt.setString(1, asinCode);
 			ResultSet rs = stmt.executeQuery();
@@ -140,25 +145,19 @@ public class MusicDB {
 			stmt = co.prepareStatement("SELECT NumberOfDiscs FROM CDs WHERE ASIN=?");
 			stmt.setString(1, asinCode);
 			rs = stmt.executeQuery();
-			if(rs.next()) {
-				discNumber = rs.getInt(1);
-			}
-		} catch(SQLException se) {
-			System.out.println("Error:" + se);
-		}
-		try{
+			if(rs.next()) discNumber = rs.getInt(1);
 			int i = 1;
 			while (i <= discNumber) {
-				PreparedStatement stmt = co.prepareStatement("SELECT * FROM Tracks WHERE ASIN=? AND DiscNumber=? ORDER BY TRACKNUMBER");
-				stmt.setString(1, asinCode);
-				stmt.setInt(2, i);
-				ResultSet rs = stmt.executeQuery();
+				PreparedStatement stmt2 = co.prepareStatement("SELECT TRACKNUMBER, TITLE FROM Tracks WHERE ASIN=? AND DiscNumber=? ORDER BY TRACKNUMBER");
+				stmt2.setString(1, asinCode);
+				stmt2.setInt(2, i);
+				ResultSet rs2 = stmt2.executeQuery();
 				writer.println("DiscNum: " + i);
-				cnt += printResult(rs, writer);
+				printResult(rs2, writer);
 				i++;
 			}
 		} catch(SQLException se) {
-			System.out.println("Error:" + se);
+			logger.error("Error: "+se.getMessage());
 		}
 		return cnt;
 	}
@@ -174,12 +173,17 @@ public class MusicDB {
 	public int showGroupAllPrices(PrintWriter writer) {
 		int cnt = 0;
 		try{
-			//TODO: Zahlen runden?? - per SQL...
-			PreparedStatement stmt = co.prepareStatement("SELECT AVG(LowestNewPrice) AVG_New, AVG(LowestUsedPrice) AVG_Used, MIN(LowestNewPrice) MIN_New, MIN(LowestUsedPrice) MIN_Used, MAX(LowestNewPrice) MAX_New, MAX(LowestUsedPrice) MAX_Used FROM CDs");
+			PreparedStatement stmt = 
+				co.prepareStatement("SELECT DEC(ROUND(AVG(LowestNewPrice),2),8,2) AVG_New," +
+													 "DEC(ROUND(AVG(LowestUsedPrice),2),8,2) 	AVG_Used, " +
+													 "DEC(ROUND(MIN(LowestNewPrice),2),8,2)		MIN_New, " +
+													 "DEC(ROUND(MIN(LowestUsedPrice),2),8,2) 	MIN_Used, " +
+													 "DEC(ROUND(MAX(LowestNewPrice),2),8,2) 	MAX_New, " +
+													 "DEC(ROUND(MAX(LowestUsedPrice),2),8,2) 	MAX_Used FROM CDs");
 			ResultSet rs = stmt.executeQuery();
 			cnt = printResult(rs, writer);
 		} catch(SQLException se) {
-			System.out.println("Error:" + se);
+			logger.error("Error: "+se.getMessage());
 		}
 		return cnt;
 	}
@@ -196,13 +200,18 @@ public class MusicDB {
 	public int showGroupPricesArtist(String artist, PrintWriter writer) {
 		int cnt = 0;
 		try{
-			//TODO: Zahlen runden?? - per SQL...
-			PreparedStatement stmt = co.prepareStatement("SELECT AVG(LowestNewPrice) AVG_New, AVG(LowestUsedPrice) AVG_Used, MIN(LowestNewPrice) MIN_New, MIN(LowestUsedPrice) MIN_Used, MAX(LowestNewPrice) MAX_New, MAX(LowestUsedPrice) MAX_Used FROM CDs WHERE Artist=?");
+			PreparedStatement stmt = 
+				co.prepareStatement("SELECT DEC(ROUND(AVG(LowestNewPrice),2),8,2) AVG_New," +
+													 "DEC(ROUND(AVG(LowestUsedPrice),2),8,2) 	AVG_Used, " +
+													 "DEC(ROUND(MIN(LowestNewPrice),2),8,2)		MIN_New, " +
+													 "DEC(ROUND(MIN(LowestUsedPrice),2),8,2) 	MIN_Used, " +
+													 "DEC(ROUND(MAX(LowestNewPrice),2),8,2) 	MAX_New, " +
+													 "DEC(ROUND(MAX(LowestUsedPrice),2),8,2) 	MAX_Used FROM CDs WHERE Artist=?");
 			stmt.setString(1, artist);
 			ResultSet rs = stmt.executeQuery();
 			cnt = printResult(rs, writer);
 		} catch(SQLException se) {
-			System.out.println("Error:" + se);
+			logger.error("Error: "+se.getMessage());
 		}
 		return cnt;
 	}
@@ -216,12 +225,13 @@ public class MusicDB {
 	 */
 	public void updateNewPrice(String asin, float price)	{
 		try{
+			System.out.println(price);
 			PreparedStatement stmt = co.prepareStatement("UPDATE CDs SET LowestNewPrice=? WHERE ASIN=?");
 			stmt.setFloat(1, price);
 			stmt.setString(2, asin);
 			stmt.execute();
 		} catch(SQLException se) {
-			System.out.println("Error:" + se);
+			logger.error("Error: "+se.getMessage());
 		}
 	}
 
@@ -240,7 +250,7 @@ public class MusicDB {
 			stmt2.setString(1, asin);
 			stmt2.execute();
 		} catch(SQLException se) {
-			System.out.println("Error:" + se);
+			logger.error("Error: "+se.getMessage());
 		}
 	}
 }
