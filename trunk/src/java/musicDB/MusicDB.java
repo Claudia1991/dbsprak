@@ -242,12 +242,15 @@ public class MusicDB {
 	 */
 	public void deleteSingleCD(String asin)	{
 		try{
+			co.setAutoCommit(false);
 			PreparedStatement stmt1 = co.prepareStatement("DELETE FROM Tracks WHERE ASIN=?");
 			stmt1.setString(1, asin);
 			stmt1.execute();
 			PreparedStatement stmt2 = co.prepareStatement("DELETE FROM CDs WHERE ASIN=?");
 			stmt2.setString(1, asin);
 			stmt2.execute();
+			co.commit();
+			co.setAutoCommit(true);
 		} catch(SQLException se) {
 			logger.error("Error: "+se.getMessage());
 		}
