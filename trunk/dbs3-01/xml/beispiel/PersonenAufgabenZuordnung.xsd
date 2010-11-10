@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema targetNamespace="http://www.example.com/Aufgabenverteilung" xmlns:aufg="http://www.example.com/Aufgaben" xmlns:pers="http://www.example.com/Personal" xmlns:faeh="http://www.example.com/Faehigkeiten" xmlns="http://www.example.com/Aufgabenverteilung" xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:import namespace="http://www.example.com/Faehigkeiten" schemaLocation="Faehigkeiten.xsd"/>
+	<xs:import namespace="http://www.example.com/Personal" schemaLocation="Personal.xsd"/>
+	<xs:import namespace="http://www.example.com/Aufgaben" schemaLocation="Aufgaben.xsd"/>
+	<xs:complexType name="tAufgabenverteilung">
+		<xs:sequence>
+			<xs:element name="Fähigkeiten" type="faeh:tFähigkeiten"/>
+			<xs:element name="Personal" type="pers:tPersonal"/>
+			<xs:element name="Aufgaben" type="aufg:tAufgaben"/>
+			<xs:element name="Zuordnungen">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Zuordnung" minOccurs="0" maxOccurs="unbounded">
+							<xs:complexType>
+								<xs:attribute name="Angestellter" use="required"/>
+								<xs:attribute name="Aufgabe" use="required"/>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="Aufgabenverteilung" type="tAufgabenverteilung">
+		<xs:key name="kFähigkeit">
+			<xs:selector xpath="Fähigkeiten/faeh:Fähigkeit"/>
+			<xs:field xpath="@Schlüssel"/>
+		</xs:key>
+		<xs:key name="kAufgabe">
+			<xs:selector xpath="Aufgaben/aufg:Aufgabe"/>
+			<xs:field xpath="@Schlüssel"/>
+		</xs:key>
+		<xs:key name="kAngestellter">
+			<xs:selector xpath="Personal/pers:Angestellte/pers:Angestellter"/>
+			<xs:field xpath="@Schlüssel"/>
+		</xs:key>
+		<xs:keyref name="krAngestellterFähigkeit" refer="kFähigkeit">
+			<xs:selector xpath="Personal/pers:Angestellte/pers:Angestellter/pers:Referenz"/>
+			<xs:field xpath="@Fähigkeit"/>
+		</xs:keyref>
+		<xs:keyref name="krAufgabenFähigkeit" refer="kFähigkeit">
+			<xs:selector xpath="Aufgaben/pers:Aufgabe/pers:Referenz"/>
+			<xs:field xpath="@Fähigkeit"/>
+		</xs:keyref>
+		<xs:keyref name="krAngestellter" refer="kAngestellter">
+			<xs:selector xpath="Zuordnungen/Zuordnung"/>
+			<xs:field xpath="@Angestellter"/>
+		</xs:keyref>
+		<xs:keyref name="krAufgabe" refer="kAufgabe">
+			<xs:selector xpath="Zuordnungen/Zuordnung"/>
+			<xs:field xpath="@Aufgabe"/>
+		</xs:keyref>
+	</xs:element>
+	<xs:complexType name="tAngestellterFähigkeit">
+		<xs:complexContent>
+			<xs:extension base="pers:tReferenz">
+				<xs:attribute name="Fähigkeit" use="required"/>
+				<xs:attribute name="Typ" fixed="Fähigkeit"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="tAufgabeFähigkeit">
+		<xs:complexContent>
+			<xs:extension base="aufg:tReferenz">
+				<xs:attribute name="Fähigkeit" use="required"/>
+				<xs:attribute name="Typ" fixed="Fähigkeit"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>

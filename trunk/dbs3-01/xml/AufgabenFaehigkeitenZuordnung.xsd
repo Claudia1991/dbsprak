@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:aufg="http://www.example.com/Aufgaben" xmlns:aufdef="http://www.example.com/Aufgabendefinition" xmlns:faeh="http://www.example.com/Faehigkeiten" xmlns="http://www.example.com/Aufgabendefinition" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.example.com/Aufgabendefinition" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:import namespace="http://www.example.com/Faehigkeiten" schemaLocation="Faehigkeiten.xsd"/>
+	<xs:import namespace="http://www.example.com/Aufgaben" schemaLocation="Aufgaben.xsd"/>
+	<xs:complexType name="tAufgabendefinition">
+		<xs:sequence>
+			<xs:element name="Fähigkeiten" type="faeh:tFähigkeiten"/>
+			<xs:element name="Aufgaben" type="aufg:tAufgaben"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="Aufgabendefinition" type="tAufgabendefinition">
+		<xs:key name="kFähigkeit">
+			<xs:selector xpath="Fähigkeiten/faeh:Fähigkeit"/>
+			<xs:field xpath="@Schlüssel"/>
+		</xs:key>
+		<xs:key name="kAufgabe">
+			<xs:selector xpath="Aufgaben/aufg:Aufgabe"/>
+			<xs:field xpath="@Schlüssel"/>
+		</xs:key>
+		<xs:keyref name="krAufgabenFähigkeit" refer="kFähigkeit">
+			<xs:selector xpath="Aufgaben/aufg:Aufgabe/aufg:Referenz"/>
+			<xs:field xpath="@Fähigkeit"/>
+		</xs:keyref>
+	</xs:element>
+	<xs:complexType name="tAufgabeFähigkeit">
+		<xs:complexContent>
+			<xs:extension base="aufg:tReferenz">
+				<xs:attribute name="ObligatorischeFähigkeit" type="xs:boolean" default="true"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+</xs:schema>

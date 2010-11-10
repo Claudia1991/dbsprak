@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified" targetNamespace="http://www.example.com/Aufgaben" xmlns="http://www.example.com/Aufgaben">
+	<xs:complexType name="tAufgaben">
+		<xs:sequence>
+			<xs:element name="Aufgabe" type="tAufgabe" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="tAufgabe">
+		<xs:sequence>
+			<xs:element name="Bezeichnung" type="xs:string"/>
+			<xs:element name="Referenz" type="tReferenz" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="Schlüssel" type="xs:string" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="tReferenz"/> 
+</xs:schema>

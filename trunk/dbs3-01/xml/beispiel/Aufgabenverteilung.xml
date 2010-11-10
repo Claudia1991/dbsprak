@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Angestellte>
+    <pers:Angestellter xmlns:pers="http://www.example.com/Personal" Schlüssel="Angest-123">
+        <pers:Name>
+            <pers:Vorname>Heinz</pers:Vorname>
+            <pers:Nachname>Müller</pers:Nachname>
+        </pers:Name>
+        <faeh:Fähigkeit xmlns:faeh="http://www.example.com/Faehigkeiten" Schlüssel="Tellerwaschen">
+            <faeh:Beschreibung>Wäscht super schnell Teller.</faeh:Beschreibung>
+        </faeh:Fähigkeit>
+        <aufg:Aufgabe xmlns:aufg="http://www.example.com/Aufgaben" Schlüssel="Aufg-234">
+            <aufg:Bezeichnung>Tellerputzer in der Kantine</aufg:Bezeichnung>
+        </aufg:Aufgabe>
+    </pers:Angestellter>
+    <pers:Angestellter xmlns:pers="http://www.example.com/Personal" Schlüssel="Angest-009">
+        <pers:Name>
+            <pers:Vorname>James</pers:Vorname>
+            <pers:Nachname>Mystery</pers:Nachname>
+        </pers:Name>
+        <faeh:Fähigkeit xmlns:faeh="http://www.example.com/Faehigkeiten" Schlüssel="Selbstverteidigung">
+            <faeh:Beschreibung>Rettet sich aus jeder Gefahr.</faeh:Beschreibung>
+        </faeh:Fähigkeit>
+        <faeh:Fähigkeit xmlns:faeh="http://www.example.com/Faehigkeiten" Schlüssel="ProfAutoFahren">
+            <faeh:Beschreibung>Fährt wie ein Profi Auto.</faeh:Beschreibung>
+        </faeh:Fähigkeit>
+        <faeh:Fähigkeit xmlns:faeh="http://www.example.com/Faehigkeiten" Schlüssel="ZehnFingerSystem">
+            <faeh:Beschreibung>Schreibt ganz schnell mit einer Tastatur.</faeh:Beschreibung>
+        </faeh:Fähigkeit>
+    </pers:Angestellter>
+</Angestellte>
+
