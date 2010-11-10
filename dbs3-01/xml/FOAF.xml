@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rdf:RDF 
+	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" 
+	xmlns:rdfs="http://www.w3.org/2000/01/rdf-schema#" 
+	xmlns:dc="http://purl.org/dc/elements/1.1/"
+	xmlns:foaf="http://xmlns.com/foaf/0.1/">
+	<foaf:Person rdf:about="http://www.example.org/~heinzi/">
+		<foaf:name>Heinz Müller</foaf:name>
+		<foaf:title>Herr</foaf:title>
+		<foaf:givenname>Heinz</foaf:givenname>
+		<foaf:family_name>Müller</foaf:family_name>
+		<foaf:gender>male</foaf:gender>
+		<foaf:nick>Heinzi</foaf:nick>
+		<!--<foaf:mbox rdf:resource="mailto:heinzi@example.org"/>-->
+		<foaf:mbox_sha1sum>b62f43717e01cb0dba02e2485f15228ee08fc0fc</foaf:mbox_sha1sum>
+		<foaf:homepage rdf:resource="http://www.example.org/~heinzi/"/>
+		<foaf:phone rdf:resource="tel:0123456789"/>
+		<foaf:workplaceHomepage rdf:resource="http://www.mensageschirr.example.com"/>
+		<foaf:schoolHomepage rdf:resource="http://www.example.com/schulen/gesamtschuleXY/"/>
+		<foaf:knows>
+			<foaf:Person>
+				<foaf:name>James Mystery</foaf:name>
+				<foaf:mbox_sha1sum>91b9e2e77fe5a8e72fea1f647352cc44d6cbd4ee</foaf:mbox_sha1sum>
+<!--				<foaf:mbox rdf:resource="mailto:mystery@example.org"/>-->
+			</foaf:Person>
+		</foaf:knows>
+		<foaf:interest>
+			<rdf:Description rdf:about="http://www.example.org/qualification/TellerWaschen">
+				 <dc:title>Ausbildung im Teller waschen</dc:title>
+				 <rdfs:comment>Wäscht super schnell Teller.</rdfs:comment>
+			</rdf:Description>
+		 </foaf:interest>
+	</foaf:Person>
+	<foaf:Person rdf:about="http://www.example.org/~009/">
+		<foaf:name>James Mystery</foaf:name>
+		<foaf:title>Herr Dr.</foaf:title>
+		<foaf:givenname>James</foaf:givenname>
+		<foaf:family_name>Mystery</foaf:family_name>
+		<foaf:gender>male</foaf:gender>
+		<foaf:nick>009</foaf:nick>
+		<!--<foaf:mbox rdf:resource="mailto:009@example.org"/>-->
+		<foaf:mbox_sha1sum>f5e5dbb1d4d3a8c9de1bbbc72e5c1ff9e38b4129</foaf:mbox_sha1sum>
+		<foaf:homepage rdf:resource="http://www.example.org/~009/"/>
+		<foaf:phone rdf:resource="tel:009"/>
+		<foaf:workplaceHomepage rdf:resource="http://www.xxx.example.com"/>
+		<foaf:schoolHomepage rdf:resource="http://www.example.com/schulen/PrivateEliteXXX/"/>
+		<foaf:knows>
+			<foaf:Person>
+				<foaf:name>Heinz Müller</foaf:name>
+				<foaf:mbox_sha1sum>b62f43717e01cb0dba02e2485f15228ee08fc0fc</foaf:mbox_sha1sum>
+<!--				<foaf:mbox rdf:resource="mailto:heinzi@example.org"/>-->
+			</foaf:Person>
+		</foaf:knows>
+		<foaf:interest>
+			<rdf:Description rdf:about="http://de.wikipedia.org/wiki/Selbstverteidigung">
+				 <dc:title>Selbstverteidigung - Wikipedia</dc:title>
+				 <rdfs:comment>Rettet sich aus jeder Gefahr.</rdfs:comment>
+			</rdf:Description>
+		 </foaf:interest>
+		<foaf:interest>
+			<rdf:Description rdf:about="http://de.wikipedia.org/wiki/Rennfahrer">
+				 <dc:title>Rennfahrer - Wikipedia</dc:title>
+				 <rdfs:comment>Fährt Autos wie ein Profi.</rdfs:comment>
+			</rdf:Description>
+		 </foaf:interest>
+		<foaf:interest>
+			<rdf:Description rdf:about="http://de.wikipedia.org/wiki/Zehnfingersystem">
+				 <dc:title>Zehnfingersystem - Wikipedia</dc:title>
+				 <rdfs:comment>Schreibt ganz schnell mit einer Tastatur.</rdfs:comment>
+			</rdf:Description>
+		 </foaf:interest>
+		<foaf:interest>
+			<rdf:Description rdf:about="http://www.example.org/qualification/TellerWaschen">
+				 <dc:title>Ausbildung im Teller waschen</dc:title>
+				 <rdfs:comment>Wäscht super schnell Teller.</rdfs:comment>
+			</rdf:Description>
+		 </foaf:interest>
+	</foaf:Person>
+</rdf:RDF>

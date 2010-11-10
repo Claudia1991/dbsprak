@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns="http://www.example.com/Faehigkeiten" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.example.com/Faehigkeiten" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:complexType name="tFähigkeiten">
+		<xs:sequence>
+			<xs:element name="Fähigkeit" type="tFähigkeit" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="tFähigkeit">
+		<xs:sequence>
+			<xs:element name="Titel" type="xs:string"/>
+			<xs:element name="Beschreibung" type="xs:string"/>
+		</xs:sequence>
+		<xs:attribute name="Schlüssel" type="xs:string" use="required"/>
+	</xs:complexType>
+</xs:schema>

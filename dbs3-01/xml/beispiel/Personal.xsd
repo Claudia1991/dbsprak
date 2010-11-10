@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified" targetNamespace="http://www.example.com/Personal" xmlns="http://www.example.com/Personal">
+	<xs:complexType name="tPersonal">
+		<xs:sequence>
+			<xs:element name="Angestellte">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Angestellter" type="tAngestellter" minOccurs="0" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="tAngestellter">
+		<xs:sequence>
+			<xs:element name="Name" type="tname"/>
+			<xs:element name="Referenz" type="tReferenz" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="Schlüssel" type="xs:string" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="tReferenz"/>
+	<xs:complexType name="tname">
+		<xs:sequence>
+			<xs:element name="Vorname" default="unbekannt">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="20"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="Nachname" default="unbekannt">
+				<xs:simpleType>
+					<xs:restriction base="xs:string">
+						<xs:maxLength value="20"/>
+					</xs:restriction>
+				</xs:simpleType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>
