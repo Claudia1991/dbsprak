@@ -47,7 +47,7 @@ public class XMLExtraktiona {
 				if( null == eAngestellterOriginal )  continue;
 				Element eAngestellter = (Element)eAngestellterOriginal.clone();
 				
-				// Verweise/Referenzen auf Fähigkeiten suchen
+				// Verweise/Referenzen auf Fï¿½higkeiten suchen
 				Iterator iRefrenzenOriginal = eAngestellterOriginal.getDescendants( new ElementFilter("Referenz") ); 
 				for (; iRefrenzenOriginal.hasNext(); )
 				{
@@ -55,20 +55,20 @@ public class XMLExtraktiona {
 					Element eReferenzOriginal = (Element) iRefrenzenOriginal.next();
 					if( null == eReferenzOriginal )  continue;
 					// Wert des Verweises ermitteln
-					String strReferenzOriginal = eReferenzOriginal.getAttributeValue("Fähigkeit");
+					String strReferenzOriginal = eReferenzOriginal.getAttributeValue("Fï¿½higkeit");
 					// System.out.println("Referenzwert: " + strReferenzOriginal);					
 
-					// passende Fähigkeit suchen
-					Iterator iFähigkeiten = eQuellWurzel.getDescendants( new ElementFilter("Fähigkeit") ); 
-					for (; iFähigkeiten.hasNext(); )
+					// passende Fï¿½higkeit suchen
+					Iterator iFï¿½higkeiten = eQuellWurzel.getDescendants( new ElementFilter("Fï¿½higkeit") ); 
+					for (; iFï¿½higkeiten.hasNext(); )
 					{
-						Element eFaehigkeitOriginal = (Element) iFähigkeiten.next();
-						if( null == eFaehigkeitOriginal || eFaehigkeitOriginal.getAttributeValue("Schlüssel").compareTo(strReferenzOriginal) != 0) continue; 
+						Element eFaehigkeitOriginal = (Element) iFï¿½higkeiten.next();
+						if( null == eFaehigkeitOriginal || eFaehigkeitOriginal.getAttributeValue("Schlï¿½ssel").compareTo(strReferenzOriginal) != 0) continue; 
 						
-						// Fähigkeit hinzufügen
+						// Fï¿½higkeit hinzufï¿½gen
 						Element eFaehigkeit = (Element)eFaehigkeitOriginal.clone();						
 						eAngestellter.addContent( eFaehigkeit );
-						// System.out.println("Fähigkeit hinzugefügt");
+						// System.out.println("Fï¿½higkeit hinzugefï¿½gt");
 					}
 				}
 				// Entfernen der Verweise
@@ -81,30 +81,30 @@ public class XMLExtraktiona {
 				{
 					// System.out.println("Zuordung");
 					Element eZuordnungOriginal = (Element) iZuordnungenOriginal.next();
-					if( null == eZuordnungOriginal  || eZuordnungOriginal.getAttributeValue("Angestellter").compareTo(eAngestellter.getAttributeValue("Schlüssel")) != 0)  continue;
+					if( null == eZuordnungOriginal  || eZuordnungOriginal.getAttributeValue("Angestellter").compareTo(eAngestellter.getAttributeValue("Schlï¿½ssel")) != 0)  continue;
 
-					// Schlüssel der Aufgabe ermitteln
+					// Schlï¿½ssel der Aufgabe ermitteln
 					String strAufgabeOriginal = eZuordnungOriginal.getAttributeValue("Aufgabe");
-					// System.out.println("Aufgabenschlüssel: " + strAufgabeOriginal);					
+					// System.out.println("Aufgabenschlï¿½ssel: " + strAufgabeOriginal);					
 
 					// passende Aufgabe suchen
 					Iterator iAufgabenOriginal = eQuellWurzel.getDescendants( new ElementFilter("Aufgabe") ); 
 					for (; iAufgabenOriginal.hasNext(); )
 					{
 						Element eAufgabeOriginal = (Element) iAufgabenOriginal.next();
-						if( null == eAufgabeOriginal || eAufgabeOriginal.getAttributeValue("Schlüssel").compareTo(strAufgabeOriginal) != 0) continue; 
+						if( null == eAufgabeOriginal || eAufgabeOriginal.getAttributeValue("Schlï¿½ssel").compareTo(strAufgabeOriginal) != 0) continue; 
 						
-						// Aufgabe hinzufügen
+						// Aufgabe hinzufï¿½gen
 						Element eAufgabe = (Element)eAufgabeOriginal.clone();
 						eAngestellter.addContent(eAufgabe);
 						eAufgabe.removeContent(new ElementFilter("Referenz"));
 
-						// System.out.println("Aufgabe hinzugefügt");
+						// System.out.println("Aufgabe hinzugefï¿½gt");
 					}
 				}
 
 				
-				// bearbeiteten Angestellten hinzufügen
+				// bearbeiteten Angestellten hinzufï¿½gen
 				eZielWurzel.addContent( eAngestellter );
 			}
 			// ---- Ausgabe der neuen XML Datei ----
