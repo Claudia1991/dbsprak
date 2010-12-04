@@ -1,0 +1,25 @@
+connect to dbprakU8;
+XQUERY document 
+{<Bibliothek> {attribute xsi:noNamespaceSchemaLocation {'Bibliothek.xsd'}}
+	<Buecher>
+{
+	for $b in db2-fn:sqlquery('
+		SELECT XMLCONCAT(XMLELEMENT(NAME "ISBN", ISBN), XMLELEMENT (NAME "Titel", TITEL)) AS Buecher FROM BUECHER
+	') 
+	return <Buecher_Tupel>{$b}</Buecher_Tupel>
+}
+	</Buecher>
+</Bibliothek>};
+
+
+<Bibliothek xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="Bibliothek.xsd">
+	<Buecher>
+		<Buecher_Tupel>
+			<ISBN>9780470025963</ISBN>
+		</Buecher_Tupel>
+		<Buecher_Tupel>
+			<Titel>Semantic Web Technologies</Titel>
+		</Buecher_Tupel>
+		<Buecher_Tupel>
+			<ISBN>9783826616105</ISBN>
+		</Buecher_Tupel><Buecher_Tupel><Titel>Software Factories</Titel></Buecher_Tupel><Buecher_Tupel><ISBN>0321491696   </ISBN></Buecher_Tupel><Buecher_Tupel><Titel>Compilers - Principles, Techniques, &amp; Tools</Titel></Buecher_Tupel><Buecher_Tupel><ISBN>gibtesnicht  </ISBN></Buecher_Tupel><Buecher_Tupel><Titel>Meine Literaturhits über interessante Sachen wie OWL</Titel></Buecher_Tupel></Buecher></Bibliothek>

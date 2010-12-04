@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:simpleType name="CHAR_13">
+        <xs:annotation>
+            <xs:documentation>
+                The "CHAR" type from the data base was mapped to "xs:string" XML Schema type.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:maxLength value="13"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="INTEGER">
+        <xs:annotation>
+            <xs:documentation>
+                The "INTEGER" type from the data base was mapped to "xs:integer" XML Schema type.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:integer">
+            <xs:maxInclusive value="2147483647"/>
+            <xs:minInclusive value="-2147483648"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="VARCHAR_15">
+        <xs:annotation>
+            <xs:documentation>
+                The "VARCHAR" type from the data base was mapped to "xs:string" XML Schema type.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:maxLength value="15"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="VARCHAR_50">
+        <xs:annotation>
+            <xs:documentation>
+                The "VARCHAR" type from the data base was mapped to "xs:string" XML Schema type.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:maxLength value="50"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="VARCHAR_3000">
+        <xs:annotation>
+            <xs:documentation>
+                The "VARCHAR" type from the data base was mapped to "xs:string" XML Schema type.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:maxLength value="3000"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="VARCHAR_100">
+        <xs:annotation>
+            <xs:documentation>
+                The "VARCHAR" type from the data base was mapped to "xs:string" XML Schema type.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:maxLength value="100"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="DATE">
+        <xs:annotation>
+            <xs:documentation>
+                The "DATE" type from the data base was mapped to "xs:date" XML Schema type.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:date">
+            <xs:pattern value="\p{Nd}{4}-\p{Nd}{2}-\p{Nd}{2}"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="VARCHAR_10">
+        <xs:annotation>
+            <xs:documentation>
+                The "VARCHAR" type from the data base was mapped to "xs:string" XML Schema type.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:maxLength value="10"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="VARCHAR_25">
+        <xs:annotation>
+            <xs:documentation>
+                The "VARCHAR" type from the data base was mapped to "xs:string" XML Schema type.
+            </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:maxLength value="25"/>
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:complexType name="RowType_Catalog_DB2INST1_ABSCHNITTE">
+        <xs:sequence>
+            <xs:element name="BUCHISBN" type="CHAR_13"/>
+            <xs:element name="ABSCHNITTID" type="INTEGER"/>
+            <xs:element name="TYP" type="VARCHAR_15"/>
+            <xs:element name="REIHENFOLGE" type="INTEGER"/>
+            <xs:element name="PARENTID" type="INTEGER" nillable="true"/>
+            <xs:element name="TITEL" type="VARCHAR_50" nillable="true"/>
+            <xs:element name="TEXT" type="VARCHAR_3000" nillable="true"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="TableType_Catalog_DB2INST1_ABSCHNITTE">
+        <xs:sequence>
+            <xs:element name="row" type="RowType_Catalog_DB2INST1_ABSCHNITTE" minOccurs="0"
+                maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="RowType_Catalog_DB2INST1_AUTOREN">
+        <xs:sequence>
+            <xs:element name="ID" type="INTEGER"/>
+            <xs:element name="KONTAKT" type="VARCHAR_50" nillable="true"/>
+            <xs:element name="HOMEPAGE" type="VARCHAR_100" nillable="true"/>
+            <xs:element name="PERSONENVERWEIS" type="INTEGER"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="TableType_Catalog_DB2INST1_AUTOREN">
+        <xs:sequence>
+            <xs:element name="row" type="RowType_Catalog_DB2INST1_AUTOREN" minOccurs="0"
+                maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="RowType_Catalog_DB2INST1_BUECHER">
+        <xs:sequence>
+            <xs:element name="ISBN" type="CHAR_13"/>
+            <xs:element name="TITEL" type="VARCHAR_100" nillable="true"/>
+            <xs:element name="ERSCHEINUNGSJAHR" type="INTEGER" nillable="true"/>
+            <xs:element name="AUFLAGE" type="INTEGER" nillable="true"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="TableType_Catalog_DB2INST1_BUECHER">
+        <xs:sequence>
+            <xs:element name="row" type="RowType_Catalog_DB2INST1_BUECHER" minOccurs="0"
+                maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="RowType_Catalog_DB2INST1_KUNDEN">
+        <xs:sequence>
+            <xs:element name="KUNDENNUMMER" type="INTEGER"/>
+            <xs:element name="PERSONENVERWEIS" type="INTEGER"/>
+            <xs:element name="EINTRITTSDATUM" type="DATE" nillable="true"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="TableType_Catalog_DB2INST1_KUNDEN">
+        <xs:sequence>
+            <xs:element name="row" type="RowType_Catalog_DB2INST1_KUNDEN" minOccurs="0"
+                maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="RowType_Catalog_DB2INST1_LEIHVORGAENGE">
+        <xs:sequence>
+            <xs:element name="BUCHISBN" type="CHAR_13"/>
+            <xs:element name="KUNDENNUMMER" type="INTEGER"/>
+            <xs:element name="AUSLEIHDATUM" type="DATE" nillable="true"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="TableType_Catalog_DB2INST1_LEIHVORGAENGE">
+        <xs:sequence>
+            <xs:element name="row" type="RowType_Catalog_DB2INST1_LEIHVORGAENGE" minOccurs="0"
+                maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="RowType_Catalog_DB2INST1_PERSONEN">
+        <xs:sequence>
+            <xs:element name="ID" type="INTEGER"/>
+            <xs:element name="NAME" type="VARCHAR_50"/>
+            <xs:element name="VORNAME" type="VARCHAR_50" nillable="true"/>
+            <xs:element name="ANREDE" type="VARCHAR_10" nillable="true"/>
+            <xs:element name="TITEL" type="VARCHAR_25" nillable="true"/>
+            <xs:element name="STRAßE" type="VARCHAR_100" nillable="true"/>
+            <xs:element name="HAUSNUMMER" type="VARCHAR_10" nillable="true"/>
+            <xs:element name="PLZ" type="VARCHAR_10" nillable="true"/>
+            <xs:element name="STADT" type="VARCHAR_50" nillable="true"/>
+            <xs:element name="LAND" type="VARCHAR_50" nillable="true"/>
+            <xs:element name="TELEFON" type="VARCHAR_50" nillable="true"/>
+            <xs:element name="EMAIL" type="VARCHAR_50" nillable="true"/>
+            <xs:element name="GEBURTSTAG" type="DATE" nillable="true"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="TableType_Catalog_DB2INST1_PERSONEN">
+        <xs:sequence>
+            <xs:element name="row" type="RowType_Catalog_DB2INST1_PERSONEN" minOccurs="0"
+                maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="RowType_Catalog_DB2INST1_ZUWEISUNGBUCHAUTOR">
+        <xs:sequence>
+            <xs:element name="BUCHISBN" type="CHAR_13"/>
+            <xs:element name="AUTORENID" type="INTEGER"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="TableType_Catalog_DB2INST1_ZUWEISUNGBUCHAUTOR">
+        <xs:sequence>
+            <xs:element name="row" type="RowType_Catalog_DB2INST1_ZUWEISUNGBUCHAUTOR" minOccurs="0"
+                maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="SchemaType_Catalog_DB2INST1">
+        <xs:all>
+            <xs:element name="ABSCHNITTE" type="TableType_Catalog_DB2INST1_ABSCHNITTE"/>
+            <xs:element name="AUTOREN" type="TableType_Catalog_DB2INST1_AUTOREN"/>
+            <xs:element name="BUECHER" type="TableType_Catalog_DB2INST1_BUECHER"/>
+            <xs:element name="KUNDEN" type="TableType_Catalog_DB2INST1_KUNDEN"/>
+            <xs:element name="LEIHVORGAENGE" type="TableType_Catalog_DB2INST1_LEIHVORGAENGE"/>
+            <xs:element name="PERSONEN" type="TableType_Catalog_DB2INST1_PERSONEN"/>
+            <xs:element name="ZUWEISUNGBUCHAUTOR"
+                type="TableType_Catalog_DB2INST1_ZUWEISUNGBUCHAUTOR"/>
+        </xs:all>
+    </xs:complexType>
+    <xs:complexType name="CatalogType_Catalog">
+        <xs:all>
+            <xs:element name="DB2INST1" type="SchemaType_Catalog_DB2INST1">
+                <xs:key name="ABSCHNITTE_SQL101204200354520">
+                    <xs:selector xpath="ABSCHNITTE/row"/>
+                    <xs:field xpath="BUCHISBN"/>
+                    <xs:field xpath="ABSCHNITTID"/>
+                </xs:key>
+                <xs:unique name="ABSCHNITTE_SQL101204200354080">
+                    <xs:selector xpath="ABSCHNITTE/row"/>
+                    <xs:field xpath="BUCHISBN"/>
+                    <xs:field xpath="ABSCHNITTID"/>
+                </xs:unique>
+                <xs:key name="AUTOREN_SQL101204200358200">
+                    <xs:selector xpath="AUTOREN/row"/>
+                    <xs:field xpath="ID"/>
+                </xs:key>
+                <xs:unique name="AUTOREN_SQL101204200358200">
+                    <xs:selector xpath="AUTOREN/row"/>
+                    <xs:field xpath="PERSONENVERWEIS"/>
+                </xs:unique>
+                <xs:unique name="AUTOREN_SQL101204200357710">
+                    <xs:selector xpath="AUTOREN/row"/>
+                    <xs:field xpath="ID"/>
+                </xs:unique>
+                <xs:keyref name="AUTOREN_To_ZUWEISUNGBUCHAUTOR_SQL101204200401600"
+                    refer="AUTOREN_SQL101204200358200">
+                    <xs:selector xpath="ZUWEISUNGBUCHAUTOR/row"/>
+                    <xs:field xpath="AUTORENID"/>
+                </xs:keyref>
+                <xs:key name="BUECHER_SQL101204200353660">
+                    <xs:selector xpath="BUECHER/row"/>
+                    <xs:field xpath="ISBN"/>
+                </xs:key>
+                <xs:unique name="BUECHER_SQL101204200353220">
+                    <xs:selector xpath="BUECHER/row"/>
+                    <xs:field xpath="ISBN"/>
+                </xs:unique>
+                <xs:keyref name="BUECHER_To_ABSCHNITTE_SQL101204200354580"
+                    refer="BUECHER_SQL101204200353660">
+                    <xs:selector xpath="ABSCHNITTE/row"/>
+                    <xs:field xpath="BUCHISBN"/>
+                </xs:keyref>
+                <xs:keyref name="BUECHER_To_LEIHVORGAENGE_SQL101204200357270"
+                    refer="BUECHER_SQL101204200353660">
+                    <xs:selector xpath="LEIHVORGAENGE/row"/>
+                    <xs:field xpath="BUCHISBN"/>
+                </xs:keyref>
+                <xs:keyref name="BUECHER_To_ZUWEISUNGBUCHAUTOR_SQL101204200401590"
+                    refer="BUECHER_SQL101204200353660">
+                    <xs:selector xpath="ZUWEISUNGBUCHAUTOR/row"/>
+                    <xs:field xpath="BUCHISBN"/>
+                </xs:keyref>
+                <xs:key name="KUNDEN_SQL101204200356310">
+                    <xs:selector xpath="KUNDEN/row"/>
+                    <xs:field xpath="KUNDENNUMMER"/>
+                </xs:key>
+                <xs:unique name="KUNDEN_SQL101204200356320">
+                    <xs:selector xpath="KUNDEN/row"/>
+                    <xs:field xpath="PERSONENVERWEIS"/>
+                </xs:unique>
+                <xs:unique name="KUNDEN_SQL101204200355850">
+                    <xs:selector xpath="KUNDEN/row"/>
+                    <xs:field xpath="KUNDENNUMMER"/>
+                </xs:unique>
+                <xs:keyref name="KUNDEN_To_LEIHVORGAENGE_SQL101204200357280"
+                    refer="KUNDEN_SQL101204200356310">
+                    <xs:selector xpath="LEIHVORGAENGE/row"/>
+                    <xs:field xpath="KUNDENNUMMER"/>
+                </xs:keyref>
+                <xs:key name="LEIHVORGAENGE_SQL101204200357260">
+                    <xs:selector xpath="LEIHVORGAENGE/row"/>
+                    <xs:field xpath="BUCHISBN"/>
+                    <xs:field xpath="KUNDENNUMMER"/>
+                </xs:key>
+                <xs:unique name="LEIHVORGAENGE_SQL101204200356790">
+                    <xs:selector xpath="LEIHVORGAENGE/row"/>
+                    <xs:field xpath="BUCHISBN"/>
+                    <xs:field xpath="KUNDENNUMMER"/>
+                </xs:unique>
+                <xs:key name="PERSONEN_SQL101204200355410">
+                    <xs:selector xpath="PERSONEN/row"/>
+                    <xs:field xpath="ID"/>
+                </xs:key>
+                <xs:unique name="PERSONEN_SQL101204200355010">
+                    <xs:selector xpath="PERSONEN/row"/>
+                    <xs:field xpath="ID"/>
+                </xs:unique>
+                <xs:keyref name="PERSONEN_To_AUTOREN_SQL101204200358260"
+                    refer="PERSONEN_SQL101204200355410">
+                    <xs:selector xpath="AUTOREN/row"/>
+                    <xs:field xpath="PERSONENVERWEIS"/>
+                </xs:keyref>
+                <xs:keyref name="PERSONEN_To_KUNDEN_SQL101204200356380"
+                    refer="PERSONEN_SQL101204200355410">
+                    <xs:selector xpath="KUNDEN/row"/>
+                    <xs:field xpath="PERSONENVERWEIS"/>
+                </xs:keyref>
+            </xs:element>
+        </xs:all>
+    </xs:complexType>
+    <xs:element name="Catalog" type="CatalogType_Catalog"/>
+</xs:schema>

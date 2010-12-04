@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+<!-- 
+TODO:
+	- Muss »date«-Format noch angepasst werden??
+	- NULL-Werte kennzeichnen? Ja/Nein ... bisher: ja
+	- Muss »key«-Wert gleichzeitig als Unique gekennzeichnet werden, oder ist das implizit?
+	- Muss »keyref«-Wert gleichzeitig als Unique gekennzeichnet werden, oder ist das implizit? (Kunden:PersonenVerweis; Autoren:PersonenVerweis)
+	- Bei Kardianlität bin ich mir unsicher... (maxOccurs="unbounded")
+-->
+	<!-- Bibliothek-Schema -->
+	<xs:element name="Bibliothek">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Buecher" type="tBuecher"></xs:element>
+			</xs:sequence>
+		</xs:complexType>
+		<xs:key name="kBuecher">
+			<xs:selector xpath="Buecher/Buecher_Tupel"/>
+			<xs:field xpath="ISBN"/>
+		</xs:key>
+		<xs:key name="kAbschnitte">
+			<xs:selector xpath="Buecher/Buecher_Tupel/Abschnitte/Abschnitte_Tupel"/>
+			<xs:field xpath="BuchISBN"/>
+			<xs:field xpath="AbschnittID"/>
+		</xs:key>
+		<xs:key name="kKunden">
+			<xs:selector xpath="Buecher/Buecher_Tupel/Leihvorgaenge/Leihvorgaenge_Tupel/Kunden/Kunden_Tupel"/>
+			<xs:field xpath="Kundennummer"/>
+		</xs:key>
+		<xs:key name="kLeihvorgaenge">
+			<xs:selector xpath="Buecher/Buecher_Tupel/Leihvorgaenge/Leihvorgaenge_Tupel"/>
+			<xs:field xpath="BuchISBN"/>
+			<xs:field xpath="KundenNummer"/>
+		</xs:key>
+		<xs:key name="kPersonen">
+			<xs:selector xpath="Buecher/Buecher_Tupel/Leihvorgaenge/Leihvorgaenge_Tupel/Kunden/Kunden_Tupel/Personen/Personen_Tupel"/>
+			<xs:field xpath="ID"/>
+		</xs:key>
+		<xs:key name="kAutoren">
+			<xs:selector xpath="Buecher/Buecher_Tupel/ZuweisungBuchAutor/ZuweisungBuchAutor_Tupel/Autoren/Autoren_Tupel"/>
+			<xs:field xpath="ID"/>
+		</xs:key>
+		<xs:keyref name="krAbschnitte" refer="kBuecher">
+			<xs:selector xpath="Buecher/Buecher_Tupel/Abschnitte/Abschnitte_Tupel"/>
+			<xs:field xpath="BuchISBN"/>
+		</xs:keyref>
+		<xs:keyref name="krKunde" refer="kPersonen">
+			<xs:selector xpath="Buecher/Buecher_Tupel/Leihvorgaenge/Leihvorgaenge_Tupel/Kunden/Kunden_Tupel"/>
+			<xs:field xpath="PersonenVerweis"/>
+		</xs:keyref>
+		<xs:keyref name="krLeihvorgaenge" refer="kBuecher">
+			<xs:selector xpath="Buecher/Buecher_Tupel/Leihvorgaenge/Leihvorgaenge_Tupel"/>
+			<xs:field xpath="BuchISBN"/>
+		</xs:keyref>
+		<xs:keyref name="krLeihvorgaenge2" refer="kKunden">
+			<xs:selector xpath="Buecher/Buecher_Tupel/Leihvorgaenge/Leihvorgaenge_Tupel"/>
+			<xs:field xpath="KundenNummer"/>
+		</xs:keyref>
+		<xs:keyref name="krAutoren" refer="kPersonen">
+			<xs:selector xpath="Buecher/Buecher_Tupel/ZuweisungBuchAutor/ZuweisungBuchAutor_Tupel/Autoren/Autoren_Tupel"/>
+			<xs:field xpath="PersonenVerweis"/>
+		</xs:keyref>
+		<xs:keyref name="krZuweisungBuchAutor" refer="kBuecher">
+			<xs:selector xpath="Buecher/Buecher_Tupel/ZuweisungBuchAutor/ZuweisungBuchAutor_Tupel"/>
+			<xs:field xpath="BuchISBN"/>
+		</xs:keyref>
+		<xs:keyref name="krZuweisungBuchAutor2" refer="kAutoren">
+			<xs:selector xpath="Buecher/Buecher_Tupel/ZuweisungBuchAutor/ZuweisungBuchAutor_Tupel"/>
+			<xs:field xpath="AutorenID"/>
+		</xs:keyref>
+	</xs:element>
+	<!-- Buecher-Relation -->
+	<xs:complexType name="tBuecher">
+		<xs:sequence>
+			<xs:element name="Buecher_Tupel" type="tBuecher_Tupel"></xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="tBuecher_Tupel">
+		<xs:sequence>
+			<xs:element name="ISBN" type="tchar13"></xs:element>
+			<xs:element name="Titel" type="tString100" nillable="true"></xs:element>
+			<xs:element name="Erscheinungsjahr" type="xs:integer" nillable="true"></xs:element>
+			<xs:element name="Auflage" type="xs:integer" nillable="true"></xs:element>
+			<xs:element name="Abschnitte" type="tAbschnitte"></xs:element>
+			<xs:element name="Leihvorgaenge" type="tLeihvorgaenge"></xs:element>
+			<xs:element name="ZuweisungBuchAutor" type="tZuweisungBuchAutor"></xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- Abschnitte-Relation -->
+	<xs:complexType name="tAbschnitte">
+		<xs:sequence>
+			<xs:element name="Abschnitte_Tupel" type="tAbschnitte_Tupel" maxOccurs="unbounded"></xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="tAbschnitte_Tupel">
+		<xs:sequence>
+			<xs:element name="BuchISBN" type="tchar13"></xs:element>
+			<xs:element name="AbschnittID" type="xs:integer"></xs:element>
+			<xs:element name="Typ" type="tString15"></xs:element>
+			<xs:element name="Reihenfolge" type="xs:integer"></xs:element>
+			<xs:element name="ParentID" type="xs:integer" nillable="true"></xs:element>
+			<xs:element name="Titel" type="tString50" nillable="true"></xs:element>
+			<xs:element name="Text" type="tString3000" nillable="true"></xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- Leihvorgaenge-Relation -->
+	<xs:complexType name="tLeihvorgaenge">
+		<xs:sequence>
+			<xs:element name="Leihvorgaenge_Tupel" type="tLeihvorgaenge_Tupel" maxOccurs="unbounded"></xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="tLeihvorgaenge_Tupel">
+		<xs:sequence>
+			<xs:element name="BuchISBN" type="tchar13"></xs:element>
+			<xs:element name="Kundennummer" type="xs:integer"></xs:element>
+			<xs:element name="Ausleihdatum" type="xs:date" nillable="true"></xs:element>
+			<xs:element name="Kunden" type="tKunden"></xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- Kunden-Relation -->
+	<xs:complexType name="tKunden">
+		<xs:sequence>
+			<xs:element name="Kunden_Tupel" type="tKunden_Tupel"></xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="tKunden_Tupel">
+		<xs:sequence>
+			<xs:element name="Kundennummer" type="xs:integer"></xs:element>
+			<xs:element name="PersonVerweis" type="xs:integer"></xs:element>
+			<xs:element name="Eintrittsdatum" type="xs:date" nillable="true"></xs:element>
+			<xs:element name="Personen" type="tPersonen"></xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- Personen-Relation -->
+	<xs:complexType name="tPersonen">
+		<xs:sequence>
+			<xs:element name="Personen_Tupel" type="tPersonen_Tupel"></xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="tPersonen_Tupel">
+		<xs:sequence>
+			<xs:element name="ID" type="xs:integer"></xs:element>
+			<xs:element name="Name" type="tString50"></xs:element>
+			<xs:element name="Vorname" type="tString50" nillable="true"></xs:element>
+			<xs:element name="Anrede" type="tString10" nillable="true"></xs:element>
+			<xs:element name="Titel" type="tString25" nillable="true"></xs:element>
+			<xs:element name="Straße" type="tString100" nillable="true"></xs:element>
+			<xs:element name="Hausnummer" type="tString10" nillable="true"></xs:element>
+			<xs:element name="PLZ" type="tString10" nillable="true"></xs:element>
+			<xs:element name="Stadt" type="tString50" nillable="true"></xs:element>
+			<xs:element name="Land" type="tString50" nillable="true"></xs:element>
+			<xs:element name="Telefon" type="tString50" nillable="true"></xs:element>
+			<xs:element name="email" type="tString50" nillable="true"></xs:element>
+			<xs:element name="Geburtstag" type="xs:date" nillable="true"></xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- ZuweisungBuchAutor-Relation -->
+	<xs:complexType name="tZuweisungBuchAutor">
+		<xs:sequence>
+			<xs:element name="ZuweisungBuchAutor_Tupel" type="tZuweisungBuchAutor_Tupel" maxOccurs="unbounded"></xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="tZuweisungBuchAutor_Tupel">
+		<xs:sequence>
+			<xs:element name="AutorenID" type="xs:integer"></xs:element>
+			<xs:element name="BuchISBN" type="tchar13"></xs:element>
+			<xs:element name="Autoren" type="tAutoren"></xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- Autoren-Relation -->
+	<xs:complexType name="tAutoren">
+		<xs:sequence>
+			<xs:element name="Autoren_Tupel" type="tAutoren_Tupel"></xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="tAutoren_Tupel">
+		<xs:sequence>
+			<xs:element name="ID" type="xs:integer"></xs:element>
+			<xs:element name="Kontakt" type="tString50" nillable="true"></xs:element>
+			<xs:element name="Homepage" type="tString100" nillable="true"></xs:element>
+			<xs:element name="PersonVerweis" type="xs:integer"></xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<!-- DB-Types -->
+	<xs:simpleType name="tString10">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="10"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="tString15">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="15"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="tString25">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="25"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="tString50">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="50"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="tString100">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="100"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="tString3000">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="3000"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="tchar13">
+		<xs:restriction base="xs:string">
+			<xs:maxLength value="13"/>
+		</xs:restriction>
+	</xs:simpleType>
+</xs:schema>
