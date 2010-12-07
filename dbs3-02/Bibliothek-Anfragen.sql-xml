@@ -3,16 +3,21 @@
  *  - muss das Datum des Leihvorgangs auch geprueft werden?
 **/
 
+/**
+ * interessante Fkt.:
+ *  - SELECT XMLGROUP(ID,Name,Vorname,Anrede,Titel,Straße,Hausnummer,plz,stadt,Land,Telefon,Email,Geburtstag OPTION ROW "Personen_Tupel" ROOT "Personen") FROM Personen
+**/
+
 -- Die folgenden Fragestellungen sind mithilfe des zu erstellenden Skripts "Bibliothek-Anfragen.sql-xml" zu beantworten. Verwenden Sie eine gemeinsame Wurzel für alle Antworten:
 
 -- connect to dbprakU8;
 
--- Geben Sie zu allen Büchern (inkl. ISBN und Buchtitel) die Autoren an, welche im Text referenziert werden. Eine Referenz auf Autoren soll im Text der folgenden Form genügen: "$Nachname $Vorname" oder "$Vorname $Nachname" oder "[$Nachname]"
+/*** Geben Sie zu allen Büchern (inkl. ISBN und Buchtitel) die Autoren an, welche im Text referenziert werden. Eine Referenz auf Autoren soll im Text der folgenden Form genügen: "$Nachname $Vorname" oder "$Vorname $Nachname" oder "[$Nachname]" ***/
 -- zu 1.; Wie Suche in im Text?????
 -- SELECT * FROM buecher;
 -- ((SELECT (P.Vorname||' '||P.Name) FROM Autoren A, Personen P WHERE A.Personenverweis = P.ID) UNION (SELECT (P.Name||' '||P.Vorname) FROM Autoren A, Personen P WHERE A.Personenverweis = P.ID))  UNION (SELECT '['||P.Name||']' FROM Autoren A, Personen P WHERE A.Personenverweis = P.ID)
 
--- Geben Sie alle "thematischen" Verbindungen zwischen den Büchern an. Eine Verbindung liegt vor, wenn ein Wort (außer "der", "die", "das", "dass", "ein", "eine", "und", "aber", "sowie" und mit jeweils erstem großen Buchstaben) aus dem Text oder Titel eines Buches im Titel oder Text eines anderen Buches auftaucht.
+/*** Geben Sie alle "thematischen" Verbindungen zwischen den Büchern an. Eine Verbindung liegt vor, wenn ein Wort (außer "der", "die", "das", "dass", "ein", "eine", "und", "aber", "sowie" und mit jeweils erstem großen Buchstaben) aus dem Text oder Titel eines Buches im Titel oder Text eines anderen Buches auftaucht. ***/
 -- WTF?
 
 /*** Geben Sie die Email-Adressen aller Kunden aus, welche Bücher lesen in denen es mehr als zwei Kapitel mit jeweils mindestens drei Unterkapiteln gibt. ***/
