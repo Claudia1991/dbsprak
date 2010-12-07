@@ -1,3 +1,8 @@
+/**
+ * TODO:
+ *  - muss das Datum des Leihvorgangs auch geprueft werden?
+**/
+
 -- Die folgenden Fragestellungen sind mithilfe des zu erstellenden Skripts "Bibliothek-Anfragen.sql-xml" zu beantworten. Verwenden Sie eine gemeinsame Wurzel für alle Antworten:
 
 -- connect to dbprakU8;
@@ -10,12 +15,20 @@
 -- Geben Sie alle "thematischen" Verbindungen zwischen den Büchern an. Eine Verbindung liegt vor, wenn ein Wort (außer "der", "die", "das", "dass", "ein", "eine", "und", "aber", "sowie" und mit jeweils erstem großen Buchstaben) aus dem Text oder Titel eines Buches im Titel oder Text eines anderen Buches auftaucht.
 -- WTF?
 
--- Geben Sie die Email-Adressen aller Kunden aus, welche Bücher lesen in denen es mehr als zwei Kapitel mit jeweils mindestens drei Unterkapiteln gibt.
+/*** Geben Sie die Email-Adressen aller Kunden aus, welche Bücher lesen in denen es mehr als zwei Kapitel mit jeweils mindestens drei Unterkapiteln gibt. ***/
+		SELECT p.email FROM Leihvorgaenge L,Kunden K,Personen P where L.kundennummer = K.Kundennummer and k.personenverweis = p.id and Buchisbn in 
+		-- Buecher mit mit mehr als 2 Kapiteln und jeweils min. 3 Unterkapiteln
+		(
+			select buchisbn from abschnitte a1 where typ = 'Kapitel' and (
+				-- fuer jedes Kapitel eines Buches wird Anzahl der Unterkapitel ermittelt 
+				select count(*) from abschnitte a2 where a2.buchisbn = a1.buchisbn and a2.parentid = a1.abschnittid and typ='Unterkapitel'
+			) > 2 and (
+				-- Anzahl der Buchkapitel
+				select count(*) from abschnitte a3 where a1.buchisbn = a3.buchisbn and a3.typ='Kapitel'
+			) > 2
+		);
 
--- SELECT * FROM KUNDE,
--- SELECT ISBN FROM BUECHER B, ABSCHNITTE A WHERE B.ISBN = A.BUCHISBN AND TYP = 'Kapitel' AND COUNT(TYP) >= 2 AND 
-
-/* Geben Sie die Anzahl der Kunden für alle Bücher aus, wobei die Kunden das Buch lesen und das Buch zwei Kapitel mit jeweils null oder zwei Unterkapiteln besitzt. */
+/*** Geben Sie die Anzahl der Kunden für alle Bücher aus, wobei die Kunden das Buch lesen und das Buch zwei Kapitel mit jeweils null oder zwei Unterkapiteln besitzt. ***/
 -- alle Buecher und die Anzahl von Ausleihungen
 select ISBN,Titel,Erscheinungsjahr,case when isbn = Buchisbn then anzahl else 0 end as Kundenanzahl from buecher,
 	-- ausgeliehene Buecher und deren Anzahl
