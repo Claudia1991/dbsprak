@@ -220,10 +220,4 @@ TODO:
 			<xs:length value="13"/>
 		</xs:restriction>
 	</xs:simpleType>
-	<xs:simpleType name="tAbschnittTyp">
-	    <xs:restriction base="xs:string">
-	        <xs:enumeration value="Kapitel"/>
-            <xs:enumeration value="Unterkapitel"/>
-            <xs:enumeration value="Absatz"/>
-    </xs:simpleType>
 </xs:schema>
