@@ -1,12 +1,9 @@
-
--- Die folgenden Fragestellungen sind mithilfe des zu erstellenden Skripts "Bibliothek-Anfragen.sql-xml" zu beantworten. Verwenden Sie eine gemeinsame Wurzel für alle Antworten:
-
 connect to dbprakU8;
 
--- Geben Sie zu allen Büchern (inkl. ISBN und Buchtitel) die Autoren an, welche im Text referenziert werden. Eine Referenz auf Autoren soll im Text der folgenden Form genügen: "$Nachname $Vorname" oder "$Vorname $Nachname" oder "[$Nachname]"
--- ((SELECT (P.Vorname||' '||P.Name) FROM Autoren A, Personen P WHERE A.Personenverweis = P.ID) UNION (SELECT (P.Name||' '||P.Vorname) FROM Autoren A, Personen P WHERE A.Personenverweis = P.ID))  UNION (SELECT '['||P.Name||']' FROM Autoren A, Personen P WHERE A.Personenverweis = P.ID)
 XQUERY
-<Ergebnisse_Query_1> {
+<Ergebnisse>
+<Ergebnisse_Query_1>
+{
 for $autor in db2-fn:sqlquery('SELECT XMLFOREST(XMLCONCAT(XMLELEMENT(name "Vorname", Vorname), XMLELEMENT(name "Name", Name)) AS Autor) FROM Personen P, Autoren A WHERE A.PersonenVerweis = P.ID')
     let $format1 := concat($autor/Vorname/text(), ' ', $autor/Name/text())
     let $format2 := concat($autor/Name/text(), ' ', $autor/Vorname/text())
@@ -15,17 +12,53 @@ for $autor in db2-fn:sqlquery('SELECT XMLFOREST(XMLCONCAT(XMLELEMENT(name "Vorna
         for $abschnitt in db2-fn:sqlquery('SELECT XMLFOREST(XMLCONCAT(XMLELEMENT(name "BuchISBN", BuchISBN), XMLELEMENT(name "Text", Text)) AS Abschnitt) FROM Abschnitte A')
         where $abschnitt/BuchISBN = $buch/ISBN
         return 
-            if(contains($abschnitt/Text/text(), $format1)) then <Ergebnis>{$buch/ISBN}{$buch/Titel}<Autor>{$format1}</Autor></Ergebnis>
-            else(if(contains($abschnitt/Text/text(), $format2)) then <Ergebnis>{$buch/ISBN}{$buch/Titel}<Autor>{$format2}</Autor></Ergebnis>
-            else(if(contains($abschnitt/Text/text(), $format3)) then <Ergebnis>{$buch/ISBN}{$buch/Titel}<Autor>{$format3}</Autor></Ergebnis> else())) }
-</Ergebnisse_Query_1> ;
-
-
--- Geben Sie alle "thematischen" Verbindungen zwischen den Büchern an. Eine Verbindung liegt vor, wenn ein Wort (außer "der", "die", "das", "dass", "ein", "eine", "und", "aber", "sowie" und mit jeweils erstem großen Buchstaben) aus dem Text oder Titel eines Buches im Titel oder Text eines anderen Buches auftaucht.
--- WTF?
+            if(contains($abschnitt/Text/text(), $format1)) then <Ergebnis>{$buch/ISBN}{$buch/Titel}<referenzierter_Autor>{$format1}</referenzierter_Autor></Ergebnis>
+            else(
+                if(contains($abschnitt/Text/text(), $format2)) then <Ergebnis>{$buch/ISBN}{$buch/Titel}<referenzierter_Autor>{$format1}</referenzierter_Autor></Ergebnis>
+                else(
+                    if(contains($abschnitt/Text/text(), $format3)) then <Ergebnis>{$buch/ISBN}{$buch/Titel}<referenzierter_Autor>{$format1}</referenzierter_Autor></Ergebnis>
+                    else()
+                    )
+                )
+}
+</Ergebnisse_Query_1>
+<Ergebnisse_Query_2>
+{
+let $exceptions := "der die das dass ein eine und aber sowie Der Die Das Dass Ein Eine Und Aber Sowie"
+for $buch1 in db2-fn:sqlquery('SELECT XMLFOREST(XMLCONCAT(XMLELEMENT(name "ISBN", ISBN), XMLELEMENT(name "Titel", Titel)) AS Buch) FROM Buecher')
+    for $token in tokenize($buch1/Titel/text(), "[.,()\[\]\{\}\s]+")
+        for $buch2 in db2-fn:sqlquery('SELECT XMLFOREST(XMLCONCAT(XMLELEMENT(name "ISBN", ISBN), XMLELEMENT(name "Titel", Titel)) AS Buch) FROM Buecher')
+        where $buch2 != $buch1
+            return ( 
+                if(contains($buch2/Titel/text(), $token)) then <Ergebnis><Verbindung>{$token}</Verbindung><Buch>{$buch1/Titel/text()}</Buch><Buch>{$buch2/Titel/text()}</Buch></Ergebnis>
+                else(
+                    for $abschnitt2 in db2-fn:sqlquery('SELECT XMLFOREST(XMLCONCAT(XMLELEMENT(name "BuchISBN", BuchISBN), XMLELEMENT(name "Text", Text)) AS Abschnitt) FROM Abschnitte')
+                    where $abschnitt2/BuchISBN = $buch2/ISBN
+                        return if(contains($abschnitt2/Text/text(), $token)) then <Ergebnis><Verbindung>{$token}</Verbindung><Buch>{$buch1/Titel/text()}</Buch><Buch>{$buch2/Titel/text()}</Buch></Ergebnis> else()
+                )
+            ) ,
+for $buch1 in db2-fn:sqlquery('SELECT XMLFOREST(XMLCONCAT(XMLELEMENT(name "ISBN", ISBN), XMLELEMENT(name "Titel", Titel)) AS Buch) FROM Buecher')
+    for $abschnitt1 in db2-fn:sqlquery('SELECT XMLFOREST(XMLCONCAT(XMLELEMENT(name "BuchISBN", BuchISBN), XMLELEMENT(name "Text", Text)) AS Abschnitt) FROM Abschnitte')
+    where $abschnitt1/BuchISBN = $buch1/ISBN
+        return(
+            for $token in tokenize($abschnitt1/Text/text(), "[.,()\[\]\{\}\s]+")
+                for $buch2 in db2-fn:sqlquery('SELECT XMLFOREST(XMLCONCAT(XMLELEMENT(name "ISBN", ISBN), XMLELEMENT(name "Titel", Titel)) AS Buch) FROM Buecher')
+                where $buch2 != $buch1
+                    return (
+                        if(contains($buch2/Titel/text(), $token)) then <Ergebnis><Verbindung>{$token}</Verbindung><Buch>{$buch1/Titel/text()}</Buch><Buch>{$buch2/Titel/text()}</Buch></Ergebnis>
+                        else (
+                            for $abschnitt2 in db2-fn:sqlquery('SELECT XMLFOREST(XMLCONCAT(XMLELEMENT(name "BuchISBN", BuchISBN), XMLELEMENT(name "Text", Text)) AS Abschnitt) FROM Abschnitte')
+                            where $abschnitt2/BuchISBN = $buch2/ISBN
+                                return if(contains($abschnitt2/Text/text(), $token)) then <Ergebnis><Verbindung>{$token}</Verbindung><Buch>{$buch1/Titel/text()}</Buch><Buch>{$buch2/Titel/text()}</Buch></Ergebnis> else()
+                        )
+                    )
+        )
+}
+</Ergebnisse_Query_2>
+</Ergebnisse> ;
 
 -- Geben Sie die Email-Adressen aller Kunden aus, welche Bücher lesen in denen es mehr als zwei Kapitel mit jeweils mindestens drei Unterkapiteln gibt.
-SELECT XMLELEMENT(NAME "Ergebnisse_Query_3",XMLAGG(XMLELEMENT(NAME "E-Mail",p.email))) FROM Leihvorgaenge L,Kunden K,Personen P where L.kundennummer = K.Kundennummer and k.personenverweis = p.id and Buchisbn in 
+SELECT XMLELEMENT(NAME "Ergebnisse_Query_3",XMLAGG(XMLELEMENT(NAME "E-Mail",p.email))) FROM Leihvorgaenge L,Kunden K,Personen P where L.kundennummer = K.Kundennummer and k.personenverweis = p.id and Buchisbn in
 		-- Buecher mit mit mehr als 2 Kapiteln und jeweils min. 3 Unterkapiteln
 		(
 			select buchisbn from abschnitte a1 where typ = 'Kapitel' and (
@@ -40,7 +73,7 @@ SELECT XMLELEMENT(NAME "Ergebnisse_Query_3",XMLAGG(XMLELEMENT(NAME "E-Mail",p.em
 
 -- Geben Sie die Anzahl der Kunden für alle Bücher aus, wobei die Kunden das Buch lesen und das Buch zwei Kapitel mit jeweils null oder zwei Unterkapiteln besitzt.
 -- alle Buecher und die Anzahl von Ausleihungen
-select XMLELEMENT(NAME "Ergebnisse_Query_4", 
+select XMLELEMENT(NAME "Ergebnisse_Query_4",
 	XMLAGG(
 		XMLELEMENT(NAME "Buch",
 		XMLCONCAT(
