@@ -49,7 +49,17 @@ SELECT XMLELEMENT(NAME "Ergebnisse_Query_3",XMLAGG(XMLELEMENT(NAME "E-Mail",p.em
 
 /*** Geben Sie die Anzahl der Kunden für alle Bücher aus, wobei die Kunden das Buch lesen und das Buch zwei Kapitel mit jeweils null oder zwei Unterkapiteln besitzt. ***/
 -- alle Buecher und die Anzahl von Ausleihungen
-select ISBN,Titel,Erscheinungsjahr,case when isbn = Buchisbn then anzahl else 0 end as Kundenanzahl from buecher,
+select XMLELEMENT(NAME "Ergebnisse_Query_4", 
+	XMLAGG(
+		XMLELEMENT(NAME "Buch",
+		XMLCONCAT(
+			XMLELEMENT(NAME "ISBN",ISBN),
+			XMLELEMENT(NAME "Titel",Titel),
+			XMLELEMENT(NAME "Erscheinungsjahr",Erscheinungsjahr),
+			XMLELEMENT(NAME "Kundenanzahl",(case when isbn = Buchisbn then anzahl else 0 end))
+		))
+	)
+)  from buecher,
 	-- ausgeliehene Buecher und deren Anzahl
 	(
 		SELECT Buchisbn, count(kundennummer) as anzahl FROM Leihvorgaenge where Buchisbn in 
