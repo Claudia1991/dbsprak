@@ -1,13 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
-<!-- 
-TODO:
-	- Muss »date«-Format noch angepasst werden??
-	- NULL-Werte kennzeichnen? Ja/Nein ... bisher: ja
-	- Muss »key«-Wert gleichzeitig als Unique gekennzeichnet werden, oder ist das implizit?
-	- Muss »keyref«-Wert gleichzeitig als Unique gekennzeichnet werden, oder ist das implizit? (Kunden:PersonenVerweis; Autoren:PersonenVerweis)
-	- Bei Kardianlität bin ich mir unsicher... (maxOccurs="unbounded")
--->
 	<!-- Bibliothek-Schema -->
 	<xs:element name="Bibliothek">
 		<xs:complexType>
@@ -40,6 +32,10 @@ TODO:
 			<xs:selector xpath="Buecher/Buecher_Tupel/Leihvorgaenge/Leihvorgaenge_Tupel/Kunden/Kunden_Tupel"/>
 			<xs:field xpath="PersonenVerweis"/>
 		</xs:keyref>
+		<xs:unique name="uKunde">
+			<xs:selector xpath="Buecher/Buecher_Tupel/Leihvorgaenge/Leihvorgaenge_Tupel/Kunden/Kunden_Tupel"/>
+			<xs:field xpath="PersonenVerweis"/>
+		</xs:unique>
 		<xs:keyref name="krLeihvorgaenge" refer="kBuecher">
 			<xs:selector xpath="Buecher/Buecher_Tupel/Leihvorgaenge/Leihvorgaenge_Tupel"/>
 			<xs:field xpath="BuchISBN"/>
@@ -52,6 +48,10 @@ TODO:
 			<xs:selector xpath="Buecher/Buecher_Tupel/ZuweisungBuchAutor/ZuweisungBuchAutor_Tupel/Autoren/Autoren_Tupel"/>
 			<xs:field xpath="PersonenVerweis"/>
 		</xs:keyref>
+		<xs:unique name="uAutoren">
+			<xs:selector xpath="Buecher/Buecher_Tupel/ZuweisungBuchAutor/ZuweisungBuchAutor_Tupel/Autoren/Autoren_Tupel"/>
+			<xs:field xpath="PersonenVerweis"/>
+		</xs:unique>
 		<xs:keyref name="krZuweisungBuchAutor" refer="kBuecher">
 			<xs:selector xpath="Buecher/Buecher_Tupel/ZuweisungBuchAutor/ZuweisungBuchAutor_Tupel"/>
 			<xs:field xpath="BuchISBN"/>
