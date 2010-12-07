@@ -19,11 +19,6 @@ TODO:
 			<xs:selector xpath="Buecher/Buecher_Tupel"/>
 			<xs:field xpath="ISBN"/>
 		</xs:key>
-		<xs:key name="kAbschnitte">
-			<xs:selector xpath="Buecher/Buecher_Tupel/Abschnitte/Abschnitte_Tupel"/>
-			<xs:field xpath="BuchISBN"/>
-			<xs:field xpath="AbschnittID"/>
-		</xs:key>
 		<xs:key name="kKunden">
 			<xs:selector xpath="Buecher/Buecher_Tupel/Leihvorgaenge/Leihvorgaenge_Tupel/Kunden/Kunden_Tupel"/>
 			<xs:field xpath="Kundennummer"/>
@@ -41,10 +36,6 @@ TODO:
 			<xs:selector xpath="Buecher/Buecher_Tupel/ZuweisungBuchAutor/ZuweisungBuchAutor_Tupel/Autoren/Autoren_Tupel"/>
 			<xs:field xpath="ID"/>
 		</xs:key>
-		<xs:keyref name="krAbschnitte" refer="kBuecher">
-			<xs:selector xpath="Buecher/Buecher_Tupel/Abschnitte/Abschnitte_Tupel"/>
-			<xs:field xpath="BuchISBN"/>
-		</xs:keyref>
 		<xs:keyref name="krKunde" refer="kPersonen">
 			<xs:selector xpath="Buecher/Buecher_Tupel/Leihvorgaenge/Leihvorgaenge_Tupel/Kunden/Kunden_Tupel"/>
 			<xs:field xpath="PersonenVerweis"/>
@@ -90,20 +81,31 @@ TODO:
 	<!-- Abschnitte-Relation -->
 	<xs:complexType name="tAbschnitte">
 		<xs:sequence>
-			<xs:element name="Abschnitte_Tupel" type="tAbschnitte_Tupel" maxOccurs="unbounded"></xs:element>
+			<xs:element name="Kapitel" type="tKapitel" maxOccurs="unbounded"></xs:element>
 		</xs:sequence>
 	</xs:complexType>
-	<xs:complexType name="tAbschnitte_Tupel">
+	<xs:complexType name="tKapitel">
 		<xs:sequence>
-			<xs:element name="BuchISBN" type="tchar13"></xs:element>
-			<xs:element name="AbschnittID" type="xs:integer"></xs:element>
-			<xs:element name="Typ" type="tAbschnittTyp"></xs:element>
 			<xs:element name="Reihenfolge" type="xs:integer"></xs:element>
-			<xs:element name="ParentID" type="xs:integer" nillable="true"></xs:element>
 			<xs:element name="Titel" type="tString50" nillable="true"></xs:element>
 			<xs:element name="Text" type="tString3000" nillable="true"></xs:element>
+			<xs:element name="Unterkapitel" type="tUnterkapitel" maxOccurs="unbounded"></xs:element>
 		</xs:sequence>
 	</xs:complexType>
+    <xs:complexType name="tUnterkapitel">
+        <xs:sequence>
+            <xs:element name="Reihenfolge" type="xs:integer"></xs:element>
+            <xs:element name="Titel" type="tString50" nillable="true"></xs:element>
+            <xs:element name="Text" type="tString3000" nillable="true"></xs:element>
+            <xs:element name="Absatz" type="tAbsatz" maxOccurs="unbounded"></xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="tAbsatz">
+        <xs:sequence>
+            <xs:element name="Reihenfolge" type="xs:integer"></xs:element>
+            <xs:element name="Text" type="tString3000" nillable="true"></xs:element>
+        </xs:sequence>
+    </xs:complexType>
 	<!-- Leihvorgaenge-Relation -->
 	<xs:complexType name="tLeihvorgaenge">
 		<xs:sequence>
@@ -223,6 +225,5 @@ TODO:
 	        <xs:enumeration value="Kapitel"/>
             <xs:enumeration value="Unterkapitel"/>
             <xs:enumeration value="Absatz"/>
-        </xs:restriction>
     </xs:simpleType>
 </xs:schema>
