@@ -38,8 +38,9 @@ int main(int argc, char ** argv){
   int currentRunningT = 0;
   while (CurrentMatrix = readNextAreaScan()){
 	  if(CurrentMatrix){
+		  fPrintMatrix(CurrentMatrix);
 		  pthread_t threadi;
-		  if(pthread_create(&threadi,NULL,&PatternThreadFunc,(CurrentMatrix))!=0){
+		  if(pthread_create(&threadi,NULL,&PatternThreadFunc,(new ThreadContainer(CurrentMatrix,thread.size())))!=0){
 			  perror(NULL);
 			  exit(-1);
 		  } else {
@@ -61,7 +62,10 @@ int main(int argc, char ** argv){
 }
 
 void * PatternThreadFunc(void* ptr){
-	t_Matrix * matrix = ((t_Matrix*)ptr);
+	ThreadContainer * cur = ((ThreadContainer*)ptr);
+	t_Matrix * matrix = cur->matrix;
+	int region = cur->scannedRegion;
+	delete(cur);
 
 #ifdef USE_MUTEX
   // wait for the lock thread runs in a cycle -> waste CPU cycles
@@ -69,18 +73,18 @@ void * PatternThreadFunc(void* ptr){
 
   //get lock, resource available?
   while(sharedVar > NUM_THREADS - 1){
-	  std::cout << "scheduled Thread" << std::endl;
+	  //std::cout << "scheduled Thread" << std::endl;
 	  //resource in use, unlock and wait (sleep) for the lock of the shared resource, thread suspended
 	  pthread_cond_wait(&global_cond,&global_mutex);
   }
 
   /* set resource to be in use */
   sharedVar++;
-  std::cout << "currently running Threads = " << sharedVar << std::endl;
+  //std::cout << "currently running Threads = " << sharedVar << std::endl;
   /* unlock */
   pthread_mutex_unlock(&global_mutex);
 
-  fMatrixScanner(matrix);
+  fMatrixScanner(matrix,region);
 
   /* set resource to be free */
   sharedVar--;
@@ -94,7 +98,7 @@ void * PatternThreadFunc(void* ptr){
   pthread_exit(NULL);
 }
 
-void fMatrixScanner(t_Matrix * matrix){
+void fMatrixScanner(t_Matrix * matrix, int region){
 	// Cops appeared - 0, Cops disappeared - 1, Criminals appeared - 2, Criminals disappeared - 3
 	HMap detectedEvents[4];
 	AMap cops[8];
@@ -113,7 +117,7 @@ void fMatrixScanner(t_Matrix * matrix){
 	for(int i=0;i<8;++i){ fPrintActors(criminals[i]); }
 	std::cout << std::endl;
 	*/
-	for(int i=0;i<8;++i) fDetectCrucialEvent(cops[i],criminals[7-i],i);
+	for(int i=0;i<8;++i) fDetectCrucialEvent(cops[i],criminals[7-i],i,region);
 }
 
 int fScanMatrix(t_Matrix * matrix, HMap (&detectedEvents)[4]){
@@ -147,7 +151,7 @@ int fGetMovement(const HMap &appearings, const HMap &disappearings, AMap (&actor
 	return 0;
 }
 
-void fDetectCrucialEvent(const AMap &cops, const AMap &criminals, int direction){
+void fDetectCrucialEvent(const AMap &cops, const AMap &criminals, int direction, int region){
 	//
 	int richtungen[8] = {-(MATRIX_SIZE+1),-MATRIX_SIZE,-(MATRIX_SIZE-1),1,-1,MATRIX_SIZE-1, MATRIX_SIZE, MATRIX_SIZE+1};
 	for(AMap::const_iterator it = cops.begin();it != cops.end();++it){
@@ -158,7 +162,7 @@ void fDetectCrucialEvent(const AMap &cops, const AMap &criminals, int direction)
 			j = richtungen[direction]*i+(*it).first;
 			itD = criminals.find(j);
 			if(itD != criminals.end()){
-				crucialEventDetected(0,(*it).second->from%MATRIX_SIZE,(*it).second->from/MATRIX_SIZE,(*it).second->to%MATRIX_SIZE,(*it).second->to/MATRIX_SIZE,(*itD).second->from%MATRIX_SIZE,(*itD).second->from/MATRIX_SIZE,(*itD).second->to%MATRIX_SIZE,(*itD).second->to/MATRIX_SIZE);
+				crucialEventDetected(region,(*it).second->from%MATRIX_SIZE,(*it).second->from/MATRIX_SIZE,(*it).second->to%MATRIX_SIZE,(*it).second->to/MATRIX_SIZE,(*itD).second->from%MATRIX_SIZE,(*itD).second->from/MATRIX_SIZE,(*itD).second->to%MATRIX_SIZE,(*itD).second->to/MATRIX_SIZE);
 				// TODO: gefundenen Verbrecher loeschen
 			}
 
