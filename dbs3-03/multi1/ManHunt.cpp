@@ -14,7 +14,7 @@ pthread_mutex_t matrixFileMutex;
 //pthread_mutex_t outputMutex;
 
 void crucialEventDetected(int scanNum, int copFrom, int copTo, int criminalFrom, int criminalTo) {
-  printf("Crucial event detected for the #%d. region scan. \nPolice officer moves from %d,%d to %d,%d. \nCriminal comes up to police officer from %d,%d to %d,%d.\n\n", scanNum, copFrom%matrixSize, copFrom/matrixSize, copTo%matrixSize, copTo/matrixSize, criminalFrom%matrixSize, criminalFrom/matrixSize, criminalTo%matrixSize, criminalFrom/matrixSize);
+  printf("Crucial event detected for the #%d. region scan. \nPolice officer moves from %d,%d to %d,%d. \nCriminal comes up to police officer from %d,%d to %d,%d.\n\n", scanNum, copFrom%matrixSize, copFrom/matrixSize, copTo%matrixSize, copTo/matrixSize, criminalFrom%matrixSize, criminalFrom/matrixSize, criminalTo%matrixSize, criminalTo/matrixSize);
 }
 
 int fMatrixReader(HMap (&detectedEvents)[4]) {
@@ -47,13 +47,13 @@ int fMatrixReader(HMap (&detectedEvents)[4]) {
 }
 
 int fGetMovement(const HMap &appearances, const HMap &disappearances, AMap (&actors)){
-  for(HMap::const_iterator it = appearances.begin(); it != appearances.end(); ++it){
-    int directions[] = {(*it).first-(matrixSize+1), (*it).first-matrixSize, (*it).first-(matrixSize-1), (*it).first-1, (*it).first+1, (*it).first+matrixSize-1, (*it).first+matrixSize, (*it).first+matrixSize+1};
+  for(HMap::const_iterator itA = appearances.begin(); itA != appearances.end(); ++itA){
+    int directions[] = {(*itA).first-(matrixSize+1), (*itA).first-matrixSize, (*itA).first-(matrixSize-1), (*itA).first-1, (*itA).first+1, (*itA).first+matrixSize-1, (*itA).first+matrixSize, (*itA).first+matrixSize+1};
     HMap::const_iterator itD;
     for(int i=0; i<8;++i){
       itD = disappearances.find(directions[i]);
       if(itD != disappearances.end()){
-        actors.insert(APair((*it).first, (new Person((*itD).first, (*it).first, (*it).first-(*itD).first))));
+        actors.insert(APair((*itA).first, (new Person((*itD).first, (*itA).first, (*itA).first-(*itD).first))));
         break;
       }
     }
@@ -68,7 +68,6 @@ void fDetectCrucialEvent(const AMap &cops, const AMap &criminals, int scanNum){
       j = (*itCop).second->to + (*itCop).second->direction*i;
       itCriminal = criminals.find(j);
       if (itCriminal != criminals.end() && (*itCop).second->direction == -(*itCriminal).second->direction){
-//        printf("Scan %d: Cop from %d to %d, Criminal from %d to %d\n",scanNum, (*itCop).second->from, (*itCop).second->to, (*itCriminal).second->from, (*itCriminal).second->to);
         crucialEventDetected(scanNum, (*itCop).second->from, (*itCop).second->to, (*itCriminal).second->from, (*itCriminal).second->to);
       }
     }
@@ -119,7 +118,6 @@ int main(int argc, char ** argv){
   pthread_t threads[numThreads];
   if ( pthread_mutex_init(&matrixFileMutex, NULL) != 0 ) { printf("mutex creation failed.\n"); exit(-1); }
   for (int i=0; i < numThreads; i++) {
-//    if( pthread_create(&threads[i], NULL, &threadFunction, *matrices[i]) != 0 ) { printf("thread creation failed.\n"); exit(-1); }
     if( pthread_create(&threads[i], NULL, &threadFunction, (int*)(i%4)) != 0 ) { printf("thread creation failed.\n"); exit(-1); }
   }
   for (int i=0; i < numThreads; i++) {
