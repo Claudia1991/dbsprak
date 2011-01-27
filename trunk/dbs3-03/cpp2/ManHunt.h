@@ -104,7 +104,14 @@ public:
 	}
 };
 
-void fMatrixScanner(t_Matrix *);
+class ThreadContainer {
+public:
+	ThreadContainer(t_Matrix * matrix,int scannedRegion):matrix(matrix),scannedRegion(scannedRegion){}
+	t_Matrix * matrix;
+	int scannedRegion;
+};
+
+void fMatrixScanner(t_Matrix *,int);
 
 int fDetermineEvent(int i, int j){
 	if(i == 1 && j ==2) return 2; // Cop appear
@@ -121,7 +128,7 @@ typedef AMap::value_type APair;
 
 int fScanMatrix(t_Matrix * matrix, HMap (&detectedEvents)[4]);
 int fGetMovement(const HMap &appearings, const HMap &disappearings, AMap (&actors)[8]);
-void fDetectCrucialEvent(const AMap &cops, const AMap &criminals, int direction);
+void fDetectCrucialEvent(const AMap &cops, const AMap &criminals, int direction, int);
 void fPrintMatrix(t_Matrix *);
 void fPrintActors(AMap &actor);
 
