@@ -6,12 +6,10 @@
 
 char *matrixFileName;
 int matrixSize = 8;
-int MATRIX_SIZE = matrixSize;
 int numThreads = 8;
 FILE *matrixFile;
 int regionScanNumber = 0;
 pthread_mutex_t matrixFileMutex;
-//pthread_mutex_t outputMutex;
 
 void crucialEventDetected(int scanNum, int copFrom, int copTo, int criminalFrom, int criminalTo) {
   printf("Crucial event detected for the #%d. region scan. \nPolice officer moves from %d,%d to %d,%d. \nCriminal comes up to police officer from %d,%d to %d,%d.\n\n", scanNum, copFrom%matrixSize, copFrom/matrixSize, copTo%matrixSize, copTo/matrixSize, criminalFrom%matrixSize, criminalFrom/matrixSize, criminalTo%matrixSize, criminalTo/matrixSize);
@@ -75,7 +73,8 @@ void fDetectCrucialEvent(const AMap &cops, const AMap &criminals, int scanNum){
 }
 
 void *threadFunction(void *arg) {
-//  int cpu_id = (int) arg;
+  int threadID = (int) arg;
+//  int cpu_id = threadID%4;
 //  cpu_set_t mask;
 //  CPU_ZERO(&mask);
 //  CPU_SET(cpu_id,&mask);
@@ -104,11 +103,11 @@ int main(int argc, char ** argv){
   case 3:
     matrixSize =  atoi(argv[2]);
   case 2:
-    matrixFileName = (char*)malloc(sizeof(argv[1]));
+    matrixFileName = (char*)malloc(strlen(argv[1])+1);
     strcpy(matrixFileName, argv[1]);
     break;
   case 1:
-    matrixFileName = (char*)malloc(sizeof("Matrix.in"));
+    matrixFileName = (char*)malloc(strlen("Matrix.in")+1);
     strcpy(matrixFileName, "Matrix.in");
     break;
   }
@@ -118,11 +117,12 @@ int main(int argc, char ** argv){
   pthread_t threads[numThreads];
   if ( pthread_mutex_init(&matrixFileMutex, NULL) != 0 ) { printf("mutex creation failed.\n"); exit(-1); }
   for (int i=0; i < numThreads; i++) {
-    if( pthread_create(&threads[i], NULL, &threadFunction, (int*)(i%4)) != 0 ) { printf("thread creation failed.\n"); exit(-1); }
+    if( pthread_create(&threads[i], NULL, &threadFunction, (int*)i) != 0 ) { printf("thread creation failed.\n"); exit(-1); }
   }
   for (int i=0; i < numThreads; i++) {
     pthread_join(threads[i], NULL);
   }
   fclose(matrixFile);
+  free(matrixFileName);
   return 0;
 }
