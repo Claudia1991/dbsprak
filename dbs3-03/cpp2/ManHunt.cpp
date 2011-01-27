@@ -38,7 +38,7 @@ int main(int argc, char ** argv){
   int currentRunningT = 0;
   while (CurrentMatrix = readNextAreaScan()){
 	  if(CurrentMatrix){
-		  fPrintMatrix(CurrentMatrix);
+		  //fPrintMatrix(CurrentMatrix); // Print nice matrix (-2/2 ~ dis-/appearing Cop, -3/3 ~ dis-/appearing Crime)
 		  pthread_t threadi;
 		  if(pthread_create(&threadi,NULL,&PatternThreadFunc,(new ThreadContainer(CurrentMatrix,thread.size())))!=0){
 			  perror(NULL);
@@ -118,6 +118,11 @@ void fMatrixScanner(t_Matrix * matrix, int region){
 	std::cout << std::endl;
 	*/
 	for(int i=0;i<8;++i) fDetectCrucialEvent(cops[i],criminals[7-i],i,region);
+	// Delete all created Objects
+	for(int i=0;i<8;++i){
+		for(AMap::const_iterator it = cops[i].begin();it != cops[i].end();++it) delete(it->second);
+		for(AMap::const_iterator it = criminals[i].begin();it != criminals[i].end();++it) delete(it->second);
+	}
 }
 
 int fScanMatrix(t_Matrix * matrix, HMap (&detectedEvents)[4]){
@@ -143,7 +148,7 @@ int fGetMovement(const HMap &appearings, const HMap &disappearings, AMap (&actor
     		itD = disappearings.find(richtungen[i]);
     		if(itD != disappearings.end()){
     			actors[7-i].insert(APair((*it).first, (new Person((*itD).first,(*it).first)) ));
-    			// TODO: abgearbeitete loeschen!
+    			// TODO: abgearbeitete aus der HMap loeschen um doppelungen zu vermeiden (dh. ein verschwinden sollte nicht 2x [oder mehr] benutzt werden)!
     			break;
     		}
     	}
@@ -163,7 +168,7 @@ void fDetectCrucialEvent(const AMap &cops, const AMap &criminals, int direction,
 			itD = criminals.find(j);
 			if(itD != criminals.end()){
 				crucialEventDetected(region,(*it).second->from%MATRIX_SIZE,(*it).second->from/MATRIX_SIZE,(*it).second->to%MATRIX_SIZE,(*it).second->to/MATRIX_SIZE,(*itD).second->from%MATRIX_SIZE,(*itD).second->from/MATRIX_SIZE,(*itD).second->to%MATRIX_SIZE,(*itD).second->to/MATRIX_SIZE);
-				// TODO: gefundenen Verbrecher loeschen
+				// TODO: gefundenen/benutzte Verbrecher/Polizisten loeschen bzw. außerhalb der Matrix verschieben um Doppelung zu vermeiden; z.B. ein polizist und 2 Verbrecher auf dem gleichen Pfad => polizist matched beide!
 			}
 
 		}
