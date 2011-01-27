@@ -22,6 +22,7 @@
 #include<tr1/unordered_map>
 #include "Matrix.h"
 #include <iostream>
+#include <vector>
 
 static inline long long int getRDTSC()
 {
@@ -79,7 +80,7 @@ static inline double getCPUFreq()
 
 #define NUM_CORES 4
 #define NUM_THREADS 8
-/* # define USE_MUTEX */
+#define USE_MUTEX
 /* # define USE_AFFINITY */
 /* # define _DEBUG */
 /* # define CALC_TIME */
@@ -89,36 +90,17 @@ pthread_mutex_t global_mutex = PTHREAD_MUTEX_INITIALIZER;
 /* signal to activate sleeping threads waiting for lock */
 pthread_cond_t global_cond = PTHREAD_COND_INITIALIZER;
 /* shared resource */
-int sharedVar = 1;
+int sharedVar = NUM_THREADS;
 
 void * PatternThreadFunc(void*);
 
 class Person {
 public:
-	int fromX,fromY,toX,toY,v,n;
-	Person(int fromX,int fromY,int toX,int toY,int v,int n){
-		//
-		this->fromX = fromX;
-		this->toX = toX;
-		this->fromY = fromY;
-		this->toY = toY;
-		this->v = v;
-		this->n = n;
-	}
-	friend std::ostream& operator<< (std::ostream& o, const Person &c){
-		return o << "FromX=" << c.fromX << ", FromY=" << c.fromY << ", ToX=" << c.toX << ", ToY=" << c.toY << ", v=" << c.v << ", N=" << c.n;
-	}
-};
-class Person2 {
-public:
 	int from,to;
-	Person2(int from,int to){
+	Person(int from,int to){
 		//
 		this->from = from;
 		this->to = to;
-	}
-	friend std::ostream& operator<< (std::ostream& o, const Person2 &c){
-		return o << "From=" << c.from;
 	}
 };
 
@@ -134,7 +116,7 @@ int fDetermineEvent(int i, int j){
 
 typedef std::tr1::unordered_map<int, bool> HMap;
 typedef HMap::value_type VPair;
-typedef std::tr1::unordered_map<int, Person2*> AMap;
+typedef std::tr1::unordered_map<int, Person*> AMap;
 typedef AMap::value_type APair;
 
 int fScanMatrix(t_Matrix * matrix, HMap (&detectedEvents)[4]);
