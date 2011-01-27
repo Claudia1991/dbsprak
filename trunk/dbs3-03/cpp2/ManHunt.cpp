@@ -35,23 +35,29 @@ int main(int argc, char ** argv){
   // step: scan region and evaluate current matrix, get next Matrix (region scan), returns Null if their is no further matrix (the manhunt ends)
   std::vector<int> threadId;
   std::vector<pthread_t> thread;
-  int currentRunningT = 0;
+  sharedVar = 0;
+  int matrixCount = 0;
   while (CurrentMatrix = readNextAreaScan()){
 	  if(CurrentMatrix){
 		  //fPrintMatrix(CurrentMatrix); // Print nice matrix (-2/2 ~ dis-/appearing Cop, -3/3 ~ dis-/appearing Crime)
 		  pthread_t threadi;
-		  if(pthread_create(&threadi,NULL,&PatternThreadFunc,(new ThreadContainer(CurrentMatrix,thread.size())))!=0){
+		  if(pthread_create(&threadi,NULL,&PatternThreadFunc,(new ThreadContainer(CurrentMatrix,matrixCount++)))!=0){
 			  perror(NULL);
 			  exit(-1);
 		  } else {
 			  thread.push_back(threadi);
 		  }
 	  }
+	  // max-Thread-anzahl erreicht, warten bis der 1. Thread beendet wurde und danach weitermachen
+	  while(sharedVar > NUM_THREADS - 1){
+		  pthread_join(thread.front(),NULL);
+		  thread.erase(thread.begin());
+	  }
   }
-  sharedVar = 0;
   for(int i=0; i < thread.size(); ++i){
 	  pthread_join(thread[i],NULL);
   }
+  thread.empty();
 
 #ifdef CALC_TIME
   GET_STOP_TIME;
@@ -78,7 +84,6 @@ void * PatternThreadFunc(void* ptr){
 	  pthread_cond_wait(&global_cond,&global_mutex);
   }
 
-  /* set resource to be in use */
   sharedVar++;
   //std::cout << "currently running Threads = " << sharedVar << std::endl;
   /* unlock */
@@ -168,7 +173,6 @@ void fDetectCrucialEvent(const AMap &cops, const AMap &criminals, int direction,
 			itD = criminals.find(j);
 			if(itD != criminals.end()){
 				crucialEventDetected(region,(*it).second->from%MATRIX_SIZE,(*it).second->from/MATRIX_SIZE,(*it).second->to%MATRIX_SIZE,(*it).second->to/MATRIX_SIZE,(*itD).second->from%MATRIX_SIZE,(*itD).second->from/MATRIX_SIZE,(*itD).second->to%MATRIX_SIZE,(*itD).second->to/MATRIX_SIZE);
-				// TODO: gefundenen/benutzte Verbrecher/Polizisten loeschen bzw. außerhalb der Matrix verschieben um Doppelung zu vermeiden; z.B. ein polizist und 2 Verbrecher auf dem gleichen Pfad => polizist matched beide!
 			}
 
 		}
