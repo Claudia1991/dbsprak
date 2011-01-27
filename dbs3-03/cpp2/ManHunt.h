@@ -90,7 +90,7 @@ pthread_mutex_t global_mutex = PTHREAD_MUTEX_INITIALIZER;
 /* signal to activate sleeping threads waiting for lock */
 pthread_cond_t global_cond = PTHREAD_COND_INITIALIZER;
 /* shared resource */
-int sharedVar = NUM_THREADS;
+int sharedVar = 0;
 
 void * PatternThreadFunc(void*);
 
