@@ -86,11 +86,13 @@ void fDetectCrucialEvent(const AMap &cops, const AMap &criminals, int scanNum){
 
 void *threadFunction(void *arg) {
   int threadID = *((int*)arg);
-//  int cpu_id = threadID%4;
-//  cpu_set_t mask;
-//  CPU_ZERO(&mask);
-//  CPU_SET(cpu_id,&mask);
-//  sched_setaffinity(0,sizeof(mask),&mask);
+#ifdef USE_AFFINITY
+  int cpu_id = threadID%4;
+  cpu_set_t mask;
+  CPU_ZERO(&mask);
+  CPU_SET(cpu_id,&mask);
+  sched_setaffinity(0,sizeof(mask),&mask);
+#endif
   int matrixNum = 0;
   while (1) {
     HMap detectedEvents[4];
@@ -109,6 +111,18 @@ void *threadFunction(void *arg) {
 
 int main(int argc, char ** argv){
   // ManHunt "MatrixFile" "matrixSize" "numThreads"
+  struct timeval tpStart,tpStop;
+  gettimeofday(&tpStart,0);
+#ifdef CALC_TIME
+  int cpu_id = 0;
+  cpu_set_t mask;
+  CPU_ZERO(&mask);
+  CPU_SET(cpu_id,&mask);
+  sched_setaffinity(0,sizeof(mask),&mask);
+  double freq = getCPUFreq();
+  VAR_TIME;
+  GET_START_TIME;
+#endif
   switch(argc) {
   case 4:
     numThreads = atoi(argv[3]);
@@ -128,13 +142,19 @@ int main(int argc, char ** argv){
   if ( !matrixFile ) { printf("opening matrix file failed.\n"); exit(-1); }
   pthread_t threads[numThreads];
   if ( pthread_mutex_init(&matrixFileMutex, NULL) != 0 ) { printf("mutex creation failed.\n"); exit(-1); }
+  int threadids[numThreads];
   for (int i=0; i < numThreads; i++) {
-    if( pthread_create(&threads[i], NULL, &threadFunction, &i) != 0 ) { printf("thread creation failed.\n"); exit(-1); }
+    threadids[i]=i;
+    if( pthread_create(&threads[i], NULL, &threadFunction, &threadids[i]) != 0 ) { printf("thread creation failed.\n"); exit(-1); }
   }
   for (int i=0; i < numThreads; i++) {
     pthread_join(threads[i], NULL);
   }
   fclose(matrixFile);
   free(matrixFileName);
-  return 0;
+#ifdef CALC_TIME
+  GET_STOP_TIME;
+  PRINT_TIME(stdout,freq);
+#endif
+  exit(0);
 }
