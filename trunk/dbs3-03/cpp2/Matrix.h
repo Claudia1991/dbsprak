@@ -6,7 +6,7 @@
 #include <errno.h>
 
 #define MATRIX_SIZE 8
-#define NUMBER_OF_SCANS 10
+#define NUMBER_OF_SCANS 1000000
 
 typedef struct Entry {
 	int 	statusScan;		 /* encodes the arrival, disappearance, and status quo of a person in a cell */
