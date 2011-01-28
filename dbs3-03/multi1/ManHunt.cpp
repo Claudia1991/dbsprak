@@ -64,8 +64,10 @@ void fDetectCrucialEvent(const AMap &cops, const AMap &criminals, int scanNum){
     AMap::const_iterator itCriminal;
     for(int i=1,j=0; j >= 0 && j <= matrixSize*matrixSize; ++i){
       j = (*itCop).second->to + (*itCop).second->direction*i;
+      if ( j==((*itCop).second->to - ((*itCop).second->to%matrixSize) - 1) || j==( (*itCop).second->to + matrixSize - ((*itCop).second->to%matrixSize) ) ) break;
       itCriminal = criminals.find(j);
       if (itCriminal != criminals.end() && (*itCop).second->direction == -(*itCriminal).second->direction){
+        printf("Scan %d: Cop from %d to %d, Criminal from %d to %d\n",scanNum, (*itCop).second->from, (*itCop).second->to, (*itCriminal).second->from, (*itCriminal).second->to);
         crucialEventDetected(scanNum, (*itCop).second->from, (*itCop).second->to, (*itCriminal).second->from, (*itCriminal).second->to);
       }
     }
