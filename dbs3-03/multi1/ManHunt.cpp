@@ -62,14 +62,28 @@ int fGetMovement(const HMap &appearances, const HMap &disappearances, AMap (&act
 void fDetectCrucialEvent(const AMap &cops, const AMap &criminals, int scanNum){
   for(AMap::const_iterator itCop = cops.begin(); itCop != cops.end(); ++itCop){
     AMap::const_iterator itCriminal;
+    int pruneBefore = 0, pruneAfter = 0;
+    switch((*itCop).second->direction ) {
+    case -9:
+    case -1:
+    case 7:
+      pruneBefore = 1;
+      break;
+    case -7:
+    case 1:
+    case 9:
+      pruneAfter = 1;
+      break;
+    }
     for(int i=1,j=0; j >= 0 && j <= matrixSize*matrixSize; ++i){
       j = (*itCop).second->to + (*itCop).second->direction*i;
-      if ( j==((*itCop).second->to - ((*itCop).second->to%matrixSize) - 1) || j==( (*itCop).second->to + matrixSize - ((*itCop).second->to%matrixSize) ) ) break;
+      if ( pruneBefore && (j%matrixSize == 0) ) break;
       itCriminal = criminals.find(j);
       if (itCriminal != criminals.end() && (*itCop).second->direction == -(*itCriminal).second->direction){
         printf("Scan %d: Cop from %d to %d, Criminal from %d to %d\n",scanNum, (*itCop).second->from, (*itCop).second->to, (*itCriminal).second->from, (*itCriminal).second->to);
         crucialEventDetected(scanNum, (*itCop).second->from, (*itCop).second->to, (*itCriminal).second->from, (*itCriminal).second->to);
       }
+      if ( pruneAfter && (j%matrixSize == 0) ) break;
     }
   }
 }
