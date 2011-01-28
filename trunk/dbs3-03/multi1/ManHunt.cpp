@@ -1,9 +1,5 @@
 #include "ManHunt.h"
 
-//void crucialEventDetected(int RegionScanNumber, int PoliceFromX, int PoliceFromY, int PoliceToX, int PoliceToY, int CriminalFromX, int CriminalFromY, int CriminalToX, int CriminalToY) {
-//	printf("Crucial event detected for the #%d. region scan. \nPolice officer moves from %d,%d to %d,%d. \nCriminal comes up to police officer from %d,%d to %d,%d.\n\n", RegionScanNumber, PoliceFromX, PoliceFromY, PoliceToX, PoliceToY, CriminalFromX, CriminalFromY, CriminalToX, CriminalToY);
-//}
-
 char *matrixFileName;
 int matrixSize = 8;
 int numThreads = 8;
@@ -80,7 +76,7 @@ void fDetectCrucialEvent(const AMap &cops, const AMap &criminals, int scanNum){
       if ( pruneBefore && (j%matrixSize == 0) ) break;
       itCriminal = criminals.find(j);
       if (itCriminal != criminals.end() && (*itCop).second->direction == -(*itCriminal).second->direction){
-        printf("Scan %d: Cop from %d to %d, Criminal from %d to %d\n",scanNum, (*itCop).second->from, (*itCop).second->to, (*itCriminal).second->from, (*itCriminal).second->to);
+//        printf("Scan %d: Cop from %d to %d, Criminal from %d to %d\n",scanNum, (*itCop).second->from, (*itCop).second->to, (*itCriminal).second->from, (*itCriminal).second->to);
         crucialEventDetected(scanNum, (*itCop).second->from, (*itCop).second->to, (*itCriminal).second->from, (*itCriminal).second->to);
       }
       if ( pruneAfter && (j%matrixSize == 0) ) break;
@@ -89,7 +85,7 @@ void fDetectCrucialEvent(const AMap &cops, const AMap &criminals, int scanNum){
 }
 
 void *threadFunction(void *arg) {
-  int threadID = (int) arg;
+  int threadID = *((int*)arg);
 //  int cpu_id = threadID%4;
 //  cpu_set_t mask;
 //  CPU_ZERO(&mask);
@@ -133,7 +129,7 @@ int main(int argc, char ** argv){
   pthread_t threads[numThreads];
   if ( pthread_mutex_init(&matrixFileMutex, NULL) != 0 ) { printf("mutex creation failed.\n"); exit(-1); }
   for (int i=0; i < numThreads; i++) {
-    if( pthread_create(&threads[i], NULL, &threadFunction, (int*)i) != 0 ) { printf("thread creation failed.\n"); exit(-1); }
+    if( pthread_create(&threads[i], NULL, &threadFunction, &i) != 0 ) { printf("thread creation failed.\n"); exit(-1); }
   }
   for (int i=0; i < numThreads; i++) {
     pthread_join(threads[i], NULL);
