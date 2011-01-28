@@ -167,9 +167,12 @@ void fDetectCrucialEvent(const AMap &cops, const AMap &criminals, int direction,
 	for(AMap::const_iterator it = cops.begin();it != cops.end();++it){
 		//
 		AMap::const_iterator itD;
-		for(int i=1,j=0; j >= 0 && j <= MATRIX_SIZE*MATRIX_SIZE;++i){
+		int old = 0;
+		for(int i=1,j=0; j >= 0 && j < MATRIX_SIZE*MATRIX_SIZE;++i){
 			//richtungen[i]*i+(*it).first
+			old = j;
 			j = richtungen[direction]*i+(*it).first;
+			if((old % MATRIX_SIZE == 0 && (j+1)%MATRIX_SIZE == 0) ||(j % MATRIX_SIZE == 0 && (old+1)%MATRIX_SIZE == 0))break;
 			itD = criminals.find(j);
 			if(itD != criminals.end()){
 				crucialEventDetected(region,(*it).second->from%MATRIX_SIZE,(*it).second->from/MATRIX_SIZE,(*it).second->to%MATRIX_SIZE,(*it).second->to/MATRIX_SIZE,(*itD).second->from%MATRIX_SIZE,(*itD).second->from/MATRIX_SIZE,(*itD).second->to%MATRIX_SIZE,(*itD).second->to/MATRIX_SIZE);
