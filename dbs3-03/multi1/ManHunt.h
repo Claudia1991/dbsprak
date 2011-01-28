@@ -22,36 +22,34 @@ static inline long long int getRDTSC() {
   return rc;
 }
 
-static inline double getCPUFreq()
-{
- struct timeval tpStart,tpStop;
- gettimeofday(&tpStart,0);
-
- long long int rStart,rStop;
-
- rStart = getRDTSC();
-
- sleep(2);
-
- rStop = getRDTSC();
-
- gettimeofday(&tpStop,0);
-
- long long int ticks = rStop-rStart;
-
- long tsec = tpStop.tv_sec - tpStart.tv_sec;
- long tmsec = tpStop.tv_usec - tpStart.tv_usec;
-
- long t = tsec * 1000000 + tmsec;
-
- double freq = ((double) ticks / (double) t) *1000000.0;
-
-#ifdef _DEBUG
- printf("msec : %d ticks: %lld freq: %g GHz\n",t,freq/1E9);
-#endif
-
- return freq;
+static inline double getCPUFreq() {
+  struct timeval tpStart,tpStop;
+  gettimeofday(&tpStart,0);
+  long long int rStart,rStop;
+  rStart = getRDTSC();
+  sleep(2);
+  rStop = getRDTSC();
+  gettimeofday(&tpStop,0);
+  long long int ticks = rStop-rStart;
+  long tsec = tpStop.tv_sec - tpStart.tv_sec;
+  long tmsec = tpStop.tv_usec - tpStart.tv_usec;
+  long t = tsec * 1000000 + tmsec;
+  double freq = ((double) ticks / (double) t) *1000000.0;
+  return freq;
 }
+
+#define VAR_TIME long long int startT,stopT;
+#define GET_START_TIME startT = getRDTSC();
+#define GET_STOP_TIME stopT = getRDTSC();
+#define PRINT_TIME(stream,freq) { \
+    if(startT <= stopT){ \
+      long long int sumT = stopT - startT; \
+      double time = (sumT/freq); \
+      uint sec=(uint)time; time -= sec; time *= 1000; \
+      uint ms= time; time -=ms; time*=1000; \
+      fprintf(stream,"Cycles: %lld = %u s %u ms %.0f ns \n",sumT,sec,ms,time); \
+      fflush(stream);} \
+      else fprintf(stream,"Overflow in RDTSC %lld %lld\n",startT,stopT);}
 
 class Person {
 public:
