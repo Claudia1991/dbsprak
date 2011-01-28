@@ -59,18 +59,8 @@ void fDetectCrucialEvent(const AMap &cops, const AMap &criminals, int scanNum){
   for(AMap::const_iterator itCop = cops.begin(); itCop != cops.end(); ++itCop){
     AMap::const_iterator itCriminal;
     int pruneBefore = 0, pruneAfter = 0;
-    switch((*itCop).second->direction ) {
-    case -9:
-    case -1:
-    case 7:
-      pruneBefore = 1;
-      break;
-    case -7:
-    case 1:
-    case 9:
-      pruneAfter = 1;
-      break;
-    }
+    if ( ((*itCop).second->direction == -(matrixSize+1)) || ((*itCop).second->direction == -1) || ((*itCop).second->direction == matrixSize-1) ) pruneBefore = 1;
+    if ( ((*itCop).second->direction == -(matrixSize-1)) || ((*itCop).second->direction == 1) || ((*itCop).second->direction == matrixSize+1) ) pruneAfter = 1;
     for(int i=1,j=0; j >= 0 && j <= matrixSize*matrixSize; ++i){
       j = (*itCop).second->to + (*itCop).second->direction*i;
       if ( pruneBefore && (j%matrixSize == 0) ) break;
@@ -140,6 +130,7 @@ int main(int argc, char ** argv){
   printf("matrixFileName: \"%s\", matrixSize: %d, numThreads: %d\n\n", matrixFileName, matrixSize, numThreads);
   matrixFile = fopen(matrixFileName, "r");
   if ( !matrixFile ) { printf("opening matrix file failed.\n"); exit(-1); }
+  free(matrixFileName);
   pthread_t threads[numThreads];
   if ( pthread_mutex_init(&matrixFileMutex, NULL) != 0 ) { printf("mutex creation failed.\n"); exit(-1); }
   int threadids[numThreads];
@@ -151,7 +142,6 @@ int main(int argc, char ** argv){
     pthread_join(threads[i], NULL);
   }
   fclose(matrixFile);
-  free(matrixFileName);
 #ifdef CALC_TIME
   GET_STOP_TIME;
   PRINT_TIME(stdout,freq);
