@@ -20,7 +20,6 @@ int fMatrixReader(HMap (&detectedEvents)[4]) {
       fscanf(matrixFile, "%d", &tempStatus);
       if(feof(matrixFile)) { return 0; }
       fscanf(matrixFile, "%d", &tempDescription);
-      //matrix[(i*matrixSize)+j] = (tempStatus%3)*10 + (tempDescription%4);
       switch ((tempStatus%3)*10 + (tempDescription%4)) {
       case 12: // Cop appeared
         detectedEvents[0].insert(VPair(i*matrixSize + j, true));
@@ -66,7 +65,6 @@ void fDetectCrucialEvent(const AMap &cops, const AMap &criminals, int scanNum){
       if ( pruneBefore && (j%matrixSize == 0) ) break;
       itCriminal = criminals.find(j);
       if (itCriminal != criminals.end() && (*itCop).second->direction == -(*itCriminal).second->direction){
-//        printf("Scan %d: Cop from %d to %d, Criminal from %d to %d\n",scanNum, (*itCop).second->from, (*itCop).second->to, (*itCriminal).second->from, (*itCriminal).second->to);
         crucialEventDetected(scanNum, (*itCop).second->from, (*itCop).second->to, (*itCriminal).second->from, (*itCriminal).second->to);
       }
       if ( pruneAfter && (j%matrixSize == 0) ) break;
@@ -99,8 +97,8 @@ void *threadFunction(void *arg) {
   pthread_exit(0);
 }
 
+// ManHunt "MatrixFile" "matrixSize" "numThreads"
 int main(int argc, char ** argv){
-  // ManHunt "MatrixFile" "matrixSize" "numThreads"
   struct timeval tpStart,tpStop;
   gettimeofday(&tpStart,0);
 #ifdef CALC_TIME
