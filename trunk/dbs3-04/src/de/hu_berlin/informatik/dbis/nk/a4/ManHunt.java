@@ -147,33 +147,39 @@ public class ManHunt extends Configured implements Tool {
 			}
 			SortedMapWritable[] v = new SortedMapWritable[8];
 			int suchRichtungen[] = {-(matrixsize+1),-matrixsize,-(matrixsize-1),1,-1,matrixsize-1, matrixsize, matrixsize+1};
-			for ( Number elem : events.get(0).keySet() ){
+			for ( Number elem : events.get(1).keySet() ){
 				int[] richtungen = {elem.intValue() - matrixsize-1,elem.intValue()-matrixsize,elem.intValue()-matrixsize+1,elem.intValue()+1,elem.intValue()-1,elem.intValue()+matrixsize-1,elem.intValue()+matrixsize,elem.intValue()+matrixsize+1};
 				for(int j = 0; j < 8; ++j){
-					int index = 7-j;
-					if(v[index] == null) v[index] = new SortedMapWritable();
-					if(events.get(1).containsKey(richtungen[j])){
-						if(DEBUG) System.out.println(((int) key.get())+": ("+(richtungen[j]%matrixsize)+","+(richtungen[j]/matrixsize)+") -> ("+(elem.intValue()%matrixsize)+","+(elem.intValue()/matrixsize)+"); "+suchRichtungen[index]+"/"+(index)+";"+"(Cop); ID="+elem.intValue());
-						// Typ, Ankunftsfeld, Startfeld
-						IntWritable[] tmp = { new IntWritable(2), new IntWritable(richtungen[j]), new IntWritable(elem.intValue()), new IntWritable(suchRichtungen[index]), new IntWritable((int) key.get())};
-						v[index].put(new IntWritable(elem.intValue()),new IntArrayWritable(tmp));
+					if(v[j] == null) v[j] = new SortedMapWritable();
+					if(events.get(0).containsKey(richtungen[j])){
+						if(!testCandidate(j,elem.intValue())){
+							System.out.println("Candidate can't cause event: "+": ("+(elem.intValue()%matrixsize)+","+(elem.intValue()/matrixsize)+") -> ("+(richtungen[j]%matrixsize)+","+(richtungen[j]/matrixsize)+"); Richtung="+j);
+							continue; 
+						}
+						if(DEBUG) System.out.println(((int) key.get())+": ("+(elem.intValue()%matrixsize)+","+(elem.intValue()/matrixsize)+") -> ("+(richtungen[j]%matrixsize)+","+(richtungen[j]/matrixsize)+"); "+suchRichtungen[j]+"/"+(j)+";"+"(Cop); ID="+elem.intValue());
+						// Typ, From, To, Direction, Matrix
+						IntWritable[] tmp = { new IntWritable(2), new IntWritable(elem.intValue()), new IntWritable(richtungen[j]), new IntWritable(suchRichtungen[j]), new IntWritable((int) key.get())};
+						v[j].put(new IntWritable(richtungen[j]),new IntArrayWritable(tmp));
 						break;
 					}
 				}
 			}
-			for ( Number elem : events.get(2).keySet() ){
+			for ( Number elem : events.get(3).keySet() ){
 				// 0    1   2   3  4    5   6  7
 				// ^\, ^|, /^, ->, <-, ./, .|, \.
 				int[] richtungen = {elem.intValue() - matrixsize-1,elem.intValue()-matrixsize,elem.intValue()-matrixsize+1,elem.intValue()+1,elem.intValue()-1,elem.intValue()+matrixsize-1,elem.intValue()+matrixsize,elem.intValue()+matrixsize+1};
 				for(int j = 0; j < 8; ++j){
-					int index = j;
-					if(v[index] == null) v[index] = new SortedMapWritable();
-					if(events.get(3).containsKey(richtungen[index])){
-						if(DEBUG) System.out.println(((int) key.get())+": ("+(richtungen[index]%matrixsize)+","+(richtungen[index]/matrixsize)+") -> ("+(elem.intValue()%matrixsize)+","+(elem.intValue()/matrixsize)+"); "+suchRichtungen[index]+"/"+(index)+";"+"(Criminal); ID="+((-1)*elem.intValue()));
+					if(v[7-j] == null) v[7-j] = new SortedMapWritable();
+					if(events.get(2).containsKey(richtungen[j])){
+						if(!testCandidate(j,elem.intValue())){
+							System.out.println("Candidate can't cause event: "+": ("+(elem.intValue()%matrixsize)+","+(elem.intValue()/matrixsize)+") -> ("+(richtungen[j]%matrixsize)+","+(richtungen[j]/matrixsize)+"); Richtung="+j);
+							continue; 
+						}
+						if(DEBUG) System.out.println(((int) key.get())+": ("+(elem.intValue()%matrixsize)+","+(elem.intValue()/matrixsize)+") -> ("+(richtungen[j]%matrixsize)+","+(richtungen[j]/matrixsize)+"); "+suchRichtungen[j]+"/"+(j)+";"+"(Criminal) ID="+((-1)*elem.intValue()));
 						// Kriminelle werden in die entgegengesetzte Bewegungsrichtung "einsortiert"
-						// Typ, Ankunftsfeld, Startfeld, Suchrichtung
-						IntWritable[] tmp = { new IntWritable(3),  new IntWritable(richtungen[index]),  new IntWritable(elem.intValue()), new IntWritable(suchRichtungen[7-j]), new IntWritable((int) key.get())};
-						v[index].put(new IntWritable((-1)*elem.intValue()),new IntArrayWritable(tmp));
+						// Typ, From, To, Direction, Matrix
+						IntWritable[] tmp = { new IntWritable(3),  new IntWritable(elem.intValue()),  new IntWritable(richtungen[j]), new IntWritable(suchRichtungen[j]), new IntWritable((int) key.get())};
+						v[7-j].put(new IntWritable((-1)*richtungen[j]),new IntArrayWritable(tmp));
 						break;
 					}
 				}
@@ -192,17 +198,31 @@ public class ManHunt extends Configured implements Tool {
 			}
 			for(int i1 = 0; i1 < 8; ++i1){
 				if(v[i1] == null){
-					if(DEBUG) System.err.print("0, ");
+					if(DEBUG) System.err.print("0 , ");
 					continue;
 				}
-				if(DEBUG) System.err.print(v[i1].size()+", ");
+				if(DEBUG) System.err.print(v[i1].size()+" , ");
 				o.set(i1);
 				// Bewegungsrichtungen mit nur einer Person muessen nicht untersucht werden!
 				if(v[i1].size() > 1)
 					context.write(new IntWritable(i1), v[i1]);
 			}
 			if(DEBUG) System.err.println("\n||||||||||||||||\n");
-		} 
+		}
+		private boolean testCandidate(int j, int value){
+			int x = (value%matrixsize), y = (value/matrixsize);
+			switch (j) {
+			case 0: return x > 2 && y > 2;
+			case 1: return y > 2;
+			case 2: return x < (matrixsize-3) && y > 2;
+			case 3: return x < (matrixsize-3);
+			case 4: return x > 2;
+			case 5: return x > 2 && y < (matrixsize-3);
+			case 6: return y < (matrixsize-3);
+			case 7: return x < (matrixsize-3) && y < (matrixsize-3);
+			}
+			return false;
+		}
 	}
 
 	public static class IntArrayWritable extends ArrayWritable {
