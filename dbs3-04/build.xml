@@ -1,0 +1,25 @@
+<project basedir="." name="MapReduce ManHunt">
+	<property name="hadoop.jar" location="./lib/hadoop-0.20.2-core.jar" />
+	<property name="junit.jar" location="./lib/junit-4.8.2.jar" />
+	<property name="logging.jar" location="./lib/commons-logging-1.0.4.jar" />
+	<property name="src" location="./src"/>
+	<property name="dest" location="./target"/>
+	
+	<target name="prepare">
+		<mkdir dir="${dest}" />
+	</target>
+	
+	<target name="compile" depends="prepare">
+		<javac classpath="${hadoop.jar};${junit.jar};${logging.jar}" srcdir="${src}" destdir="${dest}" includes="**/*.java" debug="on">
+		</javac>
+	</target>
+
+	<target name="clean">
+		<deltree dir="${dest}" />
+	</target>
+
+	<target name="package" depends="compile">
+		<jar destfile="./ManHunt.jar" basedir="${dest}" includes="**/*.class" compress="no">
+		</jar>
+	</target>
+</project>

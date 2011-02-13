@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" output="target" path="src"/>
+	<classpathentry kind="var" path="JRE_LIB" rootpath="JRE_SRCROOT" sourcepath="JRE_SRC"/>
+	<classpathentry kind="lib" path="/home/philipp/Development/dbs3-04/lib/hadoop-0.20.2-core.jar" sourcepath="/opt/hadoop/src"/>
+	<classpathentry kind="lib" path="/home/philipp/Development/dbs3-04/lib/junit-4.8.2.jar"/>
+	<classpathentry kind="lib" path="/home/philipp/Development/dbs3-04/lib/commons-logging-1.0.4.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
