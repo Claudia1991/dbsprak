@@ -307,8 +307,9 @@ final class Reduce extends Reducer<IntWritable, SortedMapWritable, IntWritable, 
 		int count = 0;
 		for (SortedMapWritable v : values) {
 			//System.err.println(key.get());
+			
+			// Prints all detected Persons from specific direction
 			System.out.println("---- ==== |"+key.get()+"/"+(++count)+"| ==== ----");
-
 			for ( WritableComparable<IntWritable> elem : v.keySet() ){
 				IntArrayWritable dataArray = (IntArrayWritable) v.get(elem);
 				Writable[] data = dataArray.get();
@@ -321,29 +322,45 @@ final class Reduce extends Reducer<IntWritable, SortedMapWritable, IntWritable, 
 						+ ((IntWritable) data[3]).get() + "/" + ((IntWritable) data[4]).get() + ";"
 						+ "("+(((IntWritable) data[0]).get()==2?"Cop":"Criminal")+"); ID=" + ((IntWritable)elem).get());
 			}
-			//sum += v.get();
-			//direction = v.get();
-			/*
+			
+			System.err.println("\n---- ==== |"+key.get()+"/"+(count)+"| ==== ----");
+
 			SortedMap<WritableComparable, Writable> Criminals = v.headMap(new IntWritable(0));
+			SortedMap<WritableComparable, Writable> Cops = v.tailMap(new IntWritable(0));
+			// in dieser Bewegungsrichtung gibt es keine Cops oder Criminals ==> es kann kein Event auftreten
+			if(Criminals.size() == 0 || Cops.size() == 0){
+				System.err.println("Missing Type >> No Event! ~ #Crime = "+Criminals.size()+", #Cops = "+Cops.size());
+				continue;
+			}
+			
+			// Event moeglich...
 			for ( WritableComparable<IntWritable> elem : Criminals.keySet() ){
-				int loc = ((IntWritable)elem).get()*(-1);
+				int crimeLoc1 = ((IntWritable)elem).get()*(-1);
 				IntArrayWritable dataArray = (IntArrayWritable) Criminals.get(elem);
-				//IntWritable[]
 				Writable[] data = dataArray.get();
-				System.err.println(key.get()+": ("+(((IntWritable) data[2]).get()%matrixsize)+","+(((IntWritable) data[2]).get()/matrixsize)+") -> ("+(loc%matrixsize)+", "+(loc/matrixsize)+"); "+((((IntWritable) data[0]).get()==3)?"Criminal":"Cop"));
+				// data = {Typ, Ankunftsfeld, Startfeld, Suchrichtung, Matrix}
+				int crimeType = ((IntWritable) data[0]).get();
+				int crimeToLoc = ((IntWritable) data[1]).get();
+				int crimeFromLoc = ((IntWritable) data[2]).get();
+				int crimeDirection = ((IntWritable) data[3]).get();
+				int crimeMatrix = ((IntWritable) data[4]).get();
+				//System.err.println(key.get()+"/"+crimeMatrix+": ("+(crimeFromLoc%matrixsize)+","+(crimeFromLoc/matrixsize)+") -> ("+(crimeToLoc%matrixsize)+", "+(crimeToLoc/matrixsize)+"); "+((crimeType==3)?"Criminal":"Cop"));
 				int old = 0;
 				for(int i=1,j=0; j >= 0 && j < matrixsize*matrixsize;++i){
 					old = j;
-					j = ((IntWritable) data[3]).get()*i+loc;
+					j = crimeDirection*i+crimeToLoc;
 					if((old % matrixsize == 0 && (j+1)%matrixsize == 0) ||(j % matrixsize == 0 && (old+1)%matrixsize == 0))break;
-					if(v.containsKey(new IntWritable(j))){
-						IntArrayWritable copDataArray = (IntArrayWritable) v.get(new IntWritable(j));
+					if(Cops.containsKey(new IntWritable(j))){
+						IntArrayWritable copDataArray = (IntArrayWritable) Cops.get(new IntWritable(j));
 						Writable[] copData = copDataArray.get();
+						if(crimeMatrix != ((IntWritable) copData[4]).get()) continue;
+						System.err.println(key.get()+"/"+crimeMatrix+": ("+(crimeFromLoc%matrixsize)+","+(crimeFromLoc/matrixsize)+") -> ("+(crimeToLoc%matrixsize)+", "+(crimeToLoc/matrixsize)+"); "+((crimeType==3)?"Criminal":"Cop"));
+						System.err.println(key.get()+"/"+((IntWritable) copData[4]).get()+": ("+(((IntWritable) copData[2]).get()%matrixsize)+","+(((IntWritable) copData[2]).get()/matrixsize)+") -> ("+(((IntWritable) copData[1]).get()%matrixsize)+", "+(((IntWritable) copData[1]).get()/matrixsize)+"); "+((((IntWritable) copData[0]).get()==3)?"Criminal":"Cop"));
 						Event detected = new Event();
 						detected.setCriminalFromColumn(((IntWritable) data[2]).get()%matrixsize);
 						detected.setCriminalFromLine(((IntWritable) data[2]).get()/matrixsize);
-						detected.setCriminalToColumn(loc%matrixsize);
-						detected.setCriminalToLine(loc/matrixsize);
+						detected.setCriminalToColumn(crimeToLoc%matrixsize);
+						detected.setCriminalToLine(crimeToLoc/matrixsize);
 						detected.setPolicemanFromColumn(((IntWritable) copData[2]).get()%matrixsize);
 						detected.setPolicemanFromLine(((IntWritable) copData[2]).get()/matrixsize);
 						detected.setPolicemanToColumn(((IntWritable) copData[1]).get()%matrixsize);
@@ -353,8 +370,9 @@ final class Reduce extends Reducer<IntWritable, SortedMapWritable, IntWritable, 
 
 				}
 			}
-			*/
 			v.clear();
+			Criminals.clear();
+			Cops.clear();
 		}
 	}
 
