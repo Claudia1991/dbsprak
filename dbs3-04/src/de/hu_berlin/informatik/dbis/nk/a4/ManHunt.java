@@ -51,7 +51,7 @@ import de.hu_berlin.informatik.dbis.nk.a4.util.EventText;
 
 public class ManHunt extends Configured implements Tool {
 	private static int matrixsize = 8;
-	private static boolean DEBUG = false;
+	private static boolean DEBUG = true;
 	@Override
 	public int run(String[] args) throws Exception {
 
@@ -172,7 +172,7 @@ public class ManHunt extends Configured implements Tool {
 						if(DEBUG) System.out.println(((int) key.get())+": ("+(richtungen[index]%matrixsize)+","+(richtungen[index]/matrixsize)+") -> ("+(elem.intValue()%matrixsize)+","+(elem.intValue()/matrixsize)+"); "+suchRichtungen[index]+"/"+(index)+";"+"(Criminal); ID="+((-1)*elem.intValue()));
 						// Kriminelle werden in die entgegengesetzte Bewegungsrichtung "einsortiert"
 						// Typ, Ankunftsfeld, Startfeld, Suchrichtung
-						IntWritable[] tmp = { new IntWritable(3),  new IntWritable(richtungen[index]),  new IntWritable(elem.intValue()), new IntWritable(suchRichtungen[index]), new IntWritable((int) key.get())};
+						IntWritable[] tmp = { new IntWritable(3),  new IntWritable(richtungen[index]),  new IntWritable(elem.intValue()), new IntWritable(suchRichtungen[7-j]), new IntWritable((int) key.get())};
 						v[index].put(new IntWritable((-1)*elem.intValue()),new IntArrayWritable(tmp));
 						break;
 					}
@@ -257,8 +257,8 @@ public class ManHunt extends Configured implements Tool {
 					Writable[] data = dataArray.get();
 					// data = {Typ, Ankunftsfeld, Startfeld, Suchrichtung, Matrix}
 					int crimeType = ((IntWritable) data[0]).get();
-					int crimeToLoc = ((IntWritable) data[1]).get();
-					int crimeFromLoc = ((IntWritable) data[2]).get();
+					int crimeToLoc = ((IntWritable) data[2]).get();
+					int crimeFromLoc = ((IntWritable) data[1]).get();
 					int crimeDirection = ((IntWritable) data[3]).get();
 					int crimeMatrix = ((IntWritable) data[4]).get();
 					//System.err.println(key.get()+"/"+crimeMatrix+": ("+(crimeFromLoc%matrixsize)+","+(crimeFromLoc/matrixsize)+") -> ("+(crimeToLoc%matrixsize)+", "+(crimeToLoc/matrixsize)+"); "+((crimeType==3)?"Criminal":"Cop"));
@@ -271,17 +271,17 @@ public class ManHunt extends Configured implements Tool {
 							IntArrayWritable copDataArray = (IntArrayWritable) Cops.get(new IntWritable(j));
 							Writable[] copData = copDataArray.get();
 							if(crimeMatrix != ((IntWritable) copData[4]).get()) continue;
-							if(DEBUG) System.err.println(key.get()+"/"+crimeMatrix+": ("+(crimeFromLoc%matrixsize)+","+(crimeFromLoc/matrixsize)+") -> ("+(crimeToLoc%matrixsize)+", "+(crimeToLoc/matrixsize)+"); "+((crimeType==3)?"Criminal":"Cop"));
-							if(DEBUG) System.err.println(key.get()+"/"+((IntWritable) copData[4]).get()+": ("+(((IntWritable) copData[2]).get()%matrixsize)+","+(((IntWritable) copData[2]).get()/matrixsize)+") -> ("+(((IntWritable) copData[1]).get()%matrixsize)+", "+(((IntWritable) copData[1]).get()/matrixsize)+"); "+((((IntWritable) copData[0]).get()==3)?"Criminal":"Cop"));
+							if(DEBUG) System.err.println(key.get()+"/"+crimeMatrix+": ("+(crimeFromLoc%matrixsize)+","+(crimeFromLoc/matrixsize)+") -> ("+(crimeToLoc%matrixsize)+", "+(crimeToLoc/matrixsize)+"); "+((crimeType==3)?"Criminal":"Cop")+"["+crimeDirection+"]");
+							if(DEBUG) System.err.println(key.get()+"/"+((IntWritable) copData[4]).get()+": ("+(((IntWritable) copData[1]).get()%matrixsize)+","+(((IntWritable) copData[1]).get()/matrixsize)+") -> ("+(((IntWritable) copData[2]).get()%matrixsize)+", "+(((IntWritable) copData[2]).get()/matrixsize)+"); "+((((IntWritable) copData[0]).get()==3)?"Criminal":"Cop")+"["+((IntWritable) copData[3]).get()+"]");
 							Event detected = new Event();
-							detected.setCriminalFromColumn(((IntWritable) data[2]).get()%matrixsize);
-							detected.setCriminalFromLine(((IntWritable) data[2]).get()/matrixsize);
-							detected.setCriminalToColumn(crimeToLoc%matrixsize);
-							detected.setCriminalToLine(crimeToLoc/matrixsize);
-							detected.setPolicemanFromColumn(((IntWritable) copData[2]).get()%matrixsize);
-							detected.setPolicemanFromLine(((IntWritable) copData[2]).get()/matrixsize);
-							detected.setPolicemanToColumn(((IntWritable) copData[1]).get()%matrixsize);
-							detected.setPolicemanToLine(((IntWritable) copData[1]).get()/matrixsize);
+							detected.setCriminalFromColumn(crimeFromLoc/matrixsize);
+							detected.setCriminalFromLine(crimeFromLoc%matrixsize);
+							detected.setCriminalToColumn(crimeToLoc/matrixsize);
+							detected.setCriminalToLine(crimeToLoc%matrixsize);
+							detected.setPolicemanFromColumn(((IntWritable) copData[1]).get()/matrixsize);
+							detected.setPolicemanFromLine(((IntWritable) copData[1]).get()%matrixsize);
+							detected.setPolicemanToColumn(((IntWritable) copData[2]).get()/matrixsize);
+							detected.setPolicemanToLine(((IntWritable) copData[2]).get()%matrixsize);
 							context.write((IntWritable) copData[4], EventText.getEventTextValue(detected));
 						}
 	
