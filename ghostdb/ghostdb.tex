@@ -1,0 +1,31 @@
+\documentclass[a4paper, pdftex, notitlepage, parskip]{scrreprt}
+%
+\usepackage[ngerman]{babel}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[latin1]{inputenc}
+\usepackage[pdfborder={0 0 0}, pdfpagelabels={false}, bookmarksnumbered={true}, pdfcreator={}, pdfproducer={}]{hyperref}
+\usepackage{rotating}
+%
+\begin{document}
+\title{\vspace{2cm} \Huge GhostDB - Ein Beispiel \vspace{2cm}}
+\author{Martin Minor, David Sander}
+\date{\today}
+\maketitle
+\vspace{2cm}
+%
+some text
+%
+\tableofcontents
+\listoffigures
+\listoftables
+\pagestyle{headings}
+%
+\chapter{Datenbank}
+\input{tex/datenbank}
+\chapter{Subtree Key Table}
+\input{tex/subtreekeytable}
+\chapter{Climbing Index}
+\input{tex/climbingindex}
+%
+\end{document}
