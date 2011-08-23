@@ -1,41 +1,106 @@
-\begin{table}[htbp]
+\newcolumntype{C}{>{\centering\arraybackslash}X}
+\begin{sidewaystable}[htbp]
 \centering
-\begin{tabular}{|c|c|c|c|c|}
+\begin{tabularx}{\textwidth}{|C|C|C|C|C|}
 \hline
-Fluggesellschaft&PilotIDs&FlugIDs&BuchungsIDs&GepaeckIDs\\
+\bfseries Geburtsdatum&\bfseries PilotIDs&\bfseries FlugIDs&\bfseries BuchungsIDs&\bfseries GepaeckIDs\\
 \hline
-\end{tabular}
-\caption{Climbing Index Pilot.Fluggesellschaft}
-\label{tab:ClimbingIndexPilotFluggesellschaft}
-\end{table}
+1949-11-05&P01&F12&&\\
+\hline
+1945-06-04&P10&F05, F15&B08, B11, B18, B19, B20, B21&G07, G18, G19, G20, G25\\
+\hline
+1948-07-01&P09&&&\\
+\hline
+1956-07-24&P05&&&\\
+\hline
+1959-10-06&P07&F08, F13&B01, B06, B09, B10, B24&G01, G02, G08, G10, G12, G17, G21, G22\\
+\hline
+1960-12-27&P03&F01, F06&B03, B12, B13, B14, B15&G05, G06, G15, G16, G23\\
+\hline
+1964-12-14&P04&F03, F11&B17&\\
+\hline
+1967-02-17&P08&F07, F14&B16, B23&G24\\
+\hline
+1974-05-26&P06&F10&B07&G04, G11, G13\\
+\hline
+1978-06-23&P02&F02, F04, F09&B02, B04, B05, B22, B25&G03, G09, G14\\
+\hline
+\end{tabularx}
+\caption{Climbing Index Piloten.Geburtsdatum}
+\label{tab:ClimbingIndexPilotenGeburtsdatum}
+\end{sidewaystable}
 %
-\begin{table}[htbp]
+\begin{sidewaystable}[htbp]
 \centering
-\begin{tabular}{|c|c|c|c|c|}
+\begin{tabularx}{\textwidth}{|C|C|C|C|C|}
 \hline
-Typ&FlugzeugIDs&FlugIDs&BuchungsIDs&GepaeckIDs\\
+\bfseries Typ&\bfseries FlugzeugIDs&\bfseries FlugIDs&\bfseries BuchungsIDs&\bfseries GepaeckIDs\\
 \hline
-\end{tabular}
-\caption{Climbing Index Flugzeug.Typ}
-\label{tab:ClimbingIndexFlugzeugTyp}
-\end{table}
+Airbus A300B4&A01&F02, F06, F12, F15&B03, B05, B08, B11, B12, B13, B14, B18, B19&G05, G06, G18, G23, G25\\
+\hline
+Airbus A340-200&A02&F03, F10, F14&B07, B16, B17, B23&G04, G11, G13, G24\\
+\hline
+Boeing 747-200B&A03&F09, F13&B01, B02, B04, B06, B09, B22, B25&G03, G09, G10, G14, G17, G22\\
+\hline
+Bombardier CRJ100 LR&A04&F05, F07, F11&B20, B21&G07, G19, G20\\
+\hline
+Bombardier CRJ1000&A05&F01, F04, F08&B10, B15, B24&G01, B02, G08, G12, G15, G16, G21\\
+\hline
+\end{tabularx}
+\caption{Climbing Index Flugzeuge.Typ}
+\label{tab:ClimbingIndexFlugzeugeTyp}
+\end{sidewaystable}
 %
-\begin{table}[htbp]
+\begin{sidewaystable}[htbp]
 \centering
-\begin{tabular}{|c|c|c|c|}
+\begin{tabularx}{\textwidth}{|C|C|C|C|}
 \hline
-Geschlecht&ReisenderIDs&BuchungsIDs&GepaeckIDs\\
+\bfseries Geschlecht&\bfseries ReisenderIDs&\bfseries BuchungsIDs&\bfseries GepaeckIDs\\
 \hline
-\end{tabular}
+F&R01, R07, R11, R12, R14, R15&B03, B04, B07, B08, B13, B17, B21, B22&G03, G04, G06, G07, G09, G11, G13, G18, G23\\
+\hline
+M&R02, R03, R04, R05, R06, R08, R09, R10, R13&B01, B02, B05, B06, B09, B10, B11, B12, B14, B15, B16, B18, B19, B20, B23, B24, B25&G01, G02, G05, G08, G10, G12, G14, G15, G16, G17, G19, G20, G21, G22, G24, G25\\
+\hline
+\end{tabularx}
 \caption{Climbing Index Reisende.Geschlecht}
 \label{tab:ClimbingIndexReisendeGeschlecht}
-\end{table}
+\end{sidewaystable}
 %
 \begin{table}[htbp]
 \centering
 \begin{tabular}{|c|c|c|c|}
 \hline
-Ziel&FlugIDs&BuchungsIDs&GepaeckIDs\\
+\bfseries Ziel&\bfseries FlugIDs&\bfseries BuchungsIDs&\bfseries GepaeckIDs\\
+\hline
+Antwerpen (ANR)&F01&B15&G15, G16\\
+\hline
+Barcelona (BCN)&F02&B05&\\
+\hline
+Chicago (ORD)&F03&B17&\\
+\hline
+Dortmund (DTM)&F04&&\\
+\hline
+Erfurt (ERF)&F05&B20, B21&G07, G19, G20\\
+\hline
+Florenz (FLR)&F06&B03, B12, B13, B14&G05, G06, G23\\
+\hline
+Genf (GVA)&F07&&\\
+\hline
+Hamburg (HAM)&F08&B10, B24&G01, G02, G08, G12, G21\\
+\hline
+Istanbul (IST)&F09&B02, B04, B22, B25&G03, G09, G14\\
+\hline
+Jakarta (CGK)&F10&B07&G04, G11, G13\\
+\hline
+Kiew (KBP)&F11&&\\
+\hline
+London (LHR)&F12&&\\
+\hline
+Madrid (MAD)&F13&B01, B06, B09&G10, G17, G22\\
+\hline
+New York (JFK)&F14&B16, B23&G24\\
+\hline
+Oslo (OSL)&F15&B08, B11, B18, B19&G18, G25\\
 \hline
 \end{tabular}
 \caption{Climbing Index Fluege.Ziel}
@@ -46,7 +111,33 @@ Ziel&FlugIDs&BuchungsIDs&GepaeckIDs\\
 \centering
 \begin{tabular}{|c|c|}
 \hline
-Gewicht&GepaeckIDs\\
+\bfseries Gewicht&\bfseries GepaeckIDs\\
+\hline
+10&G02, G21\\
+\hline
+11&G11\\
+\hline
+12&G15\\
+\hline
+14&G01, G05, G07, G14\\
+\hline
+15&G03, G10\\
+\hline
+16&G04, G25\\
+\hline
+17&G17\\
+\hline
+18&G24\\
+\hline
+20&G08, G09\\
+\hline
+21&G06, G12, G16, G18\\
+\hline
+22&G19, G22\\
+\hline
+23&G13\\
+\hline
+25&G20, G23\\
 \hline
 \end{tabular}
 \caption{Climbing Index Gepaeck.Gewicht}
@@ -57,7 +148,49 @@ Gewicht&GepaeckIDs\\
 \centering
 \begin{tabular}{|c|c|}
 \hline
-Datum&BuchungsIDs\\
+\bfseries Datum&\bfseries BuchungsIDs\\
+\hline
+2010-12-08&B01\\
+\hline
+2011-01-04&B02\\
+\hline
+2011-01-23&B03\\
+\hline
+2011-03-15&B04\\
+\hline
+2011-04-04&B05\\
+\hline
+2011-05-13&B06\\
+\hline
+2011-05-18&B07, B08\\
+\hline
+2011-05-20&B09\\
+\hline
+2011-06-04&B10\\
+\hline
+2011-06-15&B11\\
+\hline
+2011-06-22&B12, B13, B14\\
+\hline
+2011-07-01&B15\\
+\hline
+2011-07-09&B16\\
+\hline
+2011-07-14&B17\\
+\hline
+2011-07-26&B18\\
+\hline
+2011-08-05&B19\\
+\hline
+2011-08-09&B20, B21\\
+\hline
+2011-08-10&B22\\
+\hline
+2011-08-13&B23\\
+\hline
+2011-08-22&B24\\
+\hline
+2011-08-23&B25\\
 \hline
 \end{tabular}
 \caption{Climbing Index Buchungen.Datum}
