@@ -2,7 +2,7 @@
 \centering
 \begin{tabular}{|l|}
 \hline
-Buchungen\\
+\bfseries Buchungen\\
 \hline
 BuchungsID\\
 Datum\\
@@ -19,12 +19,11 @@ Flug\\
 \centering
 \begin{tabular}{|l|}
 \hline
-Gepaeck\\
+\bfseries Gepaeck\\
 \hline
 GepaeckID\\
 Flug\\
 Gewicht\\
-Abmessungen\\
 Abgabe\\
 \cellcolor[rgb]{0.85,0.85,0.85}Reisender\\
 \hline
@@ -37,12 +36,13 @@ Abgabe\\
 \centering
 \begin{tabular}{|l|}
 \hline
-Fluege\\
+\bfseries Fluege\\
 \hline
 FlugID\\
 Start\\
 Ziel\\
-Datum\\
+Entfernung\\
+Abflug\\
 Flugzeug\\
 \cellcolor[rgb]{0.85,0.85,0.85}Pilot\\
 \hline
@@ -55,7 +55,7 @@ Flugzeug\\
 \centering
 \begin{tabular}{|l|}
 \hline
-Reisende\\
+\bfseries Reisende\\
 \hline
 ReisenderID\\
 Vorname\\
@@ -63,7 +63,6 @@ Name\\
 Geschlecht\\
 \cellcolor[rgb]{0.85,0.85,0.85}Geburtsdatum\\
 \cellcolor[rgb]{0.85,0.85,0.85}Staatsbuergerschaft\\
-\cellcolor[rgb]{0.85,0.85,0.85}Besonderheiten\\
 \hline
 \end{tabular}
 \caption{Schema Reisende}
@@ -74,7 +73,7 @@ Geschlecht\\
 \centering
 \begin{tabular}{|l|}
 \hline
-Flugzeuge\\
+\bfseries Flugzeuge\\
 \hline
 FlugzeugID\\
 Typ\\
@@ -90,16 +89,14 @@ Sitzplaetze\\
 \centering
 \begin{tabular}{|l|}
 \hline
-Piloten\\
+\bfseries Piloten\\
 \hline
 PilotID\\
 Vorname\\
 Name\\
 Geschlecht\\
-Fluggesellschaft\\
 \cellcolor[rgb]{0.85,0.85,0.85}Geburtsdatum\\
 \cellcolor[rgb]{0.85,0.85,0.85}Gehalt\\
-\cellcolor[rgb]{0.85,0.85,0.85}Flugstunden\\
 \hline
 \end{tabular}
 \caption{Schema Piloten}
@@ -108,74 +105,59 @@ Fluggesellschaft\\
 %
 \begin{table}[htbp]
 \centering
-\begin{tabular}{|l|}
-\hline
-Besonderheiten\\
-\hline
-Bezeichnung\\
-Medikation\\
-Symptome\\
-\hline
-\end{tabular}
-\caption{Schema Besonderheiten}
-\label{tab:SchemaBesonderheiten}
-\end{table}
-%
-\begin{table}[htbp]
-\centering
 \begin{tabular}{|c|c|c|c|c|}
 \hline
-BuchungsID&Datum&Preis&Flug&Reisender\\
+\bfseries BuchungsID&\bfseries Datum&\bfseries Preis&\bfseries Flug&\bfseries Reisender\\
 \hline
-B01&&&&\\
+B01&2010-12-08&342&F13&R02\\
 \hline
-B02&&&&\\
+B02&2011-01-04&226&F09&R06\\
 \hline
-B03&&&&\\
+B03&2011-01-23&241&F06&R01\\
 \hline
-B04&&&&\\
+B04&2011-03-15&469&F09&R15\\
 \hline
-B05&&&&\\
+B05&2011-04-04&339&F02&R13\\
 \hline
-B06&&&&\\
+B06&2011-05-13&490&F13&R03\\
 \hline
-B07&&&&\\
+B07&2011-05-18&109&F10&R11\\
 \hline
-B08&&&&\\
+B08&2011-05-18&137&F15&R07\\
 \hline
-B09&&&&\\
+B09&2011-05-20&66&F13&R09\\
 \hline
-B10&&&&\\
+B10&2011-06-04&220&F08&R04\\
 \hline
-B11&&&&\\
+B11&2011-06-15&222&F15&R03\\
 \hline
-B12&&&&\\
+B12&2011-06-22&147&F06&R02\\
 \hline
-B13&&&&\\
+B13&2011-06-22&147&F06&R14\\
 \hline
-B14&&&&\\
+B14&2011-06-22&65&F06&R09\\
 \hline
-B15&&&&\\
+B15&2011-07-01&319&F01&R10\\
 \hline
-B16&&&&\\
+B16&2011-07-09&380&F14&R08\\
 \hline
-B17&&&&\\
+B17&2011-07-14&394&F03&R12\\
 \hline
-B18&&&&\\
+B18&2011-07-26&161&F15&R13\\
 \hline
-B19&&&&\\
+B19&2011-08-05&325&F15&R05\\
 \hline
-B20&&&&\\
+B20&2011-08-09&257&F05&R04\\
 \hline
-B21&&&&\\
+B21&2011-08-09&257&F05&R11\\
 \hline
-B22&&&&\\
+B22&2011-08-10&432&F09&R01\\
 \hline
-B23&&&&\\
+B23&2011-08-13&157&F14&R10\\
 \hline
-B24&&&&\\
+B24&2011-08-22&90&F08&R03\\
 \hline
-B25&&&&\\
+B25&2011-08-23&416&F09&R08\\
 \hline
 \end{tabular}
 \caption{Buchungen}
@@ -184,144 +166,141 @@ B25&&&&\\
 %
 \begin{table}[htbp]
 \centering
-\begin{tabular}{|c|c|c|c|c|c|}
+\begin{tabular}{|c|c|c|c|c|}
 \hline
-GepaeckID&Flug&Gewicht&Abmessungen&Abgabe&Reisender\\
+\bfseries GepaeckID&\bfseries Flug&\bfseries Gewicht&\bfseries Abgabe&\bfseries Reisender\\
 \hline
-G01&&&&&\\
+G01&F08&14&2011-08-20 17:05&R04\\
 \hline
-G02&&&&&\\
+G02&F08&10&2011-08-20 17:05&R04\\
 \hline
-G03&&&&&\\
+G03&F09&15&2011-08-23 09:30&R01\\
 \hline
-G04&&&&&\\
+G04&F10&16&2011-08-16 07:31&R11\\
 \hline
-G05&&&&&\\
+G05&F06&14&2011-08-09 12:58&R02\\
 \hline
-G06&&&&&\\
+G06&F06&21&2011-08-09 12:58&R14\\
 \hline
-G07&&&&&\\
+G07&F05&14&2011-08-09 13:00&R11\\
 \hline
-G08&&&&&\\
+G08&F08&20&2011-08-22 21:47&R04\\
 \hline
-G09&&&&&\\
+G09&F09&20&2011-08-23 08:45&R15\\
 \hline
-G10&&&&&\\
+G10&F13&15&2011-08-23 20:20&R02\\
 \hline
-G11&&&&&\\
+G11&F10&11&2011-08-23 14:35&R11\\
 \hline
-G12&&&&&\\
+G12&F08&21&2011-08-21 07:59&R03\\
 \hline
-G13&&&&&\\
+G13&F10&23&2011-08-23 12:07&R11\\
 \hline
-G14&&&&&\\
+G14&F09&14&2011-08-22 21:47&R08\\
 \hline
-G15&&&&&\\
+G15&F01&12&2011-08-02 00:45&R10\\
 \hline
-G16&&&&&\\
+G16&F01&21&2011-08-02 00:45&R10\\
 \hline
-G17&&&&&\\
+G17&F13&17&2011-08-26 16:42&R09\\
 \hline
-G18&&&&&\\
+G18&F15&21&2011-08-30 12:40&R07\\
 \hline
-G19&&&&&\\
+G19&F05&22&2011-08-08 23:57&R04\\
 \hline
-G20&&&&&\\
+G20&F05&25&2011-08-08 23:57&R04\\
 \hline
-G21&&&&&\\
+G21&F08&10&2011-08-21 08:00&R03\\
 \hline
-G22&&&&&\\
+G22&F13&22&2011-08-25 22:42&R02\\
 \hline
-G23&&&&&\\
+G23&F06&25&2011-08-14 04:19&R01\\
 \hline
-G24&&&&&\\
+G24&F14&18&2011-08-27 21:13&R08\\
 \hline
-G25&&&&&\\
+G25&F15&16&2011-08-29 17:55&R13\\
 \hline
 \end{tabular}
 \caption{Gepaeck}
 \label{tab:Gepaeck}
 \end{table}
 %
-\begin{table}[htbp]
+\begin{sidewaystable}[htbp]
 \centering
-\begin{tabular}{|c|c|c|c|c|c|}
+\begin{tabular}{|c|c|c|c|c|c|c|}
 \hline
-FlugID&Start&Ziel&Datum&Flugzeug&Pilot\\
+\bfseries FlugID&\bfseries Start&\bfseries Ziel&\bfseries Entfernung&\bfseries Abflug&\bfseries Flugzeug&\bfseries Pilot\\
 \hline
-F01&&&&&\\
+F01&Berlin (SXF)&Antwerpen (ANR)&638&2011-08-02 04:25&A05&P03\\
 \hline
-F02&&&&&\\
+F02&Berlin (SXF)&Barcelona (BCN)&1506&2011-08-05 16:10&A01&P02\\
 \hline
-F03&&&&&\\
+F03&Berlin (SXF)&Chicago (ORD)&7118&2011-08-08 19:45&A02&P04\\
 \hline
-F04&&&&&\\
+F04&Berlin (SXF)&Dortmund (DTM)&417&2011-08-09 04:05&A05&P02\\
 \hline
-F05&&&&&\\
+F05&Berlin (SXF)&Erfurt (ERF)&236&2011-08-09 15:25&A04&P10\\
 \hline
-F06&&&&&\\
+F06&Berlin (SXF)&Florenz (FLR)&968&2011-08-14 07:15&A01&P03\\
 \hline
-F07&&&&&\\
+F07&Berlin (SXF)&Genf (GVA)&869&2011-08-19 15:45&A04&P08\\
 \hline
-F08&&&&&\\
+F08&Berlin (SXF)&Hamburg (HAM)&275&2011-08-23 06:30&A05&P07\\
 \hline
-F09&&&&&\\
+F09&Berlin (SXF)&Istanbul (IST)&1717&2011-08-23 12:25&A03&P02\\
 \hline
-F10&&&&&\\
+F10&Berlin (SXF)&Jakarta (CGK)&10745&2011-08-23 15:20&A02&P06\\
 \hline
-F11&&&&&\\
+F11&Berlin (SXF)&Kiew (KBP)&1227&2011-08-23 18:30&A04&P04\\
 \hline
-F12&&&&&\\
+F12&Berlin (SXF)&London (LHR)&965&2011-08-26 13:20&A01&P01\\
 \hline
-F13&&&&&\\
+F13&Berlin (SXF)&Madrid (MAD)&1853&2011-08-26 18:15&A03&P07\\
 \hline
-F14&&&&&\\
+F14&Berlin (SXF)&New York (JFK)&6401&2011-08-29 00:30&A02&P08\\
 \hline
-F15&&&&&\\
+F15&Berlin (SXF)&Oslo (OSL)&882&2011-08-30 15:20&A01&P10\\
 \hline
 \end{tabular}
 \caption{Fluege}
 \label{tab:Fluege}
-\end{table}
+\end{sidewaystable}
 %
 \begin{sidewaystable}[htbp]
 \centering
-\begin{tabular}{l}
-Namen aus: \url{http://en.wikipedia.org/wiki/List_of_aviators}\\
-\end{tabular}
-\begin{tabular}{|c|c|c|c|c|c|c|}
+\begin{tabular}{|c|c|c|c|c|c|}
 \hline
-ReisenderID&Vorname&Name&Geschlecht&Geburtsdatum&Staatsbuergerschaft&Besonderheiten\\
+\bfseries ReisenderID&\bfseries Vorname&\bfseries Name&\bfseries Geschlecht&\bfseries Geburtsdatum&\bfseries Staatsbuergerschaft\\
 \hline
-R01&Jacqueline&Auriol&F&&&\\
+R01&Jacqueline&Auriol&F&1955-11-05&Französisch\\
 \hline
-R02&Mike&Bannister&M&&&\\
+R02&Mike&Bannister&M&1969-10-24&Britisch\\
 \hline
-R03&Francis&Chichester&M&&&\\
+R03&Francis&Chichester&M&1939-09-17&Britisch\\
 \hline
-R04&Doru&Davidovici&M&&&\\
+R04&Doru&Davidovici&M&1987-04-20&Romänisch\\
 \hline
-R05&Eugene Burton&Ely&M&&&\\
+R05&Eugene Burton&Ely&M&1971-10-21&US-Amerikanisch\\
 \hline
-R06&Charles&Fern&M&&&\\
+R06&Charles&Fern&M&1942-02-01&US-Amerikanisch\\
 \hline
-R07&Sabiha&Gökçen&F&&&\\
+R07&Sabiha&Gökçen&F&1978-03-22&Türkisch\\
 \hline
-R08&Ernst&Heinkel&M&&&\\
+R08&Ernst&Heinkel&M&1936-01-24&Deutsch\\
 \hline
-R09&Tony&Jannus&M&&&\\
+R09&Tony&Jannus&M&2008-07-22&US-Amerikanisch\\
 \hline
-R10&Algene&Key&M&&&\\
+R10&Algene&Key&M&1945-06-04&US-Amerikanisch\\
 \hline
-R11&Ruth Bancroft&Law&F&&&\\
+R11&Ruth Bancroft&Law&F&1984-11-19&US-Amerikanisch\\
 \hline
-R12&Marie&Marvingt&F&&&\\
+R12&Marie&Marvingt&F&1966-02-20&Französisch\\
 \hline
-R13&Charles&Nungesser&M&&&\\
+R13&Charles&Nungesser&M&1964-03-15&Französisch\\
 \hline
-R14&Ivy May&Pearce&F&&&\\
+R14&Ivy May&Pearce&F&1969-06-08&Australisch\\
 \hline
-R15&Harriet&Quimby&F&&&\\
+R15&Harriet&Quimby&F&1980-05-01&US-Amerikanisch\\
 \hline
 \end{tabular}
 \caption{Reisende}
@@ -332,64 +311,50 @@ R15&Harriet&Quimby&F&&&\\
 \centering
 \begin{tabular}{|c|c|c|c|}
 \hline
-FlugzeugID&Typ&Reichweite&Sitzplaetze\\
+\bfseries FlugzeugID&\bfseries Typ&\bfseries Reichweite&\bfseries Sitzplaetze\\
 \hline
-A01&&&\\
+A01&Airbus A300B4&6670&266\\
 \hline
-A02&&&\\
+A02&Airbus A340-200&15000&240\\
 \hline
-A03&&&\\
+A03&Boeing 747-200B&12700&366\\
 \hline
-A04&&&\\
+A04&Bombardier CRJ100 LR&3710&50\\
 \hline
-A05&&&\\
+A05&Bombardier CRJ1000&2491&100\\
 \hline
 \end{tabular}
 \caption{Flugzeuge}
 \label{tab:Flugzeuge}
 \end{table}
 %
-\begin{sidewaystable}[htbp]
+\begin{table}[htbp]
 \centering
-\begin{tabular}{l}
-Namen aus: \url{http://en.wikipedia.org/wiki/List_of_aviators}\\
-\end{tabular}
-\begin{tabular}{|c|c|c|c|c|c|c|c|}
+\begin{tabular}{|c|c|c|c|c|c|}
 \hline
-PilotID&Vorname&Name&Geschlecht&Fluggesellschaft&Geburtsdatum&Gehalt&Flugstunden\\
+\bfseries PilotID&\bfseries Vorname&\bfseries Name&\bfseries Geschlecht&\bfseries Geburtsdatum&\bfseries Gehalt\\
 \hline
-P01&John&Alcock&M&&&&\\
+P01&John&Alcock&M&1949-11-05&3800\\
 \hline
-P02&Richard&Bach&M&&&&\\
+P02&Richard&Bach&M&1978-06-23&2300\\
 \hline
-P03&Don&Cameron&M&&&&\\
+P03&George&Cayley&M&1960-12-27&12000\\
 \hline
-P04&Jimmy&Doolittle&M&&&&\\
+P04&Jimmy&Doolittle&M&1964-12-14&5100\\
 \hline
-P05&Amelia&Earhart&F&&&&\\
+P05&Amelia&Earhart&F&1956-07-24&8400\\
 \hline
-P06&Henri&Farman&M&&&&\\
+P06&Henri&Farman&M&1974-05-26&6700\\
 \hline
-P07&Roland&Garros&M&&&&\\
+P07&Roland&Garros&M&1959-10-06&10000\\
 \hline
-P08&Hilda&Hewlett&F&&&&\\
+P08&Hilda&Hewlett&F&1967-02-17&6700\\
 \hline
-P09&Amy&Johnson&F&&&&\\
+P09&Amy&Johnson&F&1948-07-01&8300\\
 \hline
-P10&Fred&Key&M&&&&\\
+P10&Fred&Key&M&1945-06-04&6000\\
 \hline
 \end{tabular}
 \caption{Piloten}
 \label{tab:Piloten}
-\end{sidewaystable}
-%
-\begin{table}[htbp]
-\centering
-\begin{tabular}{|c|c|c|}
-\hline
-Bezeichnung&Medikation&Symptome\\
-\hline
-\end{tabular}
-\caption{Besonderheiten}
-\label{tab:Besonderheiten}
 \end{table}
