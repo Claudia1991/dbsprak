@@ -1,0 +1,41 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+SELECT R.ReisenderID, R.Vorname, R.Name, R.Staatsbuergerschaft
+FROM Buchungen B, Gepaeck G, Fluege F, Reisende R, Piloten P
+WHERE R.Geschlecht='M' AND P.Geburtsdatum<1956-08-01 AND G.Gewicht>20
+    AND B.Flug=F.FlugID AND B.Reisender=R.ReisenderID
+    AND G.Flug=F.FlugID AND G.Reisender=R.ReisenderID
+    AND F.Pilot=P.PilotID
+\end{Verbatim}
+
+Pre-Filtering:\\
+Vis(Q,Gepaeck,G.GepaeckID) = \{G06, G12, G13, G16, G18, G19, G20, G22, G23\}\\
+CI(P.Geburtsdatum,<1956-08-01,G.GepaeckID) = \{\{\}, \{G07, G18, G19, G20, G25\}, \{\}, \{\}\}\\
+Merge($(\bigcup 2)\cap 1$) = \{G18, G19, G20\}\\
+SJoin(3,$\text{SKT}_{\text{Gepaeck}}$,R.ReisenderID) = \{R07, R04, R04\}\\
+CI(P.Geburtsdatum,<1956-08-01,B.BuchungsID) = \{\{\}, \{B08, B11, B18, B19, B20, B21\}, \{\}, \{\}\}\\
+Merge($\bigcup 5$) = \{B08, B11, B18, B19, B20, B21\}\\
+SJoin(6,$\text{SKT}_{\text{Buchungen}}$,R.ReisenderID) = \{R07, R03, R13, R05, R04, R11\}\\
+Merge($4\cap 7$) = \{R04, R07\}\\
+BuildBF(8) = BF\\
+Vis(Q,Reisende,R.ReisenderID) = \{R02, R03, R04, R05, R06, R08, R09, R10, R13\}\\
+ProbeBF(BF,10) = \{R04\}\\
+Vis(Q,Reisende,$\langle$R.ReisenderID,R.Vorname,R.Name$\rangle$) = \{$\langle$R02,Mike,Bannister$\rangle$, $\langle$R03,Francis,Chichester$\rangle$, $\langle$R04,Doru,Davidovici$\rangle$, $\langle$R05,Eugene Burton,Ely$\rangle$, $\langle$R06,Charles,Fern$\rangle$, $\langle$R08,Ernst,Heinkel$\rangle$, $\langle$R09,Tony,Jannus$\rangle$, $\langle$R10,Algene,Key$\rangle$, $\langle$R13,Charles,Nungesser$\rangle$\}\\
+MJoin(12,11,$\langle$R.ReisenderID,R.Staatsbuergerschaft$\rangle$,9) = \{$\langle$R04,Doru,Davidovici,Romänisch$\rangle$\}
+
+Post-Filtering:\\
+CI(P.Geburtsdatum,<1956-08-01,G.GepaeckID) = \{\{\}, \{G07, G18, G19, G20, G25\}, \{\}, \{\}\}\\
+Merge($\bigcup 1$) = \{G07, G18, G19, G20, G22, G23\} \\
+SJoin(2,$\text{SKT}_{\text{Gepaeck}}$,$\langle$G.GepaeckID,R.ReisenderID$\rangle$) = \{$\langle$G07,R11$\rangle$, $\langle$G18,R07$\rangle$, $\langle$G19,R04$\rangle$, $\langle$G20,R04$\rangle$, $\langle$G22,R02$\rangle$, $\langle$G23,R01$\rangle$\}\\
+Vis(Q,Gepaeck,G.GepaeckID) = \{G06, G12, G13, G16, G18, G19, G20, G22, G23\}\\
+BuildBF(4) = BF\\
+ProbeBF(BF,3) = \{$\langle$G18,R07$\rangle$, $\langle$G19,R04$\rangle$, $\langle$G20,R04$\rangle$, $\langle$G22,R02$\rangle$, $\langle$G23,R01$\rangle$\}\\
+Project(6,R.ReisenderID) = \{R07, R04, R04, R02, R01$\rangle$\}\\
+CI(P.Geburtsdatum,<1956-08-01,B.BuchungsID) = \{\{\}, \{B08, B11, B18, B19, B20, B21\}, \{\}, \{\}\}\\
+Merge($\bigcup 8$) = \{B08, B11, B18, B19, B20, B21\}\\
+SJoin(9,$\text{SKT}_{\text{Buchungen}}$,R.ReisenderID) = \{R07, R03, R13, R05, R04, R11\}\\
+Merge($7\cap 10$) = \{R04, R07\}\\
+BuildBF(11) = BF\\
+Vis(Q,Reisende,R.ReisenderID) = \{R02, R03, R04, R05, R06, R08, R09, R10, R13\}\\
+ProbeBF(BF,13) = \{R04\}\\
+Vis(Q,Reisende,$\langle$R.ReisenderID,R.Vorname,R.Name$\rangle$) = \{$\langle$R02,Mike,Bannister$\rangle$, $\langle$R03,Francis,Chichester$\rangle$, $\langle$R04,Doru,Davidovici$\rangle$, $\langle$R05,Eugene Burton,Ely$\rangle$, $\langle$R06,Charles,Fern$\rangle$, $\langle$R08,Ernst,Heinkel$\rangle$, $\langle$R09,Tony,Jannus$\rangle$, $\langle$R10,Algene,Key$\rangle$, $\langle$R13,Charles,Nungesser$\rangle$\}\\
+MJoin(15,14,$\langle$R.ReisenderID,R.Staatsbuergerschaft$\rangle$,11) = \{$\langle$R04,Doru,Davidovici,Romänisch$\rangle$\}
