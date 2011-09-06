@@ -7,19 +7,37 @@ In dieser kurzen Arbeit wollen wir anhand eines selbst gewählten Beispiels, die
 
 Wir wollen uns in dieser kurzen Arbeit mit dem Ablauf und d 
 
-
+\chapter{Einführung}
 Alternative 2:
 
-In der Vorlesung Techniken und Konzepte zum Schutz der Privatsphäre haben wir uns mit verschiedenen Techniken und Verfahren zur Anonymisierung von sensitiven Daten und deren Sicherung beschäftigt. Ein hierbei behandeltes Konzept ist die sogenannte "GhostDB". \footnote{GhostDB: Hiding Data from Prying Eyes }
+In der Vorlesung Techniken und Konzepte zum Schutz der Privatsphäre haben wir uns mit verschiedenen Techniken und Verfahren zur Anonymisierung von sensitiven Daten und deren Sicherung beschäftigt. Eine hierbei behandelte Idee ist die sogenannte "GhostDB". \footnote{GhostDB: Hiding Data from Prying Eyes }
 \footnote{GhostDB: Querying Visible and Hidden Data Without Leaks}
 \footnote{Vortrag: GhostDB: Hiding Data from Prying Eyes (Technology) }
 
+Das gesamte System, welches die "GhostDB" beschreibt basiert auf verschiedenen Komponenten und ist sehr umfangreich. Wir beschränken uns daher in dieser Arbeit auf das sogenannte Post- und Prefiltering. Beide Verfahren werden bei der Abarbeitung von Anfragen eingesetzt um diese möglichst effizient und schnell zu beantworten. Wir werden diese Techniken kurz vorstellen und anhand eines kleinen Beispieles ihre Funktionsweise erklären.
+Im folgenden erklären wir kurz unsere Datenbasis, da wir die Datenstrukturen\textbf{TODO} wie "Subtree Key Table" oder "Climbing Index" nach ihrer kurzen Einführung mit Beispielen belegen und diese einfacher zu verstehen sind, wenn die Basis auf der sie basieren bekannt ist.
+	
+	
+\chapter{Datenbasis}
+In den Papern zu diesem Thema wurden meist Beispiele aus dem medizinischen Bereich gewählt, mit Ärzten, Patienten Untersuchen, etc. Wir haben uns nach reiflicher Überlegung für den Bereich des Flugverkehrs entschieden. In diesem Feld existieren viele verschiedene Daten, die je Angreifermodell und Nutzer zu schützen sind. Eine Fluggesellschaft ist z.B. daran interessiert, zu wissen welche Reisende
+ihr Kontigent an Gepäckstückem bzw. mitzuführendes Gepäckgewicht überschreiten um ihnen beim nächsten Mal ein teureres Ticket zu verkaufen bis hin zum Terroristen der erfahren möchte welcher Pilot ein bestimmtes Flugzeug fliegt und ob bestimmte Personen wie z.B. Polizisten mitfliegen.
+Die Herausforderung bestand erst einmal in der Suche nach dem aus unserer Sicht besten Datenmodell für dieses Szenario, welches nicht zu komplex ausfällt um den Rahmen dieser Arbeit nicht zu sprengen.Ein weiterer Augenmerk lag darauf, so wenig Daten wie möglich in den "sicheren" Bereich der späteren "GhostDB" zu verlagern ohne die Sicherheit der Daten zu gefährden.\textbf{(TODO)}. 
 
 
+\textbf{TODO: Hier kommt das Bild mit dem Daenmodell hin}
 
-Das gesamte Ansatz der "GhostDB" basiert auf verschiedenen Verfahren, wobei wir uns in dieser Arbeit auf das Post- und Prefiltering beschränken wollen und dessen Funktionsweise anhand eines selbst gewählten Beispieles
-erläutern wollen.
-In den entsprechenden Papern zu diesem Themen wurden meist Beispiele aus dem medizinischen Bereich gewählt, mit Ärzten, Patienten und Untersuchen, etc. Wir haben uns nach reiflicher Überlegung für den Bereich des Flugverkehrs entschieden. In diesem Feld existieren viele verschiedene sensible Daten, die je nach Nutzung anders ausfallen. Eine Fluggesellschaft ist z.B. daran interessiert welcher Reisender zu viel Gepäck mitnimmt um ihn beim nächsten Mal ein teureres Ticket zu verkaufen bis hin zum Terroristen der erfahren möchte welcher Pilot ein bestimmtes Flugzeug fliegt und ob bestimmte Personen wie Polizisten mitfliegen.
-Die Herausforderung bestand daher erst einmal in der Suche nach dem aus unserer Sicht besten Datenmodell für dieses Szenario, welches nicht zu groß ausfällt um den Rahmen dieser arbeit nicht zu sprengen und das möglichst wenig Angriffszenarios zulässt.
-Unser Datenmodell sieht wie folgt aus:
+\chapter{Datenstrukturen TODO: bessere Erklärung}
 
+Das Post- und Prefiltering benutzen verschiedene Datenstukturen um optimal arbeiten zu können.
+Eine dieser Strukturen ist der "Subtree Key Table". Hierbei enthält die Wurzeltabelle  alle ID's der nachfolgenden Tabellen, ???
+\textbf{TODO: SKT und CI beschreiben}
+Eine weitere Struktur ist der "Climbing Index"......
+
+\chapter{Warum Filter ?}
+Die "GhostDB" hat das Problem, dass alle Berechnungen die Bezug auf die unsichtbaren Daten auf dem "SmartUSB"-Stick nehmen in diesem berechnet werden müssen. Da der Speicher für die Ausführung aber begrenzt ist entsteht hier ein Geschwindigkeitsproblem, da alle Daten in den Speicher geladen werden müssen und weiterhin in diesem auch Platz für das Ergebnis vorhanden sein muss. Die Autoren der Paper haben daher eine Möglichkeit gesucht die Menge an Informationen, die in den Speicher geladen werden müssen um das Ergebnis zu erhalten zu verringern. Das Ergebnis waren die Post-, Pre- und Crossfilter. Beim Prefiltering \textbf{???} wird versucht alle Selektionen zuerst auszuführen.
+Es wird versucht so viele Selektionen wie möglich auf dem unsicheren Bereich auszuführen, da die Ressourcen hier nicht so beschränkt sind, wie im sicheren Bereich. Selektionen auf Daten des sicheren Bereiches können allerdings auch nur in diesem ausgeführt werden. Für die Selektionen werden nach Möglichkeit "Climbing" Indizes verwendet.
+Die danach folgenden Joins werden dann im sicheren Bereich ausgeführt, hierbei wird dann ein "Subtree Key Table" verwendet.
+\textbf{TODO: zu oft Bereich benutzt}
+Beim Postfiltering wird ein anderes Verfahren verwendet. Es wird hier zuerst der Join des sicheren Bereichs ausgeführt mittels "Subtree Key Table". Im folgenden werden die möglichen Selektionen des unsicheren Bereiches durch erzeugen von Bloomfilter vermittelt.
+\textbf{TODO: hier könnte noch mehr kommen}
+Beim Crossfiltering wiederum werden beide Techniken miteinander kombiniert um noch bessere Ergebnisse zu erzielen.
