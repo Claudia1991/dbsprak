@@ -1,43 +1,144 @@
 
 Alternative1:
 
-In dieser kurzen Arbeit wollen wir anhand eines selbst gewÃ¤hlten Beispiels, die in der Vorlesung behandelten Techniken des Pre- und Postfilterings anschaulich Darstellen. Die theoretischen Grundlagen hierzu basieren auf dem Themenkomplex der sogenannten "GhostDB". \footnote{GhostDB: Hiding Data from Prying Eyes }
+In dieser kurzen Arbeit wollen wir anhand eines selbst gewählten Beispiels, die in der Vorlesung behandelten Techniken des Pre- und Postfilterings anschaulich Darstellen. Die theoretischen Grundlagen hierzu basieren auf dem Themenkomplex der sogenannten "GhostDB". \footnote{GhostDB: Hiding Data from Prying Eyes }
 \footnote{GhostDB: Querying Visible and Hidden Data Without Leaks}
 \footnote{Vortrag: GhostDB: Hiding Data from Prying Eyes (Technology) }
 
-Wir wollen uns in dieser kurzen Arbeit mit dem Ablauf und d 
+Wir wollen uns in dieser kurzen Arbeit mit dem Ablauf und dem 
 
-\chapter{EinfÃ¼hrung}
+\chapter{Einführung}
 Alternative 2:
 
-In der Vorlesung Techniken und Konzepte zum Schutz der PrivatsphÃ¤re haben wir uns mit verschiedenen Techniken und Verfahren zur Anonymisierung von sensitiven Daten und deren Sicherung beschÃ¤ftigt. Eine hierbei behandelte Idee ist die sogenannte "GhostDB". \footnote{GhostDB: Hiding Data from Prying Eyes }
+In der Vorlesung Techniken und Konzepte zum Schutz der Privatsphäre haben wir uns mit verschiedenen Techniken und Verfahren zur Anonymisierung von sensitiven Daten und deren Sicherung beschäftigt. Eine hierbei behandelte Idee ist die sogenannte "GhostDB". \footnote{GhostDB: Hiding Data from Prying Eyes }
 \footnote{GhostDB: Querying Visible and Hidden Data Without Leaks}
 \footnote{Vortrag: GhostDB: Hiding Data from Prying Eyes (Technology) }
 
-Das gesamte System, welches die "GhostDB" beschreibt basiert auf verschiedenen Komponenten und ist sehr umfangreich. Wir beschrÃ¤nken uns daher in dieser Arbeit auf das sogenannte Post- und Prefiltering. Beide Verfahren werden bei der Abarbeitung von Anfragen eingesetzt um diese mÃ¶glichst effizient und schnell zu beantworten. Wir werden diese Techniken kurz vorstellen und anhand eines kleinen Beispieles ihre Funktionsweise erklÃ¤ren.
-Im folgenden erklÃ¤ren wir kurz unsere Datenbasis, da wir die Datenstrukturen\textbf{TODO} wie "Subtree Key Table" oder "Climbing Index" nach ihrer kurzen EinfÃ¼hrung mit Beispielen belegen und diese einfacher zu verstehen sind, wenn die Basis auf der sie basieren bekannt ist.
+Das gesamte System, welches die "GhostDB" beschreibt basiert auf verschiedenen Komponenten und ist sehr umfangreich. Wir beschränken uns daher in dieser Arbeit auf das sogenannte Post- und Prefiltering. Beide Verfahren werden bei der Abarbeitung von Anfragen eingesetzt um diese möglichst effizient und schnell zu beantworten. Wir werden diese Techniken kurz vorstellen und anhand eines kleinen Beispieles ihre Funktionsweise erklären.
+Im folgenden erklären wir kurz unsere Datenbasis, da wir die Datenstrukturen\textbf{TODO} wie "Subtree Key Table" oder "Climbing Index" nach ihrer kurzen Einführung mit Beispielen belegen und diese einfacher zu verstehen sind, wenn die Basis auf der sie basieren bekannt ist.
 	
 	
 \chapter{Datenbasis}
-In den Papern zu diesem Thema wurden meist Beispiele aus dem medizinischen Bereich gewÃ¤hlt, mit Ã„rzten, Patienten Untersuchen, etc. Wir haben uns nach reiflicher Ãœberlegung fÃ¼r den Bereich des Flugverkehrs entschieden. In diesem Feld existieren viele verschiedene Daten, die je Angreifermodell und Nutzer zu schÃ¼tzen sind. Eine Fluggesellschaft ist z.B. daran interessiert, zu wissen welche Reisende
-ihr Kontigent an GepÃ¤ckstÃ¼ckem bzw. mitzufÃ¼hrendes GepÃ¤ckgewicht Ã¼berschreiten um ihnen beim nÃ¤chsten Mal ein teureres Ticket zu verkaufen bis hin zum Terroristen der erfahren mÃ¶chte welcher Pilot ein bestimmtes Flugzeug fliegt und ob bestimmte Personen wie z.B. Polizisten mitfliegen.
-Die Herausforderung bestand erst einmal in der Suche nach dem aus unserer Sicht besten Datenmodell fÃ¼r dieses Szenario, welches nicht zu komplex ausfÃ¤llt um den Rahmen dieser Arbeit nicht zu sprengen.Ein weiterer Augenmerk lag darauf, so wenig Daten wie mÃ¶glich in den "sicheren" Bereich der spÃ¤teren "GhostDB" zu verlagern ohne die Sicherheit der Daten zu gefÃ¤hrden.\textbf{(TODO)}. 
+In den Papern zu diesem Thema wurden meist Beispiele aus dem medizinischen Bereich gewählt, mit Ärzten, Patienten Untersuchen, etc. Wir haben uns nach reiflicher Überlegung für den Bereich des Flugverkehrs entschieden. In diesem Feld existieren viele verschiedene Daten, die je Angreifermodell und Nutzer zu schützen sind. Eine Fluggesellschaft ist z.B. daran interessiert, zu wissen welche Reisende
+ihr Kontigent an Gepäckstückem bzw. mitzuführendes Gepäckgewicht überschreiten um ihnen beim nächsten Mal ein teureres Ticket zu verkaufen bis hin zum Terroristen der erfahren möchte welcher Pilot ein bestimmtes Flugzeug fliegt und ob bestimmte Personen wie z.B. Polizisten mitfliegen.
+Die Herausforderung bestand erst einmal in der Suche nach dem aus unserer Sicht besten Datenmodell für dieses Szenario, welches nicht zu komplex ausfällt um den Rahmen dieser Arbeit nicht zu sprengen.Ein weiterer Augenmerk lag darauf, so wenig Daten wie möglich in den "sicheren" Bereich der späteren "GhostDB" zu verlagern ohne die Sicherheit der Daten zu gefährden.\textbf{(TODO)}. 
 
 
-\textbf{TODO: Hier kommt das Bild mit dem Daenmodell hin}
+\textbf{TODO: bessere Skalierung für das Bild wählen}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=0.9\textwidth]{img/Datenmodell.jpg}
+  \caption{Datenmodell}
+  \label{fig:Datenmodell}
+\end{figure}
 
-\chapter{Datenstrukturen TODO: bessere ErklÃ¤rung}
+\chapter{Datenstrukturen TODO: bessere Erklärung}
 
-Das Post- und Prefiltering benutzen verschiedene Datenstukturen um optimal arbeiten zu kÃ¶nnen.
-Eine dieser Strukturen ist der "Subtree Key Table". Hierbei enthÃ¤lt die Wurzeltabelle  alle ID's der nachfolgenden Tabellen, ???
+Das Post- und Prefiltering benutzen verschiedene Datenstukturen um optimal arbeiten zu können.
+Eine dieser Strukturen ist der "Subtree Key Table". Hierbei enthält die Wurzeltabelle  alle ID's der nachfolgenden Tabellen, ???
 \textbf{TODO: SKT und CI beschreiben}
 Eine weitere Struktur ist der "Climbing Index"......
 
 \chapter{Warum Filter ?}
-Die "GhostDB" hat das Problem, dass alle Berechnungen die Bezug auf die unsichtbaren Daten auf dem "SmartUSB"-Stick nehmen in diesem berechnet werden mÃ¼ssen. Da der Speicher fÃ¼r die AusfÃ¼hrung aber begrenzt ist entsteht hier ein Geschwindigkeitsproblem, da alle Daten in den Speicher geladen werden mÃ¼ssen und weiterhin in diesem auch Platz fÃ¼r das Ergebnis vorhanden sein muss. Die Autoren der Paper haben daher eine MÃ¶glichkeit gesucht die Menge an Informationen, die in den Speicher geladen werden mÃ¼ssen um das Ergebnis zu erhalten zu verringern. Das Ergebnis waren die Post-, Pre- und Crossfilter. Beim Prefiltering \textbf{???} wird versucht alle Selektionen zuerst auszufÃ¼hren.
-Es wird versucht so viele Selektionen wie mÃ¶glich auf dem unsicheren Bereich auszufÃ¼hren, da die Ressourcen hier nicht so beschrÃ¤nkt sind, wie im sicheren Bereich. Selektionen auf Daten des sicheren Bereiches kÃ¶nnen allerdings auch nur in diesem ausgefÃ¼hrt werden. FÃ¼r die Selektionen werden nach MÃ¶glichkeit "Climbing" Indizes verwendet.
-Die danach folgenden Joins werden dann im sicheren Bereich ausgefÃ¼hrt, hierbei wird dann ein "Subtree Key Table" verwendet.
+Die "GhostDB" hat das Problem, dass alle Berechnungen die Bezug auf die unsichtbaren Daten auf dem "SmartUSB"-Stick nehmen in diesem berechnet werden müssen. Da der Speicher für die Ausführung aber begrenzt ist entsteht hier ein Geschwindigkeitsproblem, da alle Daten in den Speicher geladen werden müssen und weiterhin in diesem auch Platz für das Ergebnis vorhanden sein muss. Die Autoren der Paper haben daher eine Möglichkeit gesucht die Menge an Informationen, die in den Speicher geladen werden müssen um das Ergebnis zu erhalten zu verringern. Das Ergebnis waren die Post-, Pre- und Crossfilter.
+
+Beim Prefiltering \textbf{???} wird versucht alle Selektionen zuerst auszuführen.
+Es wird versucht so viele Selektionen wie möglich auf dem unsicheren Bereich auszuführen, da die Ressourcen hier nicht so beschränkt sind, wie im sicheren Bereich. Selektionen auf Daten des sicheren Bereiches können allerdings auch nur in diesem ausgeführt werden. Für die Selektionen werden nach Möglichkeit "Climbing" Indizes verwendet.
+Die danach folgenden Joins werden dann im sicheren Bereich ausgeführt, hierbei wird dann ein "Subtree Key Table" verwendet.
 \textbf{TODO: zu oft Bereich benutzt}
-Beim Postfiltering wird ein anderes Verfahren verwendet. Es wird hier zuerst der Join des sicheren Bereichs ausgefÃ¼hrt mittels "Subtree Key Table". Im folgenden werden die mÃ¶glichen Selektionen des unsicheren Bereiches durch erzeugen von Bloomfilter vermittelt.
-\textbf{TODO: hier kÃ¶nnte noch mehr kommen}
+Beim Postfiltering wird ein anderes Verfahren verwendet. Es wird hier zuerst der Join des sicheren Bereichs ausgeführt mittels "Subtree Key Table". Im folgenden werden die möglichen Selektionen des unsicheren Bereiches durch erzeugen von Bloomfilter vermittelt.
+\textbf{TODO: hier könnte noch mehr kommen}
 Beim Crossfiltering wiederum werden beide Techniken miteinander kombiniert um noch bessere Ergebnisse zu erzielen.
+
+
+\chapter{Anwendung}
+
+Die folgenden Beispiel zum Pre- und Postfiltering basieren auf der oben schon vorgestellten Datenbasis und der folgenden Anfrage:
+
+
+\begin{Verbatim}[commandchars=\\\{\}]
+SELECT R.ReisenderID, R.Vorname, R.Name, R.Staatsbuergerschaft
+FROM Buchungen B, Gepaeck G, Fluege F, Reisende R, Piloten P
+WHERE R.Geschlecht='M' AND P.Geburtsdatum<1956-08-01 AND G.Gewicht>20
+    AND B.Flug=F.FlugID AND B.Reisender=R.ReisenderID
+    AND G.Flug=F.FlugID AND G.Reisender=R.ReisenderID
+    AND F.Pilot=P.PilotID
+\end{Verbatim}
+
+
+
+
+\subsection{Prefiltering}
+
+Beim Prefiltering-Verfahren kommt es wie oben schon erwähnt darauf an die Selektionen der Anfrage (Query) \textbf{TODO: Was ist besser Query und Anfrage verwenden oder jeweils nur eines der beiden Wörter???} so früh wie möglich auszuführen um weniger Daten für die wietere Verarbeitung zu haben. In unserem Beispiel kommen drei Selektionen vor. Diese sind die Auswahl des Geschlechts des Reisenden, das Geburtsdatum des Piloten und das Gewicht des Gepäcks. In der Regel ist eine Selektion immer dann am schnellsten, wenn Sie einen Bereich betrifft der nicht versteckt ist, da hier alle Ressourcen der unsicheren Plattform benutzt werden kann. Diese sind meist um ein vielfaches höher als die des "SmartUSB"-Sticks. Aus diesem Grund beginnen wir mit der Auswahl des Gewichts. Wir wollen alle GepaeckIds herausfiltern für die gilt, dass das ihnen zugeordnetes Gewicht größer als 20 Kilogramm ist. Dies wären die folgenden IDs(siehe Tabelle 7.8):  G06, G12, G13, G16, G18, G19, G20, G22, G23.
+\textbf{TODO: hier sollte irgendwie erwähnt werden das die GIds zur sicheren Plattform übertragen werden}
+Der nächste naheliegende Schritt wäre die Auswahl des Geschlechts der Reisenden, da diese Eigenschaft nicht versteckt ist, aus später noch zu erläuternden Gründen machen wir dies aber erst einmal nicht. 
+Es bleibt demzufolge nur noch die Selektion auf den Piloten. Diese Eigenschaft ist versteckt und muss daher auf der sicheren Plattform ausgeführt werden.
+Als Ergebnis würden wir alle PilotenIds erhalten,deren Geburtstag vor dem 01.08.1956 liegt. Mit dieser Information kann aber nur schlecht weitergearbeitet werden, da wir bis jetzt nur GepaeckIds haben. Aus diesem Grund kommt wird ein "ClimbingIndex" auf dem Attribut Geburtsdatum verwendet(siehe Tabelle 9.1) und auf diesem wird dann die Selektion ausgeführt. Als Ergebnis werden folgende GepaeckIds im sicheren Bereich vorgehalten:
+G07, G18, G19, G20, G25.
+Die nun vorhandenen IDs können mittels der Schnittmenge verringert werden um den Aufwand für den nachfolgenden Join \textbf{TODO: darf man hier Join erwähnen oder sollte es SJoin heißen} zu verringern.
+Als Ergebnis bekommt man: G18, G19, G20.
+
+\textbf{TODO: bessere Skalierung für das Bild wählen}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1\textwidth]{img/Pre1.jpg}
+  \caption{Teilergebnis 1}
+  \label{fig: Teilergebnis 1}
+\end{figure}
+
+Im Nachfolgenden müssen alle "Statements" in der "WHERE-Clause" erfüllt werden. Dies geschieht unter zu Hilfenahme von Semi-Joins und diese werden wiederum durch "Subtree Key Tables"(SKT) unterstützt. Die "Where Clause", die wir berechnen wollen ist folgende:  G.Reisender=R.ReisenderID . Im SKT für Gepaeck (Tabelle 8.2) werden nun die ReisendenIds zu den entsprechenden GepaeckIds herausgesucht, dies geschieht mittels SJoin.\textbf{TODO: kann man das so schreiben ??}
+Da wir nun ReisendeIds haben kann die nächste Bedingung in Angriff genommen werden: B.Reisender=R.ReisenderID. Hierfür werden ReisendeIds auf Basis der BuchungsIds benötigt. Die Selektion mittels GepäckIds entfällt da diese keine direkte Verbindung zu den Buchungen haben. Da wir schon die Piloten vorhin als selektives Mittel verwendet haben tun wir dies diesmal auch wieder mittels eines "Climbing Indexes" auf den BuchungsIds. Da der "Climbing Index" als Ergebnis eine Liste von Listen liefert, wir für den SKT aber nur eine Liste verwenden können müssen wir die erhaltenen Listen in der Liste mittels Vereinigung zusammenführen. Als Ergebnis würden wir folgendes Erhalten: B08, B11, B18, B19, B20, B21.
+
+
+\textbf{TODO: bessere Skalierung für das Bild wählen}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1\textwidth]{img/Pre2.jpg}
+  \caption{Teilergebnis 2}
+  \label{fig: Teilergebnis 2}
+\end{figure}
+
+Die so erhaltenen BuchungsIds werden analog zu den GepäckIds im vorherigen Schritt benutzt um ReisendeIds. Um beide Bedingungen zu erfüllen muss nun noch der Durchschnitt der beiden ReisendenIds erzielt werden, damit wären beide Bedingungen erfüllt. Nit diesem Ergebnis kann dann weiter gearbeitet werden.
+
+
+\textbf{TODO: bessere Skalierung für das Bild wählen}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1\textwidth]{img/Pre3.jpg}
+  \caption{Teilergebnis 3}
+  \label{fig: Teilergebnis 3}
+\end{figure}
+
+Auf dieser entstandenen Datenbasis wird nun ein Bloomfilter gebaut, der für die noch nicht angewandte Selektion verwendet wird. 
+Die fehlende Selektion ist diese: R.Geschlecht='M'. Die Selektion wird erst jetzt angewandt, da Sie sonst vorher in den beiden Joins die zu bearbeitenden Datenmengen erhöht hätte. Durch den späteren Einsatz können die Datenmengen geringer gehalten werden udn der Rechenaufwand ist somit geringer.
+
+\textbf{TODO: bessere Skalierung für das Bild wählen}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1\textwidth]{img/Pre4.jpg}
+  \caption{Teilergebnis 4}
+  \label{fig: Teilergebnis 4}
+\end{figure}
+
+Als Abschluss müssen nur noch die entsprechenden Projektionen angewendet werden, dies geschieht mittels eines MJoins. Dieser benötigt aber nochmals alle ReisendenIds mit der Eigenschaft das das Geschlecht männlich ist. Bei dieser Anfrage werden aber nicht nur die ReisendenIds benötigt, sondern auch die Attribute für Vorname und Name.
+Als Ergebnis kann dann folgendes ausgegeben werden:  R04,Doru,Davidovici,Romänisch 
+
+\textbf{TODO: bessere Skalierung für das Bild wählen}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1\textwidth]{img/Pre5.jpg}
+  \caption{Teilergebnis 5}
+  \label{fig: Teilergebnis 5}
+\end{figure}
+ 
+
+Der gesamte zusammengesetzte Plan sieht dann wie folgt aus:
+\textbf{TODO: bessere Skalierung für das Bild wählen}
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1\textwidth]{img/Pre-Filtering.jpg}
+  \caption{Gesamtplan}
+  \label{fig: Gesamtplan}
+\end{figure}
+ 
