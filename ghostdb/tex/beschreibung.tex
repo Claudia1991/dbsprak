@@ -4,21 +4,6 @@ In der Vorlesung Techniken und Konzepte zum Schutz der Privatsphäre haben wir un
 
 Das gesamte System, welches die ``GhostDB'' umfasst basiert auf verschiedenen Komponenten und ist sehr umfangreich. Wir beschränken uns daher in dieser Arbeit auf das sogenannte Post- und Prefiltering. Beide Verfahren werden bei der Abarbeitung von Anfragen eingesetzt um diese möglichst effizient und schnell zu beantworten. Wir werden diese Techniken kurz vorstellen und anhand eines kleinen Beispieles ihre Funktionsweise erklären.
 
-Im folgenden wollen wir eine kurze Einführung in unsere Datenbasis geben um später auf diese zurückgreifen zu können.	
-	
-\chapter{Datenbasis}
-
-In den Papern zu diesem Thema wurden meist Beispiele aus dem medizinischen Bereich gewählt mit Ärzten, Patienten, Untersuchungen etc. Wir haben uns nach reiflicher Überlegung für den Bereich des Flugverkehrs entschieden. In diesem Feld existieren viele verschiedene Daten, die je nach Angreifermodell und Nutzer zu schützen sind. Eine Fluggesellschaft ist zum Beispiel daran interessiert, welche Reisende ihr Kontigent an Gepäckstückem beziehungsweise mitzuführendes Gepäckgewicht überschreiten, um ihnen beim nächsten Flug ein teureres Ticket verkaufen zu können. Auf die Spitze getrieben möchte ein Terrorist in Erfahrung bringen, welcher Pilot ein bestimmtes Flugzeug fliegt und ob bestimmte Personen, wie zum Beispiel Polizisten, im Flugzeug sitzen.
-
-Die Herausforderung bestand erst einmal in der Suche nach dem aus unserer Sicht besten Datenmodell für dieses Szenario, welches nicht zu komplex ausfällt um den Rahmen dieser Arbeit nicht zu sprengen. Ein weiterer Augenmerk lag darauf, so wenig Daten wie möglich in den ``sicheren'' Bereich der späteren ``GhostDB'' zu verlagern ohne die Sicherheit der Daten zu gefährden.\textbf{(TODO: noch mal durchlesen, gefällt mir noch nicht von der Formulierung)}.
-
-\begin{figure}[htb]
-  \centering%
-  \includegraphics[width=0.8\linewidth]{img/Datenmodell.pdf}%
-  \caption{Datenmodell}
-  \label{fig:Datenmodell}
-\end{figure}%
-
 \chapter{Datenstrukturen TODO: bessere Erklärung}
 
 Um im Laufe der Erklärungen zu den verschiedenen Methoden einen Ablaufplan für eine Anfrage auf der ``GhostDB'' zu erstellen werden verschiedenen Datenstrukturen benötigt. Einige von ihnen wollen wir kurz vorstellen.
