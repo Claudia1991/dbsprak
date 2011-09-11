@@ -77,26 +77,21 @@ Fügt man die einzelnen Schritte zusammen entsteht folgender Ausführungsplan für 
 
 \subsection{Pre-Filtering Funktionsaufrufe}
 
-%\begin{Verbatim}[commandchars=\\\{\}]
-\begin{enumerate}
-
-
-\item Vis(Q,Gepaeck,G.GepaeckID) = \{G06, G12, G13, G16, G18, G19, G20, G22, G23\}\\
-\item CI(P.Geburtsdatum,<1956-08-01,G.GepaeckID) = \{\{\}, \{G07, G18, G19, G20, G25\}, \{\}, \{\}\}\\
-\item Merge($(\bigcup 2)\cap 1$) = \{G18, G19, G20\}\\
-\item  SJoin(3,$\text{SKT}_{\text{Gepaeck}}$,R.ReisenderID) = \{R07, R04, R04\}\\
-\item  CI(P.Geburtsdatum,<1956-08-01,B.BuchungsID) = \{\{\}, \{B08, B11, B18, B19, B20, B21\}, \{\}, \{\}\}\\
-\item  Merge($\bigcup 5$) = \{B08, B11, B18, B19, B20, B21\}\\
-\item SJoin(6,$\text{SKT}_{\text{Buchungen}}$,R.ReisenderID) = \{R07, R03, R13, R05, R04, R11\}\\
-\item Merge($4\cap 7$) = \{R04, R07\}\\
-\item BuildBF(8) = BF\\
-\item Vis(Q,Reisende,R.ReisenderID) = \{R02, R03, R04, R05, R06, R08, R09, R10, R13\}\\
-\item ProbeBF(BF,10) = \{R04\}\\
-\item Vis(Q,Reisende,$\langle$R.ReisenderID,R.Vorname,R.Name$\rangle$) = \{$\langle$R02,Mike,Bannister$\rangle$, $\langle$R03,Francis,Chichester$\rangle$, $\langle$R04,Doru,Davidovici$\rangle$, $\langle$R05,Eugene Burton,Ely$\rangle$, $\langle$R06,Charles,Fern$\rangle$, $\langle$R08,Ernst,Heinkel$\rangle$, $\langle$R09,Tony,Jannus$\rangle$, $\langle$R10,Algene,Key$\rangle$, $\langle$R13,Charles,Nungesser$\rangle$\}\\
-
-\item MJoin(12,11,$\langle$R.ReisenderID,R.Staatsbuergerschaft$\rangle$,9) = \{$\langle$R04,Doru,Davidovici,Romänisch$\rangle$\}
-\end{enumerate}
-%\end{Verbatim}
+\begin{Verbatim}[commandchars=\\\{\},numbers=left]
+Vis(Q,Gepaeck,G.GepaeckID) = \{G06, G12, G13, G16, G18, G19, G20, G22, G23\}\\
+CI(P.Geburtsdatum,<1956-08-01,G.GepaeckID) = \{\{\}, \{G07, G18, G19, G20, G25\}, \{\}, \{\}\}\\
+Merge(\begin{math}(\bigcup 2)\cap 1\end{math}) = \{G18, G19, G20\}\\
+SJoin(3,\begin{math}\text{SKT}_{\text{Gepaeck}}\end{math},R.ReisenderID) = \{R07, R04, R04\}\\
+CI(P.Geburtsdatum,<1956-08-01,B.BuchungsID) = \{\{\}, \{B08, B11, B18, B19, B20, B21\}, \{\}, \{\}\}\\
+Merge(\begin{math}\bigcup 5\end{math}) = \{B08, B11, B18, B19, B20, B21\}\\
+SJoin(6,\begin{math}\text{SKT}_{\text{Buchungen}}\end{math},R.ReisenderID) = \{R07, R03, R13, R05, R04, R11\}\\
+Merge(\begin{math}4\cap 7\end{math}) = \{R04, R07\}\\
+BuildBF(8) = BF\\
+Vis(Q,Reisende,R.ReisenderID) = \{R02, R03, R04, R05, R06, R08, R09, R10, R13\}\\
+ProbeBF(BF,10) = \{R04\}\\
+Vis(Q,Reisende,\begin{math}\langle\end{math}R.ReisenderID,R.Vorname,R.Name\begin{math}\rangle\end{math}) = \{\begin{math}\langle\end{math}R02,Mike,Bannister\begin{math}\rangle\end{math}, \begin{math}\langle\end{math}R03,Francis,Chichester\begin{math}\rangle\end{math}, \begin{math}\langle\end{math}R04,Doru,Davidovici\begin{math}\rangle\end{math}, \begin{math}\langle\end{math}R05,Eugene Burton,Ely\begin{math}\rangle\end{math}, \begin{math}\langle\end{math}R06,Charles,Fern\begin{math}\rangle\end{math}, \begin{math}\langle\end{math}R08,Ernst,Heinkel\begin{math}\rangle\end{math}, \begin{math}\langle\end{math}R09,Tony,Jannus\begin{math}\rangle\end{math}, \begin{math}\langle\end{math}R10,Algene,Key\begin{math}\rangle\end{math}, \begin{math}\langle\end{math}R13,Charles,Nungesser\begin{math}\rangle\end{math}\}\\
+MJoin(12,11,\begin{math}\langle\end{math}R.ReisenderID,R.Staatsbuergerschaft\begin{math}\rangle\end{math},9) = \{\begin{math}\langle\end{math}R04,Doru,Davidovici,Romänisch\begin{math}\rangle\end{math}\}
+\end{Verbatim}
 
 Auf den ersten Blick scheint die Lösung des Prefilterings optimal zu sein, da man schon im Vorfeld viele Daten \textbf{TODO: ist Daten das Richtige Wort ???} aus der Berechnung der Joins herausnehmen kann und somit den Aufwand verringert.
 
