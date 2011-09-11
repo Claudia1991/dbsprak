@@ -11,7 +11,6 @@ WHERE R.Geschlecht='M' AND P.Geburtsdatum<1956-08-01 AND G.Gewicht>20
 
 Die genauen Funktionsaufrufe für den gesamten Plan sind jeweils am Ende der Kapitel zu finden.
 \section{Prefiltering}
-
 Die Idee beim Prefiltering ist, dass alle Selektionen zuerst ausgeführt werden um die gesamte Datenmenge die bei Joins und Mergeoperationen verwendet werden so gering wie möglich zu halten. Weiterhin wird versucht so viele Selektionen wie möglich auf dem unsicheren Bereich auszuführen, da die Ressourcen hier nicht so beschränkt sind, wie im sicheren Bereich. Selektionen auf Daten die den sicheren Teil der ``GhostDB'' betreffen können allerdings auch nur in diesem ausgeführt werden. Für die Selektionen werden nach Möglichkeit ``Climbing Indices'' verwendet. Die danach folgenden Joins werden dann im sicheren Bereich ausgeführt, hierbei wird meist ein ``Subtree Key Table'' verwendet.
 
 Es wird mit der Auswahl des Gewichts begonnen. Es sollen alle Gepäckstücke gefunden werden, die schwerer als 20kg sind: {G06, G12, G13, G16, G18, G19, G20, G22, G23}. Diese \textit{GepaeckIDs} werden der sicheren Plattform übergeben. Es folgt die Selektion auf den Geburtsdaten der Piloten. Diese Eigenschaft ist versteckt und muss daher auf der sicheren Plattform ausgeführt werden. Es wird ein ``Climbing Index'' verwendet, um \textit{GepaeckIDs} zu erhalten:  \{\{\}, \{G07, G18, G19, G20, G25\}, \{\}, \{\}\}. Die beiden Listen werden mittels Merge zusammengeführt: \{G18, G19, G20\}
@@ -69,7 +68,6 @@ Fügt man die einzelnen Schritte zusammen entsteht folgender Ausführungsplan für 
 \end{figure}
 
 \subsection{Pre-Filtering Funktionsaufrufe}
-
 \begin{enumerate}[1]
 \item Vis(Q,Gepaeck,G.GepaeckID) = \{G06, G12, G13, G16, G18, G19, G20, G22, G23\}
 \item CI(P.Geburtsdatum,<1956-08-01,G.GepaeckID) = \{\{\}, \{G07, G18, G19, G20, G25\}, \{\}, \{\}\}
@@ -87,15 +85,12 @@ $\langle$R03,Francis,Chichester$\rangle$, $\langle$R04,Doru,Davidovici$\rangle$,
 \item MJoin(12,11,$\langle$R.ReisenderID,R.Staatsbuergerschaft$\rangle$,8) = \{$\langle$R04,Doru,Davidovici,Romänisch$\rangle$\}
 \end{enumerate}
 
-Das Problem an dieser Strategie ist allerdings, dass bei zu geringer Selektivität Selektionen zu wenige Tupel im Vorfeld aussortiert werden und somit ein großer Vorteil des Prefilterings verschwindet. Eine andere Alternative, die dem eben angesprochenen Effekt nicht so stark unterliegt ist das Postfiltering.
+Das Problem an dieser Strategie ist allerdings, dass bei zu geringer Selektivität der sichtbaren Selektionen zu wenige Tupel im Vorfeld aussortiert werden und somit ein großer Vorteil des Prefilterings verschwindet. Eine Alternative, die diesem Effekt entgegen wirkt ist das Postfiltering.
 
 \section{Postfiltering}
+Beim Postfiltering werden zuerst alle Selektionen ausgeführt und mittels Joins zusammengefasst, die auf den sicheren Bereich zugreifen. Erst danach werden unter Verwendung von Bloom-Filtern die Selektionen des unsicheren Bereiches hinzugefügt.
 
-Beim Postfiltering wird ein anderes Verfahren verwendet. Es wird hier zuerst der Join auf dem sicheren Teil der ``GhostDB'' ausgeführt. Im folgenden werden die möglichen Selektionen des unsicheren Bereiches zu den erzeugten Ergebnissen hinzugefügt. Dies geschieht entweder durch das Erzeugen eines Bloom-Filters aus diesen Daten, der dann für die Filterung der bisherigen Ergebnisse benutzt wird oder genau umgekehrt. Im umgedrehten Fall wird der Bloom-Filter aus den vorhandenen Resultaten gebildet und die Daten der Selektion werden mit diesem gefiltert. Die übrig gebliebenen Daten werden dann weiterverabeitet.
-
-Beim Postfiltering werden zuerst alle Selektionen ausgeführt und mittels Join zusammengefasst, die auf den sicheren Bereich zugreifen. Erst danach werden durch ``Fuzzy Filtering''\footnote{GhostDB: Hiding Data from Prying Eyes(Technology) Vortrag} die Selektionen des unsicheren Bereiches hinzugefügt.
-
-Für unser Beispiel heißt dies, dass zuerst die Selektion auf dem Geburtsdatum des Piloten ausgeführt wird. Da wir mit der PilotID aber nicht ohne Weiteres weiterarbeiten können, verwenden wir hierfür den ``Climbing Index'' auf der GepaeckID und führen auf diesem Ergebnis eine Vereinigung aus, da wir nur eine Liste von GepaeckIDs für die Weiterverwendung benutzen können.
+Für unser Beispiel heißt dies, dass zuerst die Selektion auf dem Geburtsdatum des Piloten ausgeführt wird. Es wird der ``Climbing Index'' verwendet um \textit{GepackIDs} zu erhalten: \{\{\}, \{G07, G18, G19, G20, G25\}, \{\}, \{\}\}.
 
 \begin{figure}[H]
   \centering
@@ -104,7 +99,7 @@ Für unser Beispiel heißt dies, dass zuerst die Selektion auf dem Geburtsdatum de
   \label{fig:post1}
 \end{figure}
 
-Diese Selektion ist in unserem Beispiel die Einzige die auf den unsicheren Bereich zugreift. Nach dem Verfahren des Postfilterings werden diese IDs nun für einen Join benutzt. Als Ergebnis brauchen wir wiederum ReisendeIDs, da diese für die spätere Projektion notwendig sind. Um diese IDs zu erhalten bedienen wir uns wieder beim ``Subtree Key Table'' und Filtern uns somit alle ReisendeIDs heraus. Bei den Selektionen aus dem unsicheren Berich erhalten wir aber GepaeckIDs, daher gibt uns der Join auf unsere Anforderung hin eine Menge von Tupeln aus GepaeckID und dazu passender ReisendeID heraus.
+Es wird ein ``Subtree Key Table'' verwendet, um passende \textit{ReisndeIDs} zu berechnen: \{$\langle$G07,R11$\rangle$, $\langle$G18,R07$\rangle$, $\langle$G19,R04$\rangle$, $\langle$G20,R04$\rangle$, $\langle$G22,R02$\rangle$, $\langle$G23,R01$\rangle$\}
 
 \begin{figure}[H]
   \centering
@@ -113,11 +108,7 @@ Diese Selektion ist in unserem Beispiel die Einzige die auf den unsicheren Berei
   \label{fig:post2}
 \end{figure}
 
-Im nächsten Schritt kann nun die Selektion auf dem Gepäck, welches ein Gewicht größer als 20 Kilogramm hat geschehen. Um dies umzusetzen wird das ``Fuzzy Filtering'' benutzt. In unserem Fall ist es so definiert, das ein Bloomfilter über eine bestimmte Menge von Daten generiert und dann auf eine andere Menge angewendet wird. Man könnte diesen Filter eventuell auf das Ergebnis des Joins beziehen, da diese Ergebnisse aber im sicheren Bereich sind würden wir hier nur unnötig Ressourcen verbrauchen. Eine bessere Lösung ist es den Bloomfilter auf der Selektion der Daten des unsicheren Bereiches zu generieren, da hier mehr Resosurcen zur Verfügung stehen.
-
-Es wird also ein Bloomfilter auf dem Ergebnis von G.Gewicht>20 gebildet und auf folgende Daten des Joins angewendet:\{$\langle$G07,R11$\rangle$, $\langle$G18,R07$\rangle$, $\langle$G19,R04$\rangle$, $\langle$G20,R04$\rangle$, $\langle$G22,R02$\rangle$, $\langle$G23,R01$\rangle$\}.
-
-Hierbei ist zu beachten das nur die GepaeckIDs des Resultats betrachtet werden, da nur diese im Bloomfilter vorkommen. Auf der Ausgabe des Bloomfilters wird nachfolgend noch eine Projektion auf die ReisendeIDs vorgenommen, da wir die Tupel aus GepaeckID und ReisendeID nicht mehr für die nächsten Schritte benötigen. Wir erhalten folgende ReisendeIDs: \{R07, R04, R04, R02, R01\}
+Das unsichere Gerät liefert die Gepcäkstücke, die schwerer als 20 Kilogramm sind. Es wir dein Bloom-Filter erzeugt und auf das vorhandene Zwischenergebnis angewendet: \{$\langle$G07,R11$\rangle$, $\langle$G18,R07$\rangle$, $\langle$G19,R04$\rangle$, $\langle$G20,R04$\rangle$, $\langle$G22,R02$\rangle$, $\langle$G23,R01$\rangle$\}. Da die \textit{GepaeckIDs} nicht mehr benötigt werden, werden nur die \textit{ReisendeIDs} aufgehoben: \{R07, R04, R04, R02, R01\}
 
 \begin{figure}[H]
   \centering
@@ -126,9 +117,7 @@ Hierbei ist zu beachten das nur die GepaeckIDs des Resultats betrachtet werden, 
   \label{fig:post3}
 \end{figure}
 
-Als nächster logischer Schritt würde die Selektion auf dem Geschlecht folgen, da aber durch die ``WHERE-Clause'' B.Reisender=R.ReisenderID ebenfalls ReisendeIDs entstehen, die verglichen werden müssen, wird dieser Schritt vorgezogen, da andernfalls die Selektion ein zweites Mal erfolgen müsste. Diesen Mehraufwand wollen wir uns ersparen. Um die entsprechende ``WHERE-Clause'' zu erfüllen, benötigen wir BuchungsIDs, die wir dann in entsprechende ReisendeIDs umwandeln können. Hier verwenden wir das gleiche Schema wie im Prefiltering. Mittels der Selektion auf dem Geburtsdatum des Piloten erhalten wir durch den ``Climbing Index'' eine Liste von Listen mit BuchungsIDs. Diese muss durch eine Vereinigung zu einer Liste zusammengeführt werden.
-
-Im Folgenden wird ein SemiJoin angewendet, der mit Hilfe eines ``Subtree Key Tables'' uns die entsprechenden ReisendeIDs ausgibt, die wir dann weiterverwenden. Als Ausgabe werden folgende ReisendeIDs geliefert: \{R07, R03, R13, R05, R04, R11\}
+Mittels ``Climbing Index'' ist der Schritt von \textit{Pilot.Geburtsdatum} auf \textit{BuchungsID} möglich: \{\{\}, \{B08, B11, B18, B19, B20, B21\}, \{\}, \{\}\}. Durch Verwendung von Merge und eines ``Subtree Key Tables'' wird eine Liste von \textit{ReisendeIDs} berechnet: \{R07, R03, R13, R05, R04, R11\}.
 
 \begin{figure}[H]
   \centering
@@ -137,8 +126,7 @@ Im Folgenden wird ein SemiJoin angewendet, der mit Hilfe eines ``Subtree Key Tab
   \label{fig:post4}
 \end{figure}
 
-Die beiden Mengen von ReisendeIDs werden nun mittels Durchschnitt miteinander vereint. Aus diesem Resultat wird nachfolgend einen Bloomfilter gebaut. Die Ergebnisse die durch die Selektion des Geschlechtes auf die Reisenden (Reisender.Geschlecht='M') im unsicheren Bereich erhaltenen Daten werden durch diesen Filter geschickt. Die nun erhaltenen IDs werden wie im Prefiltering mittels MJoin zusammengefügt und als Ergebnis erhält man: \{$\langle$R04,Doru,Davidovici,Romänisch$\rangle$\}.
-
+Aus dem Durchschnitt beider Lsiten von \textit{ReisendeIDs} wird ein Bloom-Filter erzeugt. Dieser wird auf das übermittelte Zwischenergebnis des unsicheren Geräts (Reisender.Geschlecht='M') angewendet. Durch Verwendung des MJoin-Operators wird das Ergebnis erzeugt: \{$\langle$R04,Doru,Davidovici,Romänisch$\rangle$\}.
 
 \begin{figure}[H]
   \centering
@@ -147,8 +135,7 @@ Die beiden Mengen von ReisendeIDs werden nun mittels Durchschnitt miteinander ve
   \label{fig:post5}
 \end{figure}
 
-Fügt man nun wie schon oben alle Teile zusammen erhält man den kompletten Ablaufplan für unsere Anfrage.
-
+Fügt man alle Teile zusammen erhält man den kompletten Ablaufplan für unsere Anfrage.
 
 \begin{figure}[H]
   \centering
@@ -158,10 +145,8 @@ Fügt man nun wie schon oben alle Teile zusammen erhält man den kompletten Ablauf
 \end{figure}
 
 \subsection{Post-Filtering Funktionsaufrufe}
-
-
 \begin{enumerate}[1]
-\item CI(P.Geburtsdatum,<1956-08-01,G.GepaeckID) = \{\{\}, \{G07, G18, G19, G20, G25\}, \{\}, \{\}\} 
+\item CI(P.Geburtsdatum,<1956-08-01,G.GepaeckID) = \{\{\}, \{G07, G18, G19, G20, G25\}, \{\}, \{\}\}
 \item Merge($\bigcup 1$) = \{G07, G18, G19, G20, G22, G23\}
 \item SJoin(2,$\text{SKT}_{\text{Gepaeck}}$,$\langle$G.GepaeckID,R.ReisenderID$\rangle$) = \{$\langle$G07,R11$\rangle$, $\langle$G18,R07$\rangle$, $\langle$G19,R04$\rangle$, $\langle$G20,R04$\rangle$, $\langle$G22,R02$\rangle$, $\langle$G23,R01$\rangle$\}
 \item Vis(Q,Gepaeck,G.GepaeckID) = \{G06, G12, G13, G16, G18, G19, G20, G22, G23\}
