@@ -12,66 +12,61 @@ WHERE R.Geschlecht='M' AND P.Geburtsdatum<1956-08-01 AND G.Gewicht>20
 Die genauen Funktionsaufrufe für den gesamten Plan sind jeweils am Ende der Kapitel zu finden.
 \section{Prefiltering}
 
-Beim Prefiltering-Verfahren kommt es wie oben schon erwähnt darauf an die Selektionen der Anfrage so früh wie möglich auszuführen um weniger Daten für die weitere Verarbeitung zu haben. In unserem Beispiel kommen drei Selektionen vor. Diese sind die Auswahl des Geschlechts des Reisenden, das Geburtsdatum des Piloten und das Gewicht des Gepäcks. In der Regel ist eine Selektion immer dann am schnellsten, wenn Sie einen Bereich betrifft der nicht versteckt ist, da hier alle Ressourcen der unsicheren Plattform genutzt werden können. Diese sind meist um ein vielfaches höher als die des ``SmartUSB''-Sticks. Aus diesem Grund beginnen wir mit der Auswahl des Gewichts. Wir wollen alle GepaeckIDs herausfiltern für die gilt, dass das ihnen zugeordnetes Gewicht größer als 20 Kilogramm ist. Dies wären die folgenden IDs (siehe Tabelle \ref{tab:Gepaeck}):  G06, G12, G13, G16, G18, G19, G20, G22, G23. Diese GepaeckIDs werden dann der sicheren Plattform übergeben.
+Die Idee beim Prefiltering ist, dass alle Selektionen zuerst ausgeführt werden um die gesamte Datenmenge die bei Joins und Mergeoperationen verwendet werden so gering wie möglich zu halten. Weiterhin wird versucht so viele Selektionen wie möglich auf dem unsicheren Bereich auszuführen, da die Ressourcen hier nicht so beschränkt sind, wie im sicheren Bereich. Selektionen auf Daten die den sicheren Teil der ``GhostDB'' betreffen können allerdings auch nur in diesem ausgeführt werden. Für die Selektionen werden nach Möglichkeit ``Climbing Indices'' verwendet. Die danach folgenden Joins werden dann im sicheren Bereich ausgeführt, hierbei wird meist ein ``Subtree Key Table'' verwendet.
 
-Nun folgt die Selektion auf den Geburtsdaten der Piloten. Diese Eigenschaft ist versteckt und muss daher auf der sicheren Plattform ausgeführt werden. Als Ergebnis würden wir alle PilotIDs erhalten, deren Geburtstag vor dem 01.08.1956 liegt. Mit dieser Information kann aber nur schlecht weitergearbeitet werden, da bis jetzt nur GepaeckIDs vorliegen. Aus diesem Grund wird ein ``ClimbingIndex'' auf dem Attribut Geburtsdatum verwendet (siehe Tabelle \ref{tab:ClimbingIndexPilotenGeburtsdatum}) und auf diesem wird dann die Selektion ausgeführt. Als Ergebnis werden folgende GepaeckIDs im sicheren Bereich vorgehalten: \{G07, G18, G19, G20, G25\}.
+Es wird mit der Auswahl des Gewichts begonnen. Es sollen alle Gepäckstücke gefunden werden, die schwerer als 20kg sind: {G06, G12, G13, G16, G18, G19, G20, G22, G23}. Diese \textit{GepaeckIDs} werden der sicheren Plattform übergeben. Es folgt die Selektion auf den Geburtsdaten der Piloten. Diese Eigenschaft ist versteckt und muss daher auf der sicheren Plattform ausgeführt werden. Es wird ein ``Climbing Index'' verwendet, um \textit{GepaeckIDs} zu erhalten:  \{\{\}, \{G07, G18, G19, G20, G25\}, \{\}, \{\}\}. Die beiden Listen werden mittels Merge zusammengeführt: \{G18, G19, G20\}
 
-Die nun vorhandenen GepaeckIDs können mittels der Schnittmenge verringert werden um den Aufwand für den nachfolgenden SJoin zu verringern. Als Resultat erhält man: \{G18, G19, G20\}.
-
-\begin{figure}[H]%
-  \centering%
+\begin{figure}[H]
+  \centering
   \includegraphics[width=1\linewidth]{img/Pre1}
-  \caption{Teilergebnis Pre-Filtering 1}%
-  \label{fig:pre1}%
-\end{figure}%
+  \caption{Teilergebnis Pre-Filtering 1}
+  \label{fig:pre1}
+\end{figure}
 
-Im Nachfolgenden müssen alle ``Statements'' in der ``WHERE-Clause'' erfüllt werden. Dies geschieht unter zu Hilfenahme von Semi-Joins und diese werden wiederum durch ``Subtree Key Tables'' (SKT) unterstützt. Die ``WHERE-Clause'', die wir berechnen wollen ist folgende: G.Reisender=R.ReisenderID. Im SKT für Gepaeck (Tabelle \ref{tab:SKTGepaeck}) werden nun die ReisendenIDs zu den entsprechenden GepaeckIDs herausgesucht und mit dem SJoin zusammengeführt.\textbf{TODO: kann man das so schreiben ??, die anderen WHERE-Clauses werden nicht weiter erwähnt ??}
+Von Piloten aus wird analog der Weg über Buchungen Buchungen beschritten. ``Climbing Index'': \{\{\}, \{B08, B11, B18, B19, B20, B21\}, \{\}, \{\}\}, Merge: \{B08, B11, B18, B19, B20, B21\}.
 
-Da wir nun ReisendeIDs haben kann die nächste Bedingung in Angriff genommen werden: B.Reisender=R.ReisenderID. Hierfür werden ReisendeIDs auf Basis der BuchungsIDs benötigt. Die Selektion mittels GepäckIDs entfällt da diese keine direkte Verbindung zu den Buchungen haben. Da wir vorhin schon die Piloten als selektives Mittel verwendet haben tun wir dies noch einamal mittels eines ``Climbing Index'' auf den BuchungsIDs. Der ``Climbing Index'' liefert uns als Resultat eine Liste von Listen. Diese können wir für den SKT aber nicht verwenden, da dieser nur eine Liste als Eingabe akzeptiert. Die Die Lösung ist das Zusammenführen der einzelnen Liste zu einer Liste mit der Operation Vereinigung. Als Ergebnis wird folgendes geliefert: \{B08, B11, B18, B19, B20, B21\}.
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1\linewidth]{img/Pre2.pdf}
+  \caption{Teilergebnis Pre-Filtering 2}
+  \label{fig:pre2}
+\end{figure}
 
-\begin{figure}[H]%
-  \centering%
-  \includegraphics[width=1\linewidth]{img/Pre2.pdf}%
-  \caption{Teilergebnis Pre-Filtering 2}%
-  \label{fig:pre2}%
-\end{figure}%
+Unter Zuhilfenahme der entsprechenden ``Subtree Key Tables'' wird die Verbindung zur Tabelle \textit{Reisende} hergestellt: \{R07, R04, R04\} bzw. \{R07, R03, R13, R05, R04, R11\}. Mittels Merge wird der Durchschnitt beider Listen gebildet: \{R04, R07\}.
 
-Die so erhaltenen BuchungsIDs werden analog zu den GepaeckIDs im vorherigen Schritt benutzt um ReisendeIDs zu berechnen. Um beide Bedingungen zu erfüllen muss nun noch der Durchschnitt der beiden ReisendeIDs durchgeführt werden. Damit wären beide Bedingungen erfüllt. Mit diesem Resultat kann dann weiter gearbeitet werden.
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1\linewidth]{img/Pre3.pdf}
+  \caption{Teilergebnis Pre-Filtering 3}
+  \label{fig:pre3}
+\end{figure}
 
-\begin{figure}[H]%
-  \centering%
-  \includegraphics[width=1\linewidth]{img/Pre3.pdf}%
-  \caption{Teilergebnis Pre-Filtering 3}%
-  \label{fig:pre3}%
-\end{figure}%
+Für die entstandene Liste wird ein Bloom-Filter erzeugt. Die noch ausstehende Selektion R.Geschlecht='M' wird vom unsicheren Gerät ausgeführt und das Ergbnis mittels Bloom-Filter gefiltert.
 
-Auf dieser entstandenen Datenbasis wird nun ein Bloomfilter gebaut, der für die noch nicht angewandte Selektion verwendet wird. Die fehlende Selektion ist: R.Geschlecht='M'. Die Selektion wird erst jetzt angewandt, da sie sonst vorher in den beiden Joins die zu bearbeitenden Datenmengen erhöht hätte. Durch den späteren Einsatz können die Datenmengen geringer gehalten werden und der Rechenaufwand ist somit geringer.
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1\linewidth]{img/Pre4.pdf}
+  \caption{Teilergebnis Pre-Filtering 4}
+  \label{fig:pre4}
+\end{figure}
 
-\begin{figure}[H]%
-  \centering%
-  \includegraphics[width=1\linewidth]{img/Pre4.pdf}%
-  \caption{Teilergebnis Pre-Filtering 4}%
-  \label{fig:pre4}%
-\end{figure}%
+Mittels MJoin werden die noch verbleibenden Projektionen ausgeführt: \{$\langle$R04,Doru,Davidovici,Romänisch$\rangle$\}.
 
-Als Abschluss müssen nur noch die entsprechenden Projektionen angewendet werden. Dies geschieht mittels eines MJoins. Dieser benötigt aber nochmals alle ReisendeIDs mit der Eigenschaft das das Geschlecht männlich ist. Bei dieser Anfrage werden aber nicht nur die ReisendeIDs benötigt, sondern auch die Attribute für Vorname und Name. Als Ergebnis kann dann folgendes ausgegeben werden: \{$\langle$R04,Doru,Davidovici,Romänisch$\rangle$\}.
-
-\begin{figure}[H]%
-  \centering%
-  \includegraphics[width=1\linewidth]{img/Pre5.pdf}%
-  \caption{Teilergebnis Pre-Filtering 5}%
-  \label{fig:pre5}%
-\end{figure}%
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1\linewidth]{img/Pre5.pdf}
+  \caption{Teilergebnis Pre-Filtering 5}
+  \label{fig:pre5}
+\end{figure}
 
 Fügt man die einzelnen Schritte zusammen entsteht folgender Ausführungsplan für das Prefiltering:
 
-
-\begin{figure}[H]%
-  \centering%
-  \includegraphics[width=1\linewidth]{img/Pre-Filtering.pdf}%
-  \caption{Pre-Filtering QEP}%
-  \label{fig:pre}%
-\end{figure}%
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1\linewidth]{img/Pre-Filtering.pdf}
+  \caption{Pre-Filtering QEP}
+  \label{fig:pre}
+\end{figure}
 
 \subsection{Pre-Filtering Funktionsaufrufe}
 
@@ -89,35 +84,34 @@ Fügt man die einzelnen Schritte zusammen entsteht folgender Ausführungsplan für 
 \item ProbeBF(BF,10) = \{R04\}
 \item Vis(Q,Reisende,$\langle$R.ReisenderID,R.Vorname,R.Name$\rangle$) = \{$\langle$R02,Mike,Bannister$\rangle$, \\
 $\langle$R03,Francis,Chichester$\rangle$, $\langle$R04,Doru,Davidovici$\rangle$, $\langle$R05,Eugene Burton,Ely$\rangle$, $\langle$R06,Charles,Fern$\rangle$, $\langle$R08,Ernst,Heinkel$\rangle$, $\langle$R09,Tony,Jannus$\rangle$, $\langle$R10,Algene,Key$\rangle$, $\langle$R13,Charles,Nungesser$\rangle$\}
-\item MJoin(12,11,$\langle$R.ReisenderID,R.Staatsbuergerschaft$\rangle$,9) = \{$\langle$R04,Doru,Davidovici,Romänisch$\rangle$\}
+\item MJoin(12,11,$\langle$R.ReisenderID,R.Staatsbuergerschaft$\rangle$,8) = \{$\langle$R04,Doru,Davidovici,Romänisch$\rangle$\}
 \end{enumerate}
-
-
-Auf den ersten Blick scheint die Lösung des Prefilterings optimal zu sein, da man schon im Vorfeld viele Daten aus der Berechnung der Joins herausnehmen kann und somit den Aufwand verringert.
 
 Das Problem an dieser Strategie ist allerdings, dass bei zu geringer Selektivität Selektionen zu wenige Tupel im Vorfeld aussortiert werden und somit ein großer Vorteil des Prefilterings verschwindet. Eine andere Alternative, die dem eben angesprochenen Effekt nicht so stark unterliegt ist das Postfiltering.
 
 \section{Postfiltering}
 
+Beim Postfiltering wird ein anderes Verfahren verwendet. Es wird hier zuerst der Join auf dem sicheren Teil der ``GhostDB'' ausgeführt. Im folgenden werden die möglichen Selektionen des unsicheren Bereiches zu den erzeugten Ergebnissen hinzugefügt. Dies geschieht entweder durch das Erzeugen eines Bloom-Filters aus diesen Daten, der dann für die Filterung der bisherigen Ergebnisse benutzt wird oder genau umgekehrt. Im umgedrehten Fall wird der Bloom-Filter aus den vorhandenen Resultaten gebildet und die Daten der Selektion werden mit diesem gefiltert. Die übrig gebliebenen Daten werden dann weiterverabeitet.
+
 Beim Postfiltering werden zuerst alle Selektionen ausgeführt und mittels Join zusammengefasst, die auf den sicheren Bereich zugreifen. Erst danach werden durch ``Fuzzy Filtering''\footnote{GhostDB: Hiding Data from Prying Eyes(Technology) Vortrag} die Selektionen des unsicheren Bereiches hinzugefügt.
 
 Für unser Beispiel heißt dies, dass zuerst die Selektion auf dem Geburtsdatum des Piloten ausgeführt wird. Da wir mit der PilotID aber nicht ohne Weiteres weiterarbeiten können, verwenden wir hierfür den ``Climbing Index'' auf der GepaeckID und führen auf diesem Ergebnis eine Vereinigung aus, da wir nur eine Liste von GepaeckIDs für die Weiterverwendung benutzen können.
 
-\begin{figure}[H]%
-  \centering%
-  \includegraphics[width=1\linewidth]{img/Post1.pdf}%
-  \caption{Teilergebnis Post-Filtering 1}%
-  \label{fig:post1}%
-\end{figure}%
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1\linewidth]{img/Post1.pdf}
+  \caption{Teilergebnis Post-Filtering 1}
+  \label{fig:post1}
+\end{figure}
 
 Diese Selektion ist in unserem Beispiel die Einzige die auf den unsicheren Bereich zugreift. Nach dem Verfahren des Postfilterings werden diese IDs nun für einen Join benutzt. Als Ergebnis brauchen wir wiederum ReisendeIDs, da diese für die spätere Projektion notwendig sind. Um diese IDs zu erhalten bedienen wir uns wieder beim ``Subtree Key Table'' und Filtern uns somit alle ReisendeIDs heraus. Bei den Selektionen aus dem unsicheren Berich erhalten wir aber GepaeckIDs, daher gibt uns der Join auf unsere Anforderung hin eine Menge von Tupeln aus GepaeckID und dazu passender ReisendeID heraus.
 
-\begin{figure}[H]%
-  \centering%
-  \includegraphics[width=1\textwidth]{img/Post2.pdf}%
-  \caption{Teilergebnis Post-Filtering 2}%
-  \label{fig:post2}%
-\end{figure}%
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1\textwidth]{img/Post2.pdf}
+  \caption{Teilergebnis Post-Filtering 2}
+  \label{fig:post2}
+\end{figure}
 
 Im nächsten Schritt kann nun die Selektion auf dem Gepäck, welches ein Gewicht größer als 20 Kilogramm hat geschehen. Um dies umzusetzen wird das ``Fuzzy Filtering'' benutzt. In unserem Fall ist es so definiert, das ein Bloomfilter über eine bestimmte Menge von Daten generiert und dann auf eine andere Menge angewendet wird. Man könnte diesen Filter eventuell auf das Ergebnis des Joins beziehen, da diese Ergebnisse aber im sicheren Bereich sind würden wir hier nur unnötig Ressourcen verbrauchen. Eine bessere Lösung ist es den Bloomfilter auf der Selektion der Daten des unsicheren Bereiches zu generieren, da hier mehr Resosurcen zur Verfügung stehen.
 
@@ -125,43 +119,43 @@ Es wird also ein Bloomfilter auf dem Ergebnis von G.Gewicht>20 gebildet und auf 
 
 Hierbei ist zu beachten das nur die GepaeckIDs des Resultats betrachtet werden, da nur diese im Bloomfilter vorkommen. Auf der Ausgabe des Bloomfilters wird nachfolgend noch eine Projektion auf die ReisendeIDs vorgenommen, da wir die Tupel aus GepaeckID und ReisendeID nicht mehr für die nächsten Schritte benötigen. Wir erhalten folgende ReisendeIDs: \{R07, R04, R04, R02, R01\}
 
-\begin{figure}[H]%
-  \centering%
-  \includegraphics[width=1\textwidth]{img/Post3.pdf}%
-  \caption{Teilergebnis Post-Filtering 3}%
-  \label{fig:post3}%
-\end{figure}%
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1\textwidth]{img/Post3.pdf}
+  \caption{Teilergebnis Post-Filtering 3}
+  \label{fig:post3}
+\end{figure}
 
 Als nächster logischer Schritt würde die Selektion auf dem Geschlecht folgen, da aber durch die ``WHERE-Clause'' B.Reisender=R.ReisenderID ebenfalls ReisendeIDs entstehen, die verglichen werden müssen, wird dieser Schritt vorgezogen, da andernfalls die Selektion ein zweites Mal erfolgen müsste. Diesen Mehraufwand wollen wir uns ersparen. Um die entsprechende ``WHERE-Clause'' zu erfüllen, benötigen wir BuchungsIDs, die wir dann in entsprechende ReisendeIDs umwandeln können. Hier verwenden wir das gleiche Schema wie im Prefiltering. Mittels der Selektion auf dem Geburtsdatum des Piloten erhalten wir durch den ``Climbing Index'' eine Liste von Listen mit BuchungsIDs. Diese muss durch eine Vereinigung zu einer Liste zusammengeführt werden.
 
 Im Folgenden wird ein SemiJoin angewendet, der mit Hilfe eines ``Subtree Key Tables'' uns die entsprechenden ReisendeIDs ausgibt, die wir dann weiterverwenden. Als Ausgabe werden folgende ReisendeIDs geliefert: \{R07, R03, R13, R05, R04, R11\}
 
-\begin{figure}[H]%
-  \centering%
-  \includegraphics[width=1\textwidth]{img/Post4.pdf}%
-  \caption{Teilergebnis Post-Filtering 4}%
-  \label{fig:post4}%
-\end{figure}%
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1\textwidth]{img/Post4.pdf}
+  \caption{Teilergebnis Post-Filtering 4}
+  \label{fig:post4}
+\end{figure}
 
 Die beiden Mengen von ReisendeIDs werden nun mittels Durchschnitt miteinander vereint. Aus diesem Resultat wird nachfolgend einen Bloomfilter gebaut. Die Ergebnisse die durch die Selektion des Geschlechtes auf die Reisenden (Reisender.Geschlecht='M') im unsicheren Bereich erhaltenen Daten werden durch diesen Filter geschickt. Die nun erhaltenen IDs werden wie im Prefiltering mittels MJoin zusammengefügt und als Ergebnis erhält man: \{$\langle$R04,Doru,Davidovici,Romänisch$\rangle$\}.
 
 
-\begin{figure}[H]%
-  \centering%
-  \includegraphics[width=1\textwidth]{img/Post5.pdf}%
-  \caption{Teilergebnis Post-Filtering 5}%
-  \label{fig:post5}%
-\end{figure}%
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1\textwidth]{img/Post5.pdf}
+  \caption{Teilergebnis Post-Filtering 5}
+  \label{fig:post5}
+\end{figure}
 
 Fügt man nun wie schon oben alle Teile zusammen erhält man den kompletten Ablaufplan für unsere Anfrage.
 
 
-\begin{figure}[H]%
-  \centering%
-  \includegraphics[width=1\textwidth]{img/Post-Filtering.pdf}%
-  \caption{Post-Filtering QEP}%
-  \label{fig:post}%
-\end{figure}%
+\begin{figure}[H]
+  \centering
+  \includegraphics[width=1\textwidth]{img/Post-Filtering.pdf}
+  \caption{Post-Filtering QEP}
+  \label{fig:post}
+\end{figure}
 
 \subsection{Post-Filtering Funktionsaufrufe}
 
