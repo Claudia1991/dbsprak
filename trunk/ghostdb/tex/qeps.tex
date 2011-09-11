@@ -14,7 +14,7 @@ Die genauen Funktionsaufrufe für den gesamten Plan sind jeweils am Ende der Kapi
 
 Beim Prefiltering-Verfahren kommt es wie oben schon erwähnt darauf an die Selektionen der Anfrage (Query) \textbf{TODO: Was ist besser Query und Anfrage verwenden oder jeweils nur eines der beiden Wörter???} so früh wie möglich auszuführen um weniger Daten für die weitere Verarbeitung zu haben. In unserem Beispiel kommen drei Selektionen vor. Diese sind die Auswahl des Geschlechts des Reisenden, das Geburtsdatum des Piloten und das Gewicht des Gepäcks. In der Regel ist eine Selektion immer dann am schnellsten, wenn Sie einen Bereich betrifft der nicht versteckt ist, da hier alle Ressourcen der unsicheren Plattform genutzt werden können. Diese sind meist um ein vielfaches höher als die des ``SmartUSB''-Sticks. Aus diesem Grund beginnen wir mit der Auswahl des Gewichts. Wir wollen alle GepaeckIds herausfiltern für die gilt, dass das ihnen zugeordnetes Gewicht größer als 20 Kilogramm ist. Dies wären die folgenden IDs (siehe Tabelle \ref{tab:Gepaeck}):  G06, G12, G13, G16, G18, G19, G20, G22, G23.
  \textbf{TODO: hier sollte irgendwie erwähnt werden das die GIds zur sicheren Plattform übertragen werden}
-\\ 
+
 Der nächste naheliegende Schritt wäre die Auswahl des Geschlechts der Reisenden, da diese Eigenschaft nicht versteckt ist. Aus Gründen die später noch erläutert werden ignorieren wir diese Selektion erst einmal. 
 Es bleibt demzufolge nur noch die Selektion auf den Geburtsdaten der Piloten übrig. Diese Eigenschaft ist versteckt und muss daher auf der sicheren Plattform ausgeführt werden. Als Ergebnis würden wir alle PilotIds erhalten, deren Geburtstag vor dem 01.08.1956 liegt. Mit dieser Information kann aber nur schlecht weitergearbeitet werden, da bis jetzt nur GepaeckIds vorliegen. Aus diesem Grund wird ein ``ClimbingIndex'' auf dem Attribut Geburtsdatum verwendet (siehe Tabelle \ref{tab:ClimbingIndexPilotenGeburtsdatum}) und auf diesem wird dann die Selektion ausgeführt. Als Ergebnis werden folgende GepaeckIds im sicheren Bereich vorgehalten: \{G07, G18, G19, G20, G25\}.
 
@@ -77,21 +77,22 @@ Fügt man die einzelnen Schritte zusammen entsteht folgender Ausführungsplan für 
 
 \subsection{Pre-Filtering Funktionsaufrufe}
 
-\begin{Verbatim}[commandchars=\\\{\},numbers=left]
-Vis(Q,Gepaeck,G.GepaeckID) = \{G06, G12, G13, G16, G18, G19, G20, G22, G23\}
-CI(P.Geburtsdatum,<1956-08-01,G.GepaeckID) = \{\{\}, \{G07, G18, G19, G20, G25\}, \{\}, \{\}\}
-Merge((\begin{math}\bigcup\end{math} 2)\begin{math}\cap\end{math} 1) = \{G18, G19, G20\}
-SJoin(3,\begin{math}\text{SKT}_{\text{Gepaeck}}\end{math},R.ReisenderID) = \{R07, R04, R04\}
-CI(P.Geburtsdatum,<1956-08-01,B.BuchungsID) = \{\{\}, \{B08, B11, B18, B19, B20, B21\}, \{\}, \{\}\}
-Merge(\begin{math}\bigcup\end{math} 5) = \{B08, B11, B18, B19, B20, B21\}
-SJoin(6,\begin{math}\text{SKT}_{\text{Buchungen}}\end{math},R.ReisenderID) = \{R07, R03, R13, R05, R04, R11\}
-Merge(\begin{math}4\cap 7\end{math}) = \{R04, R07\}
-BuildBF(8) = BF
-Vis(Q,Reisende,R.ReisenderID) = \{R02, R03, R04, R05, R06, R08, R09, R10, R13\}
-ProbeBF(BF,10) = \{R04\}
-Vis(Q,Reisende,\begin{math}\langle\end{math}R.ReisenderID,R.Vorname,R.Name\begin{math}\rangle\end{math}) = \{\begin{math}\langle\end{math}R02,Mike,Bannister\begin{math}\rangle\end{math}, \begin{math}\langle\end{math}R03,Francis,Chichester\begin{math}\rangle\end{math}, \begin{math}\langle\end{math}R04,Doru,Davidovici\begin{math}\rangle\end{math}, \begin{math}\langle\end{math}R05,Eugene Burton,Ely\begin{math}\rangle\end{math}, \begin{math}\langle\end{math}R06,Charles,Fern\begin{math}\rangle\end{math}, \begin{math}\langle\end{math}R08,Ernst,Heinkel\begin{math}\rangle\end{math}, \begin{math}\langle\end{math}R09,Tony,Jannus\begin{math}\rangle\end{math}, \begin{math}\langle\end{math}R10,Algene,Key\begin{math}\rangle\end{math}, \begin{math}\langle\end{math}R13,Charles,Nungesser\begin{math}\rangle\end{math}\}
-MJoin(12,11,\begin{math}\langle\end{math}R.ReisenderID,R.Staatsbuergerschaft\begin{math}\rangle\end{math},9) = \{\begin{math}\langle\end{math}R04,Doru,Davidovici,Romänisch\begin{math}\rangle\end{math}\}
-\end{Verbatim}
+\begin{enumerate}[1]
+\item Vis(Q,Gepaeck,G.GepaeckID) = \{G06, G12, G13, G16, G18, G19, G20, G22, G23\}
+\item CI(P.Geburtsdatum,<1956-08-01,G.GepaeckID) = \{\{\}, \{G07, G18, G19, G20, G25\}, \{\}, \{\}\}
+\item Merge($(\bigcup 2)\cap 1$) = \{G18, G19, G20\}
+\item  SJoin(3,$\text{SKT}_{\text{Gepaeck}}$,R.ReisenderID) = \{R07, R04, R04\}
+\item  CI(P.Geburtsdatum,<1956-08-01,B.BuchungsID) = \{\{\}, \{B08, B11, B18, B19, B20, B21\}, \{\}, \{\}\}
+\item  Merge($\bigcup 5$) = \{B08, B11, B18, B19, B20, B21\}
+\item SJoin(6,$\text{SKT}_{\text{Buchungen}}$,R.ReisenderID) = \{R07, R03, R13, R05, R04, R11\}
+\item Merge($4\cap 7$) = \{R04, R07\}
+\item BuildBF(8) = BF
+\item Vis(Q,Reisende,R.ReisenderID) = \{R02, R03, R04, R05, R06, R08, R09, R10, R13\}
+\item ProbeBF(BF,10) = \{R04\}
+\item Vis(Q,Reisende,$\langle$R.ReisenderID,R.Vorname,R.Name$\rangle$) = \{$\langle$R02,Mike,Bannister$\rangle$, \\$\langle$R03,Francis,Chichester$\rangle$, $\langle$R04,Doru,Davidovici$\rangle$, $\langle$R05,Eugene Burton,Ely$\rangle$, \\$\langle$R06,Charles,Fern$\rangle$, $\langle$R08,Ernst,Heinkel$\rangle$, $\langle$R09,Tony,Jannus$\rangle$, $\langle$R10,Algene,Key$\rangle$, \\$\langle$R13,Charles,Nungesser$\rangle$\}
+\item MJoin(12,11,$\langle$R.ReisenderID,R.Staatsbuergerschaft$\rangle$,9) = \\\{$\langle$R04,Doru,Davidovici,Romänisch$\rangle$\}
+\end{enumerate}
+
 
 Auf den ersten Blick scheint die Lösung des Prefilterings optimal zu sein, da man schon im Vorfeld viele Daten \textbf{TODO: ist Daten das Richtige Wort ???} aus der Berechnung der Joins herausnehmen kann und somit den Aufwand verringert.
 
@@ -166,7 +167,7 @@ Fügt man nun wie schon oben alle Teile zusammen erhält man den kompletten Ablauf
 \subsection{Post-Filtering Funktionsaufrufe}
 
 
-\begin{compactenum}[1]
+\begin{enumerate}[1]
 \item CI(P.Geburtsdatum,<1956-08-01,G.GepaeckID) = \{\{\}, \{G07, G18, G19, G20, G25\}, \{\}, \{\}\}
 \item Merge($\bigcup 1$) = \{G07, G18, G19, G20, G22, G23\}
 \item SJoin(2,$\text{SKT}_{\text{Gepaeck}}$,$\langle$G.GepaeckID,R.ReisenderID$\rangle$) = \{$\langle$G07,R11$\rangle$, $\langle$G18,R07$\rangle$, $\langle$G19,R04$\rangle$, $\langle$G20,R04$\rangle$, $\langle$G22,R02$\rangle$, $\langle$G23,R01$\rangle$\}
@@ -181,6 +182,6 @@ Fügt man nun wie schon oben alle Teile zusammen erhält man den kompletten Ablauf
 \item BuildBF(11) = BF
 \item Vis(Q,Reisende,R.ReisenderID) = \{R02, R03, R04, R05, R06, R08, R09, R10, R13\}
 \item ProbeBF(BF,13) = \{R04\}
-\item Vis(Q,Reisende,$\langle$R.ReisenderID,R.Vorname,R.Name$\rangle$) = \{$\langle$R02,Mike,Bannister$\rangle$, \\$\langle$R03,Francis,Chichester$\rangle$, $\langle$R04,Doru,Davidovici$\rangle$, $\langle$R05,Eugene Burton,Ely$\rangle$, $\langle$R06,Charles,Fern$\rangle$, $\langle$R08,Ernst,Heinkel$\rangle$, $\langle$R09,Tony,Jannus$\rangle$, $\langle$R10,Algene,Key$\rangle$, $\langle$R13,Charles,Nungesser$\rangle$\}
-\item MJoin(15,14,$\langle$R.ReisenderID,R.Staatsbuergerschaft$\rangle$,11) = \{$\langle$R04,Doru,Davidovici,Romänisch$\rangle$\}
-\end{compactenum}
+\item Vis(Q,Reisende,$\langle$R.ReisenderID,R.Vorname,R.Name$\rangle$) = \{$\langle$R02,Mike,Bannister$\rangle$, \\$\langle$R03,Francis,Chichester$\rangle$, $\langle$R04,Doru,Davidovici$\rangle$, $\langle$R05,Eugene Burton,Ely$\rangle$, \\$\langle$R06,Charles,Fern$\rangle$, $\langle$R08,Ernst,Heinkel$\rangle$, $\langle$R09,Tony,Jannus$\rangle$, $\langle$R10,Algene,Key$\rangle$, \\$\langle$R13,Charles,Nungesser$\rangle$\}
+\item MJoin(15,14,$\langle$R.ReisenderID,R.Staatsbuergerschaft$\rangle$,11) = \\\{$\langle$R04,Doru,Davidovici,Romänisch$\rangle$\}
+\end{enumerate}
