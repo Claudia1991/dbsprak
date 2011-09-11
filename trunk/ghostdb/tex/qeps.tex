@@ -165,7 +165,8 @@ Fügt man nun wie schon oben alle Teile zusammen erhält man den kompletten Ablauf
 
 \subsection{Post-Filtering Funktionsaufrufe}
 
-\begin{enumerate}[1]
+
+\begin{compactenum}[1]
 \item CI(P.Geburtsdatum,<1956-08-01,G.GepaeckID) = \{\{\}, \{G07, G18, G19, G20, G25\}, \{\}, \{\}\}
 \item Merge($\bigcup 1$) = \{G07, G18, G19, G20, G22, G23\}
 \item SJoin(2,$\text{SKT}_{\text{Gepaeck}}$,$\langle$G.GepaeckID,R.ReisenderID$\rangle$) = \{$\langle$G07,R11$\rangle$, $\langle$G18,R07$\rangle$, $\langle$G19,R04$\rangle$, $\langle$G20,R04$\rangle$, $\langle$G22,R02$\rangle$, $\langle$G23,R01$\rangle$\}
@@ -182,4 +183,4 @@ Fügt man nun wie schon oben alle Teile zusammen erhält man den kompletten Ablauf
 \item ProbeBF(BF,13) = \{R04\}
 \item Vis(Q,Reisende,$\langle$R.ReisenderID,R.Vorname,R.Name$\rangle$) = \{$\langle$R02,Mike,Bannister$\rangle$, \\$\langle$R03,Francis,Chichester$\rangle$, $\langle$R04,Doru,Davidovici$\rangle$, $\langle$R05,Eugene Burton,Ely$\rangle$, $\langle$R06,Charles,Fern$\rangle$, $\langle$R08,Ernst,Heinkel$\rangle$, $\langle$R09,Tony,Jannus$\rangle$, $\langle$R10,Algene,Key$\rangle$, $\langle$R13,Charles,Nungesser$\rangle$\}
 \item MJoin(15,14,$\langle$R.ReisenderID,R.Staatsbuergerschaft$\rangle$,11) = \{$\langle$R04,Doru,Davidovici,Romänisch$\rangle$\}
-\end{enumerate}
+\end{compactenum}
