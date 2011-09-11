@@ -31,12 +31,15 @@ Eine dieser Strukturen ist der "Subtree Key Table". Hierbei enthält die Wurzelta
 Eine weitere Struktur ist der "Climbing Index"......
 
 \chapter{Warum Filter ?}
-Die "GhostDB" hat das Problem, dass alle Berechnungen die Bezug auf die unsichtbaren Daten auf dem "SmartUSB"-Stick nehmen in diesem berechnet werden müssen. Da der Speicher für die Ausführung aber begrenzt ist entsteht hier ein Geschwindigkeitsproblem, da alle Daten in den Speicher geladen werden müssen und weiterhin in diesem auch Platz für das Ergebnis vorhanden sein muss. Die Autoren der Paper haben daher eine Möglichkeit gesucht die Menge an Informationen, die in den Speicher geladen werden müssen um das Ergebnis zu erhalten zu verringern. Das Ergebnis waren die Post-, Pre- und Crossfilter.
+Das System "GhostDB" hat das Problem, dass alle Berechnungen die Bezug auf die unsichtbaren Daten auf dem "SmartUSB"-Stick nehmen in diesem berechnet werden müssen. Da der Speicher für die Ausführung auf diesem Gerät aber begrenzt ist entsteht hier ein Ressourcenproblem, da alle Daten in den Speicher geladen werden müssen und weiterhin in diesem auch Platz für das Ergebnis vorhanden sein muss. Die Autoren der Paper haben daher eine Möglichkeit gesucht die Menge an Informationen, die in den Speicher geladen werden müssen um eine Antwort auf die gestellte Anfrage zu erhalten zu verringern. Das Ergebnis waren die Post-, Pre- und Crossfilter. In dieser Arbeit werden wir nur auf die ersten beiden eingehen, da Letzterer eine Kombination aus den anderen beiden ist. 
 
-Beim Prefiltering \textbf{???} wird versucht alle Selektionen zuerst auszuführen.
-Es wird versucht so viele Selektionen wie möglich auf dem unsicheren Bereich auszuführen, da die Ressourcen hier nicht so beschränkt sind, wie im sicheren Bereich. Selektionen auf Daten des sicheren Bereiches können allerdings auch nur in diesem ausgeführt werden. Für die Selektionen werden nach Möglichkeit "Climbing" Indizes verwendet.
+\subsection{Prefiltering}
+Der Ansatz beim Prefiltering \textbf{???} ist der, dass alle Selektionen zuerst ausgeführt werden um die gesamte Datenmenge die bei Joins und Mergeoperationen verwendet werden so gering wie möglich zu halten.
+Weiterhin wird versucht so viele Selektionen wie möglich auf dem unsicheren Bereich auszuführen, da die Ressourcen hier nicht so beschränkt sind, wie im sicheren Bereich. Selektionen auf Daten des sicheren Bereiches können allerdings auch nur in diesem ausgeführt werden. Für die Selektionen werden nach Möglichkeit "Climbing" Indizes verwendet.
 Die danach folgenden Joins werden dann im sicheren Bereich ausgeführt, hierbei wird dann ein "Subtree Key Table" verwendet.
 \textbf{TODO: zu oft Bereich benutzt}
+
+\subsection{Postfiltering}
 Beim Postfiltering wird ein anderes Verfahren verwendet. Es wird hier zuerst der Join des sicheren Bereichs ausgeführt mittels "Subtree Key Table". Im folgenden werden die möglichen Selektionen des unsicheren Bereiches durch erzeugen von Bloomfilter vermittelt.
 \textbf{TODO: hier könnte noch mehr kommen}
 Beim Crossfiltering wiederum werden beide Techniken miteinander kombiniert um noch bessere Ergebnisse zu erzielen.
