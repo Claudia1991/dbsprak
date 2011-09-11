@@ -12,13 +12,12 @@ WHERE R.Geschlecht='M' AND P.Geburtsdatum<1956-08-01 AND G.Gewicht>20
 Die genauen Funktionsaufrufe für den gesamten Plan sind jeweils am Ende der Kapitel zu finden.
 \section{Prefiltering}
 
-Beim Prefiltering-Verfahren kommt es wie oben schon erwähnt darauf an die Selektionen der Anfrage (Query) \textbf{TODO: Was ist besser Query und Anfrage verwenden oder jeweils nur eines der beiden Wörter???} so früh wie möglich auszuführen um weniger Daten für die weitere Verarbeitung zu haben. In unserem Beispiel kommen drei Selektionen vor. Diese sind die Auswahl des Geschlechts des Reisenden, das Geburtsdatum des Piloten und das Gewicht des Gepäcks. In der Regel ist eine Selektion immer dann am schnellsten, wenn Sie einen Bereich betrifft der nicht versteckt ist, da hier alle Ressourcen der unsicheren Plattform genutzt werden können. Diese sind meist um ein vielfaches höher als die des ``SmartUSB''-Sticks. Aus diesem Grund beginnen wir mit der Auswahl des Gewichts. Wir wollen alle GepaeckIds herausfiltern für die gilt, dass das ihnen zugeordnetes Gewicht größer als 20 Kilogramm ist. Dies wären die folgenden IDs (siehe Tabelle \ref{tab:Gepaeck}):  G06, G12, G13, G16, G18, G19, G20, G22, G23.
- \textbf{TODO: hier sollte irgendwie erwähnt werden das die GIds zur sicheren Plattform übertragen werden}
+Beim Prefiltering-Verfahren kommt es wie oben schon erwähnt darauf an die Selektionen der Anfrage so früh wie möglich auszuführen um weniger Daten für die weitere Verarbeitung zu haben. In unserem Beispiel kommen drei Selektionen vor. Diese sind die Auswahl des Geschlechts des Reisenden, das Geburtsdatum des Piloten und das Gewicht des Gepäcks. In der Regel ist eine Selektion immer dann am schnellsten, wenn Sie einen Bereich betrifft der nicht versteckt ist, da hier alle Ressourcen der unsicheren Plattform genutzt werden können. Diese sind meist um ein vielfaches höher als die des ``SmartUSB''-Sticks. Aus diesem Grund beginnen wir mit der Auswahl des Gewichts. Wir wollen alle GepaeckIDs herausfiltern für die gilt, dass das ihnen zugeordnetes Gewicht größer als 20 Kilogramm ist. Dies wären die folgenden IDs (siehe Tabelle \ref{tab:Gepaeck}):  G06, G12, G13, G16, G18, G19, G20, G22, G23. Diese GepaeckIDs werden dann der sicheren Plattform übergeben.
 
 Der nächste naheliegende Schritt wäre die Auswahl des Geschlechts der Reisenden, da diese Eigenschaft nicht versteckt ist. Aus Gründen die später noch erläutert werden ignorieren wir diese Selektion erst einmal. 
-Es bleibt demzufolge nur noch die Selektion auf den Geburtsdaten der Piloten übrig. Diese Eigenschaft ist versteckt und muss daher auf der sicheren Plattform ausgeführt werden. Als Ergebnis würden wir alle PilotIds erhalten, deren Geburtstag vor dem 01.08.1956 liegt. Mit dieser Information kann aber nur schlecht weitergearbeitet werden, da bis jetzt nur GepaeckIds vorliegen. Aus diesem Grund wird ein ``ClimbingIndex'' auf dem Attribut Geburtsdatum verwendet (siehe Tabelle \ref{tab:ClimbingIndexPilotenGeburtsdatum}) und auf diesem wird dann die Selektion ausgeführt. Als Ergebnis werden folgende GepaeckIds im sicheren Bereich vorgehalten: \{G07, G18, G19, G20, G25\}.
+Es bleibt demzufolge nur noch die Selektion auf den Geburtsdaten der Piloten übrig. Diese Eigenschaft ist versteckt und muss daher auf der sicheren Plattform ausgeführt werden. Als Ergebnis würden wir alle PilotIDs erhalten, deren Geburtstag vor dem 01.08.1956 liegt. Mit dieser Information kann aber nur schlecht weitergearbeitet werden, da bis jetzt nur GepaeckIDs vorliegen. Aus diesem Grund wird ein ``ClimbingIndex'' auf dem Attribut Geburtsdatum verwendet (siehe Tabelle \ref{tab:ClimbingIndexPilotenGeburtsdatum}) und auf diesem wird dann die Selektion ausgeführt. Als Ergebnis werden folgende GepaeckIDs im sicheren Bereich vorgehalten: \{G07, G18, G19, G20, G25\}.
 
-Die nun vorhandenen GepaeckIds können mittels der Schnittmenge verringert werden um den Aufwand für den nachfolgenden Join \textbf{TODO: darf man hier Join erwähnen oder sollte es SJoin heißen} zu verringern. Als Resultat erhält man: \{G18, G19, G20\}.
+Die nun vorhandenen GepaeckIDs können mittels der Schnittmenge verringert werden um den Aufwand für den nachfolgenden SJoin zu verringern. Als Resultat erhält man: \{G18, G19, G20\}.
 
 \begin{figure}[H]%
   \centering%
@@ -27,7 +26,7 @@ Die nun vorhandenen GepaeckIds können mittels der Schnittmenge verringert werden
   \label{fig:pre1}%
 \end{figure}%
 
-Im Nachfolgenden müssen alle ``Statements'' in der ``WHERE-Clause'' erfüllt werden. Dies geschieht unter zu Hilfenahme von Semi-Joins und diese werden wiederum durch ``Subtree Key Tables'' (SKT) unterstützt. Die ``WHERE-Clause'', die wir berechnen wollen ist folgende: G.Reisender=R.ReisenderID. Im SKT für Gepaeck (Tabelle \ref{tab:SKTGepaeck}) werden nun die ReisendenIDs zu den entsprechenden GepaeckIDs herausgesucht und mit dem SJoin zusammengeführt.\textbf{TODO: kann man das so schreiben ??}
+Im Nachfolgenden müssen alle ``Statements'' in der ``WHERE-Clause'' erfüllt werden. Dies geschieht unter zu Hilfenahme von Semi-Joins und diese werden wiederum durch ``Subtree Key Tables'' (SKT) unterstützt. Die ``WHERE-Clause'', die wir berechnen wollen ist folgende: G.Reisender=R.ReisenderID. Im SKT für Gepaeck (Tabelle \ref{tab:SKTGepaeck}) werden nun die ReisendenIDs zu den entsprechenden GepaeckIDs herausgesucht und mit dem SJoin zusammengeführt.\textbf{TODO: kann man das so schreiben ??, die anderen WHERE-Clauses werden nicht weiter erwähnt ??}
 
 Da wir nun ReisendeIDs haben kann die nächste Bedingung in Angriff genommen werden: B.Reisender=R.ReisenderID. Hierfür werden ReisendeIDs auf Basis der BuchungsIDs benötigt. Die Selektion mittels GepäckIDs entfällt da diese keine direkte Verbindung zu den Buchungen haben. Da wir schon die Piloten vorhin als selektives Mittel verwendet haben tun wir dies noch einamal mittels eines ``Climbing Index'' auf den BuchungsIDs. Der ``Climbing Index'' liefert uns als Resultat eine Liste von Listen. Diese können wir für den SKT aber nicht verwenden, da dieser nur eine Liste als Eingabe akzeptiert. Die Die Lösung ist das Zusammenführen der einzelnen Liste zu einer Liste mit der Operation Vereinigung. Als Ergebnis wird folgendes geliefert: \{B08, B11, B18, B19, B20, B21\}.
 
@@ -95,7 +94,7 @@ $\langle$R03,Francis,Chichester$\rangle$, $\langle$R04,Doru,Davidovici$\rangle$,
 \end{enumerate}
 
 
-Auf den ersten Blick scheint die Lösung des Prefilterings optimal zu sein, da man schon im Vorfeld viele Daten \textbf{TODO: ist Daten das Richtige Wort ???} aus der Berechnung der Joins herausnehmen kann und somit den Aufwand verringert.
+Auf den ersten Blick scheint die Lösung des Prefilterings optimal zu sein, da man schon im Vorfeld viele Daten aus der Berechnung der Joins herausnehmen kann und somit den Aufwand verringert.
 
 Das Problem an dieser Strategie ist allerdings, dass bei zu geringer Selektivität Selektionen zu wenige Tupel im Vorfeld aussortiert werden und somit ein großer Vorteil des Prefilterings verschwindet. Eine andere Alternative, die dem eben angesprochenen Effekt nicht so stark unterliegt ist das Postfiltering.
 
@@ -112,7 +111,7 @@ Für unser Beispiel heißt dies, dass zuerst die Selektion auf dem Geburtsdatum de
   \label{fig:post1}%
 \end{figure}%
 
-Diese Selektion ist in unserem Beispiel die Einzige die auf den unsicheren Bereich zugreift. Nach dem Verfahren des Postfilterings werden diese IDs nun für einen Join benutzt. Als Ergebnis brauchen wir wiederum ReisendeIDs, da diese für die spätere Projektion notwendig sind. Um diese IDs zu erhalten bedienen wir uns wieder beim ``Subtree Key Table'' und Filtern uns somit alle ReisendeIds heraus. Bei den Selektionen aus dem unsicheren Berich erhalten wir aber GepaeckIds, daher gibt uns der Join auf unsere Anforderung hin eine Menge von Tupeln aus GepaeckID und dazu passender ReisendeID heraus.
+Diese Selektion ist in unserem Beispiel die Einzige die auf den unsicheren Bereich zugreift. Nach dem Verfahren des Postfilterings werden diese IDs nun für einen Join benutzt. Als Ergebnis brauchen wir wiederum ReisendeIDs, da diese für die spätere Projektion notwendig sind. Um diese IDs zu erhalten bedienen wir uns wieder beim ``Subtree Key Table'' und Filtern uns somit alle ReisendeIDs heraus. Bei den Selektionen aus dem unsicheren Berich erhalten wir aber GepaeckIDs, daher gibt uns der Join auf unsere Anforderung hin eine Menge von Tupeln aus GepaeckID und dazu passender ReisendeID heraus.
 
 \begin{figure}[H]%
   \centering%
@@ -134,9 +133,9 @@ Hierbei ist zu beachten das nur die GepaeckIDs des Resultats betrachtet werden, 
   \label{fig:post3}%
 \end{figure}%
 
-Als nächster logischer Schritt würde die Selektion auf dem Geschlecht folgen, da aber durch die ``WHERE-Clause'' B.Reisender=R.ReisenderID ebenfalls ReisendeIds entstehen, die verglichen werden müssen, wird dieser Schritt vorgezogen, da andernfalls die Selektion ein zweites Mal erfolgen müsste. Diesen Mehraufwand wollen wir uns ersparen. Um die entsprechende ``WHERE-Clause'' zu erfüllen, benötigen wir BuchungsIDs, die wir dann in entsprechende ReisendeIDs umwandeln können. Hier verwenden wir das gleiche Schema wie im Prefiltering. Mittels der Selektion auf dem Geburtsdatum des Piloten erhalten wir durch den ``Climbing Index'' eine Liste von Listen mit BuchungsIds. Diese muss durch eine Vereinigung zu einer Liste zusammengeführt werden.
+Als nächster logischer Schritt würde die Selektion auf dem Geschlecht folgen, da aber durch die ``WHERE-Clause'' B.Reisender=R.ReisenderID ebenfalls ReisendeIDs entstehen, die verglichen werden müssen, wird dieser Schritt vorgezogen, da andernfalls die Selektion ein zweites Mal erfolgen müsste. Diesen Mehraufwand wollen wir uns ersparen. Um die entsprechende ``WHERE-Clause'' zu erfüllen, benötigen wir BuchungsIDs, die wir dann in entsprechende ReisendeIDs umwandeln können. Hier verwenden wir das gleiche Schema wie im Prefiltering. Mittels der Selektion auf dem Geburtsdatum des Piloten erhalten wir durch den ``Climbing Index'' eine Liste von Listen mit BuchungsIDs. Diese muss durch eine Vereinigung zu einer Liste zusammengeführt werden.
 
-Im Folgenden wird ein SemiJoin angewendet, der unter Zuhilfenahme eines ``Subtree Key Tables'' uns die entsprechenden ReisendeIDs ausgibt, die wir dann weiterverwenden. Als Ausgabe werden folgende ReisendeIds geliefert: \{R07, R03, R13, R05, R04, R11\}
+Im Folgenden wird ein SemiJoin angewendet, der unter Zuhilfenahme eines ``Subtree Key Tables'' uns die entsprechenden ReisendeIDs ausgibt, die wir dann weiterverwenden. Als Ausgabe werden folgende ReisendeIDs geliefert: \{R07, R03, R13, R05, R04, R11\}
 
 \begin{figure}[H]%
   \centering%
