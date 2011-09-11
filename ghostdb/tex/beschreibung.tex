@@ -4,18 +4,6 @@ In der Vorlesung Techniken und Konzepte zum Schutz der Privatsphäre haben wir un
 
 Das gesamte System, welches die ``GhostDB'' umfasst basiert auf verschiedenen Komponenten und ist sehr umfangreich. Wir beschränken uns daher in dieser Arbeit auf das sogenannte Post- und Prefiltering. Beide Verfahren werden bei der Abarbeitung von Anfragen eingesetzt um diese möglichst effizient und schnell zu beantworten. Wir werden diese Techniken kurz vorstellen und anhand eines kleinen Beispieles ihre Funktionsweise erklären.
 
-\chapter{Datenstrukturen TODO: bessere Erklärung}
-
-Um im Laufe der Erklärungen zu den verschiedenen Methoden einen Ablaufplan für eine Anfrage auf der ``GhostDB'' zu erstellen werden verschiedenen Datenstrukturen benötigt. Einige von ihnen wollen wir kurz vorstellen.
-
-\section{Subtree Key Table}
-
-Eine dieser Strukturen ist der ``Subtree Key Table''. Hierbei enthält die Wurzeltabelle  alle ID's der nachfolgenden Tabellen, ??? \textbf{TODO: SKT und CI beschreiben}
-
-\section{Climbing Index}
-
-Eine weitere Struktur ist der ``Climbing Index''......
-
 \chapter{Warum Filter ?}
 
 Das System ``GhostDB'' hat das Problem, dass alle Berechnungen die Bezug auf die unsichtbaren Daten auf dem ``SmartUSB''-Stick nehmen in diesem berechnet werden müssen. Da der Speicher für die Ausführung auf diesem Gerät aber begrenzt ist, entsteht hier ein Ressourcenproblem, da alle Daten in den Speicher geladen werden müssen und weiterhin in diesem auch Platz für das Ergebnis vorhanden sein muss. Die Autoren der Paper haben daher eine Möglichkeit gesucht die Menge an Informationen, die in den Speicher geladen werden müssen, um eine Antwort auf die gestellte Anfrage zu erhalten, zu verringern. Das Ergebnis waren die Post-, Pre- und Crossfilter. In dieser Arbeit werden wir nur auf die ersten beiden eingehen.
