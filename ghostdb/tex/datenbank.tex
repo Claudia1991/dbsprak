@@ -1,8 +1,8 @@
-In den Papern zu diesem Thema wurden meist Beispiele aus dem medizinischen Bereich mit Ärzten, Patienten, Untersuchungen und mehr gewählt. Wir haben uns für ein anderes Feld entschieden: den Flugverkehr. Hier existieren viele verschiedene Daten, die je nach Angreifermodell und Nutzer zu schützen sind. Eine Fluggesellschaft ist zum Beispiel daran interessiert, welche Reisende ihr Kontingent an Gepäckstücken beziehungsweise Gepäckgewicht überschreiten, um ihnen beim nächsten Flug ein teureres Ticket verkaufen zu können. Andererseits soll aber nicht für jeden erkennbar sein wer, wann, wohin geflogen ist.
+In den Papern zu diesem Thema wurden meist Beispiele aus dem medizinischen Bereich mit Ärzten, Patienten, Untersuchungen und mehr gewählt. Wir haben uns für ein anderes Feld entschieden: den Flugverkehr. Hier existieren viele verschiedene Daten, die je nach Angreifermodell und Nutzer zu schützen sind. Eine Fluggesellschaft ist zum Beispiel daran interessiert, welche Reisende ihr Kontingent an Gepäckstücken beziehungsweise Gewicht überschreiten, um ihnen beim nächsten Flug ein teureres Ticket verkaufen zu können. Andererseits soll aber nicht für jeden erkennbar sein wer, wann, wohin geflogen ist.
 
-Die von uns erdachte Datenbank besteht aus 6 Tabellen: \textit{Buchungen}, \textit{Gepaeck}, \textit{Fluege}, \textit{Reisende}, \textit{Flugzeuge} und \textit{Piloten}. Die jeweils enthaltenen Attribute sind in den Tabellen \ref{tab:SchemaBuchungen}-\ref{tab:SchemaPiloten} zu sehen. Grau hinterlegte Attribute, häufig Fremdschlüssel, müssen unserer Meinung nach besonders geschützt werden und werden deshalb auf dem ``SmartUSB''-Stick gespeichert.
+Die von uns erdachte Datenbank besteht aus 6 Tabellen: \textit{Buchungen}, \textit{Gepaeck}, \textit{Fluege}, \textit{Reisende}, \textit{Flugzeuge} und \textit{Piloten}. Die jeweils enthaltenen Attribute sind in den Tabellen \ref{tab:SchemaBuchungen} bis \ref{tab:SchemaPiloten} zu sehen. Grau hinterlegte Attribute, häufig Fremdschlüssel, müssen unserer Meinung nach besonders geschützt werden und werden deshalb auf dem ``SmartUSB''-Stick gespeichert.
 
-\begin{table}[htbp]
+\begin{table}[H]
 \centering
 \begin{tabular}{|l|}
 \hline
@@ -19,7 +19,7 @@ Flug\\
 \label{tab:SchemaBuchungen}
 \end{table}
 
-\begin{table}[htbp]
+\begin{table}[H]
 \centering
 \begin{tabular}{|l|}
 \hline
@@ -36,7 +36,7 @@ Abgabe\\
 \label{tab:SchemaGepaeck}
 \end{table}
 
-\begin{table}[htbp]
+\begin{table}[H]
 \centering
 \begin{tabular}{|l|}
 \hline
@@ -55,7 +55,7 @@ Flugzeug\\
 \label{tab:SchemaFluege}
 \end{table}
 
-\begin{table}[htbp]
+\begin{table}[H]
 \centering
 \begin{tabular}{|l|}
 \hline
@@ -73,7 +73,7 @@ Geschlecht\\
 \label{tab:SchemaReisende}
 \end{table}
 
-\begin{table}[htbp]
+\begin{table}[H]
 \centering
 \begin{tabular}{|l|}
 \hline
@@ -89,7 +89,7 @@ Sitzplaetze\\
 \label{tab:SchemaFlugzeuge}
 \end{table}
 
-\begin{table}[htbp]
+\begin{table}[H]
 \centering
 \begin{tabular}{|l|}
 \hline
@@ -107,7 +107,7 @@ Geschlecht\\
 \label{tab:SchemaPiloten}
 \end{table}
 
-Visualisiert man die Fremdschlüsselbeziehungen zwischen den Tabellen mit Pfeilen ergibt sich die Struktur in Abbildung \ref{fig:Datenmodell}. Die hier verwendete Datenbank unterscheidet sich strukturell stark von dem Beispiel das die ``GhostDB''-Autoren verwendeten. Am auffälligsten ist das Vorhandensein von zwei ``Wurzeln''. In den zugrunde liegenden Arbeiten werden explizit nur Datenbanken in Baumstrukur, das heißt mit einer Wurzel, vorgesehen. Dies sahen wir als Herausforderung das ``GhostDB''-System hier zu erproben. Erstaunlicherweise entstanden dadurch kaum Probleme. In der Anfragebearbeitung waren aber teilweise zusätzliche Schritte nötig.
+Visualisiert man die Fremdschlüsselbeziehungen zwischen den Tabellen mit Pfeilen ergibt sich die Struktur in Abbildung \ref{fig:Datenmodell}. Die hier verwendete Datenbank unterscheidet sich strukturell stark von dem Beispiel, dass die ``GhostDB''-Autoren verwendeten. Am Auffälligsten ist das Vorhandensein von zwei ``Wurzeln''. In den zugrunde liegenden Arbeiten werden explizit nur Datenbanken in Baumstrukur, das heißt mit einer Wurzel, vorgesehen. Dies sahen wir als Herausforderung das ``GhostDB''-System hieran zu erproben. Erstaunlicherweise entstanden dadurch kaum Probleme. In der Anfragebearbeitung waren aber teilweise zusätzliche Schritte nötig.
 
 \begin{figure}[htbp]
 \centering
