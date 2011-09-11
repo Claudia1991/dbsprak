@@ -78,61 +78,57 @@ Die nun vorhandenen GepaeckIds können mittels der Schnittmenge verringert werden
   \label{fig:pre1}%
 \end{figure}%
 
-Im Nachfolgenden müssen alle ``Statements'' in der ``WHERE-Clause'' erfüllt werden. Dies geschieht unter zu Hilfenahme von Semi-Joins und diese werden wiederum durch ``Subtree Key Tables''(SKT) unterstützt. Die ``Where Clause'', die wir berechnen wollen ist folgende: G.Reisender=R.ReisenderID. Im SKT für Gepaeck (Tabelle \ref{tab:SKTGepaeck}) werden nun die ReisendenIDs zu den entsprechenden GepaeckIDs herausgesucht, dies geschieht mittels SJoin.\textbf{TODO: kann man das so schreiben ??}
+Im Nachfolgenden müssen alle ``Statements'' in der ``WHERE-Clause'' erfüllt werden. Dies geschieht unter zu Hilfenahme von Semi-Joins und diese werden wiederum durch ``Subtree Key Tables'' (SKT) unterstützt. Die ``WHERE-Clause'', die wir berechnen wollen ist folgende: G.Reisender=R.ReisenderID. Im SKT für Gepaeck (Tabelle \ref{tab:SKTGepaeck}) werden nun die ReisendenIDs zu den entsprechenden GepaeckIDs herausgesucht und mit dem SJoin zusammengeführt.\textbf{TODO: kann man das so schreiben ??}
 
-Da wir nun ReisendeIDs haben kann die nächste Bedingung in Angriff genommen werden: B.Reisender=R.ReisenderID. Hierfür werden ReisendeIDs auf Basis der BuchungsIDs benötigt. Die Selektion mittels GepäckIDs entfällt da diese keine direkte Verbindung zu den Buchungen haben. Da wir schon die Piloten vorhin als selektives Mittel verwendet haben tun wir dies diesmal auch wieder mittels eines ``Climbing Index'' auf den BuchungsIDs. Da der ``Climbing Index'' als Ergebnis eine Liste von Listen liefert, wir für den SKT aber nur eine Liste verwenden können, müssen wir die erhaltenen Listen in der Liste mittels Vereinigung zusammenführen. Als Ergebnis würden wir folgendes erhalten: B08, B11, B18, B19, B20, B21.
+Da wir nun ReisendeIDs haben kann die nächste Bedingung in Angriff genommen werden: B.Reisender=R.ReisenderID. Hierfür werden ReisendeIDs auf Basis der BuchungsIDs benötigt. Die Selektion mittels GepäckIDs entfällt da diese keine direkte Verbindung zu den Buchungen haben. Da wir schon die Piloten vorhin als selektives Mittel verwendet haben tun wir dies noch einamal mittels eines ``Climbing Index'' auf den BuchungsIDs. Der ``Climbing Index'' liefert uns als Resultat eine Liste von Listen. Diese können wir für den SKT aber nicht verwenden, da dieser nur eine Liste als Eingabe akzeptiert. Die Die Lösung ist das Zusammenführen der einzelnen Liste zu einer Liste mit der Operation Vereinigung. Als Ergebnis wird folgendes geliefert: B08, B11, B18, B19, B20, B21.
 
-\textbf{TODO: bessere Skalierung für das Bild wählen}
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=1\textwidth]{img/Pre2.pdf}
-  \caption{Teilergebnis Pre-Filtering 2}
-  \label{fig:pre2}
-\end{figure}
+\begin{figure}[htbp]%
+  \centering%
+  \includegraphics[width=1\linewidth]{img/Pre2.pdf}%
+  \caption{Teilergebnis Pre-Filtering 2}%
+  \label{fig:pre2}%
+\end{figure}%
 
-Die so erhaltenen BuchungsIDs werden analog zu den GepaeckIDs im vorherigen Schritt benutzt um ReisendeIDs zu berechnen. Um beide Bedingungen zu erfüllen muss nun noch der Durchschnitt der beiden ReisendenIDs durchgeführt werden. Damit wären beide Bedingungen erfüllt. Mit diesem Ergebnis kann dann weiter gearbeitet werden.
+Die so erhaltenen BuchungsIDs werden analog zu den GepaeckIDs im vorherigen Schritt benutzt um ReisendeIDs zu berechnen. Um beide Bedingungen zu erfüllen muss nun noch der Durchschnitt der beiden ReisendeIDs durchgeführt werden. Damit wären beide Bedingungen erfüllt. Mit diesem Resultat kann dann weiter gearbeitet werden.
 
-\textbf{TODO: bessere Skalierung für das Bild wählen}
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=1\textwidth]{img/Pre3.pdf}
-  \caption{Teilergebnis Pre-Filtering 3}
-  \label{fig:pre3}
-\end{figure}
+\begin{figure}[htbp]%
+  \centering%
+  \includegraphics[width=1\linewidth]{img/Pre3.pdf}%
+  \caption{Teilergebnis Pre-Filtering 3}%
+  \label{fig:pre3}%
+\end{figure}%
 
-Auf dieser entstandenen Datenbasis wird nun ein Bloomfilter gebaut, der für die noch nicht angewandte Selektion verwendet wird. Die fehlende Selektion ist diese: R.Geschlecht='M'. Die Selektion wird erst jetzt angewandt, da sie sonst vorher in den beiden Joins die zu bearbeitenden Datenmengen erhöht hätte. Durch den späteren Einsatz können die Datenmengen geringer gehalten werden und der Rechenaufwand ist somit geringer.
+Auf dieser entstandenen Datenbasis wird nun ein Bloomfilter gebaut, der für die noch nicht angewandte Selektion verwendet wird. Die fehlende Selektion ist: R.Geschlecht='M'. Die Selektion wird erst jetzt angewandt, da sie sonst vorher in den beiden Joins die zu bearbeitenden Datenmengen erhöht hätte. Durch den späteren Einsatz können die Datenmengen geringer gehalten werden und der Rechenaufwand ist somit geringer.
 
-\textbf{TODO: bessere Skalierung für das Bild wählen}
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=1\textwidth]{img/Pre4.pdf}
-  \caption{Teilergebnis Pre-Filtering 4}
-  \label{fig:pre4}
-\end{figure}
+\begin{figure}[htbp]%
+  \centering%
+  \includegraphics[width=1\textwidth]{img/Pre4.pdf}%
+  \caption{Teilergebnis Pre-Filtering 4}%
+  \label{fig:pre4}%
+\end{figure}%
 
-Als Abschluss müssen nur noch die entsprechenden Projektionen angewendet werden. Dies geschieht mittels eines MJoins. Dieser benötigt aber nochmals alle ReisendenIDs mit der Eigenschaft das das Geschlecht männlich ist. Bei dieser Anfrage werden aber nicht nur die ReisendenIDs benötigt, sondern auch die Attribute für Vorname und Name. Als Ergebnis kann dann folgendes ausgegeben werden: \{$\langle$R04,Doru,Davidovici,Romänisch$\rangle$\}.
+Als Abschluss müssen nur noch die entsprechenden Projektionen angewendet werden. Dies geschieht mittels eines MJoins. Dieser benötigt aber nochmals alle ReisendeIDs mit der Eigenschaft das das Geschlecht männlich ist. Bei dieser Anfrage werden aber nicht nur die ReisendeIDs benötigt, sondern auch die Attribute für Vorname und Name. Als Ergebnis kann dann folgendes ausgegeben werden: \{$\langle$R04,Doru,Davidovici,Romänisch$\rangle$\}.
 
-\textbf{TODO: bessere Skalierung für das Bild wählen}
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=1\textwidth]{img/Pre5.pdf}
-  \caption{Teilergebnis Pre-Filtering 5}
-  \label{fig:pre5}
-\end{figure}
+\begin{figure}[H]%
+  \centering%
+  \includegraphics[width=1\textwidth]{img/Pre5.pdf}%
+  \caption{Teilergebnis Pre-Filtering 5}%
+  \label{fig:pre5}%
+\end{figure}%
 
 Fügt man die einzelnen Schritte zusammen entsteht folgender Ausführungsplan für das Prefiltering:
 
-\textbf{TODO: bessere Skalierung für das Bild wählen}
-\begin{figure}[htbp]
-  \centering
-  \includegraphics[width=1\textwidth]{img/Pre-Filtering.pdf}
-  \caption{Pre-Filtering QEP}
-  \label{fig:pre}
-\end{figure}
 
-Die einzelnen ``Methoden'' die zur Berechnung verwendet wurden kann man sich unter der Rubrik Query Excecution Plans noch einmal genauer ansehen. Auf den ersten Blick scheint die Lösung des Prefiltering optimal zu sein, da man schon im Vorfeld viele Daten \textbf{TODO: ist Daten das Richtige Wort ???} aus der Berechnung der Joins herausnehmen kann und somit den Aufwand verringert.
+\begin{figure}[H]%
+  \centering%
+  \includegraphics[width=1\textwidth]{img/Pre-Filtering.pdf}%
+  \caption{Pre-Filtering QEP}%
+  \label{fig:pre}%
+\end{figure}%
 
-Das Problem an dieser Strategie ist allerdings, dass bei zu geringer Selektivität der unsicheren ``Selektionen'' zu wenige Tupel im Vorfeld aussortiert werden und somit ein großer Vorteil des Prefilterings verschwindet. Eine andere Alternative, die dem eben angesprochenen Effekt nicht so stark unterliegt ist das Postfiltering.
+Die einzelnen ``Methoden'' die zur Berechnung verwendet wurden kann man sich unter Kapitel ~\ref{chp:Query Execution Plans} noch einmal genauer ansehen. Auf den ersten Blick scheint die Lösung des Prefilterings optimal zu sein, da man schon im Vorfeld viele Daten \textbf{TODO: ist Daten das Richtige Wort ???} aus der Berechnung der Joins herausnehmen kann und somit den Aufwand verringert.
+
+Das Problem an dieser Strategie ist allerdings, dass bei zu geringer Selektivität Selektionen zu wenige Tupel im Vorfeld aussortiert werden und somit ein großer Vorteil des Prefilterings verschwindet. Eine andere Alternative, die dem eben angesprochenen Effekt nicht so stark unterliegt ist das Postfiltering.
 
 \section{Postfiltering}
 
