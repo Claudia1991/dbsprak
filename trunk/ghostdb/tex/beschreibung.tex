@@ -185,7 +185,7 @@ Im folgenden wird ein SemiJoin angewendet, der unter Zuhilfenahme eines ``Subtre
   \label{fig:post4}
 \end{figure}
 
-Die beiden Mengen von ReisendeIDs werden nun mittels Durchschnitt miteinander vereint. Dieses Ergebnis wird nachfolgend durch einen Bloomfilter geschickt, der durch die Selektion des Geschlechtes auf die Reisenden (Reisender.Geschlecht='M') im unsicheren Bereich erstellt wurde. Die nun erhaltenen IDs werden wie im Prefiltering mittels MJoin zusammengefügt und als Ergebnis erhält man: \{$\langle$R04,Doru,Davidovici,Romänisch$\rangle$\}.
+Die beiden Mengen von ReisendeIDs werden nun mittels Durchschnitt miteinander vereint. Aus diesem Ergebnis wird nachfolgend einen Bloomfilter gebaut. Die Ergebnisse die durch die Selektion des Geschlechtes auf die Reisenden (Reisender.Geschlecht='M') im unsicheren Bereich erhaltenen Daten werden durch diesen Filter geschickt. Die nun erhaltenen IDs werden wie im Prefiltering mittels MJoin zusammengefügt und als Ergebnis erhält man: \{$\langle$R04,Doru,Davidovici,Romänisch$\rangle$\}.
 
 \textbf{TODO: bessere Skalierung für das Bild wählen}
 \begin{figure}[htbp]
