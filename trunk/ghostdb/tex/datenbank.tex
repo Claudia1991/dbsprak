@@ -1,3 +1,7 @@
+In den Papern zu diesem Thema wurden meist Beispiele aus dem medizinischen Bereich mit Ärzten, Patienten, Untersuchungen und mehr gewählt. Wir haben uns für ein anderes Feld entschieden: den Flugverkehr. Hier existieren viele verschiedene Daten, die je nach Angreifermodell und Nutzer zu schützen sind. Eine Fluggesellschaft ist zum Beispiel daran interessiert, welche Reisende ihr Kontingent an Gepäckstücken beziehungsweise Gepäckgewicht überschreiten, um ihnen beim nächsten Flug ein teureres Ticket verkaufen zu können. Andererseits soll aber nicht für jeden erkennbar sein wer, wann, wohin geflogen ist.
+
+Die von uns erdachte Datenbank besteht aus 6 Tabellen: Buchungen, Gepaeck, Fluege, Reisende, Flugzeuge und Piloten. Die jeweils enthaltenen Attribute sind in den Tabellen \ref{tab:SchemaBuchungen}-\ref{tab:SchemaPiloten} zu sehen. Grau hinterlegte Attribute, häufig Fremdschlüssel, müssen unserer Meinung nach besonders geschützt werden und werden deshalb auf dem ``SmartUSB''-Stick gespeichert.
+
 \begin{table}[htbp]
 \centering
 \begin{tabular}{|l|}
@@ -14,7 +18,7 @@ Flug\\
 \caption{Schema Buchungen}
 \label{tab:SchemaBuchungen}
 \end{table}
-%
+
 \begin{table}[htbp]
 \centering
 \begin{tabular}{|l|}
@@ -31,7 +35,7 @@ Abgabe\\
 \caption{Schema Gepaeck}
 \label{tab:SchemaGepaeck}
 \end{table}
-%
+
 \begin{table}[htbp]
 \centering
 \begin{tabular}{|l|}
@@ -50,7 +54,7 @@ Flugzeug\\
 \caption{Schema Fluege}
 \label{tab:SchemaFluege}
 \end{table}
-%
+
 \begin{table}[htbp]
 \centering
 \begin{tabular}{|l|}
@@ -68,7 +72,7 @@ Geschlecht\\
 \caption{Schema Reisende}
 \label{tab:SchemaReisende}
 \end{table}
-%
+
 \begin{table}[htbp]
 \centering
 \begin{tabular}{|l|}
@@ -84,7 +88,7 @@ Sitzplaetze\\
 \caption{Schema Flugzeuge}
 \label{tab:SchemaFlugzeuge}
 \end{table}
-%
+
 \begin{table}[htbp]
 \centering
 \begin{tabular}{|l|}
@@ -102,7 +106,18 @@ Geschlecht\\
 \caption{Schema Piloten}
 \label{tab:SchemaPiloten}
 \end{table}
-%
+
+Visualisiert man die Fremdschlüsselbeziehungen zwischen den Tabellen mit Pfeilen ergibt sich die Struktur in Abbildung \ref{fig:Datenmodell}. Die hier verwendete Datenbank unterscheidet sich strukturell stark von dem Beispiel das die ``GhostDB''-Autoren verwendeten. Am auffälligsten ist das Vorhandensein von zwei ``Wurzeln''. In den zugrunde liegenden Arbeiten werden explizit nur Datenbanken in Baumstrukur, das heißt mit einer Wurzel, vorgesehen. Dies sahen wir als Herausforderung das ``GhostDB''-System hier zu erproben. Erstaunlicherweise entstanden dadurch kaum Probleme. In der Anfragebearbeitung waren aber teilweise zusätzliche Schritte nötig.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=1.00\textwidth]{img/Datenmodell.pdf}
+\caption{Datenmodell}
+\label{fig:Datenmodell}
+\end{figure}
+
+Um die erdachten Strukturen, ``Subtree Key Table'' und ``Climbing Index'' adäquat vorzustellen, haben wir die ausgedachten Tabellen mit Daten ausgefüllt. Dies ist in den Tabllen \ref{tab:Buchungen} bis \ref{tab:Piloten} dargestellt. Einige Tabellen enthalten Attribute, die nicht frei erfunden sind, insbesondere Personen und Orte. Die verwendeten Quellen dazu sind im Anhang aufgelistet.
+
 \begin{table}[htbp]
 \centering
 \begin{tabular}{|c|c|c|c|c|}
@@ -163,7 +178,7 @@ B25&2011-08-23&416&F09&R08\\
 \caption{Buchungen}
 \label{tab:Buchungen}
 \end{table}
-%
+
 \begin{table}[htbp]
 \centering
 \begin{tabular}{|c|c|c|c|c|}
@@ -224,7 +239,7 @@ G25&F15&16&2011-08-29 17:55&R13\\
 \caption{Gepaeck}
 \label{tab:Gepaeck}
 \end{table}
-%
+
 \begin{sidewaystable}[htbp]
 \centering
 \begin{tabular}{|c|c|c|c|c|c|c|}
@@ -265,7 +280,7 @@ F15&Berlin (SXF)&Oslo (OSL)&882&2011-08-30 15:20&A01&P10\\
 \caption{Fluege}
 \label{tab:Fluege}
 \end{sidewaystable}
-%
+
 \begin{sidewaystable}[htbp]
 \centering
 \begin{tabular}{|c|c|c|c|c|c|}
@@ -306,7 +321,7 @@ R15&Harriet&Quimby&F&1980-05-01&US-Amerikanisch\\
 \caption{Reisende}
 \label{tab:Reisende}
 \end{sidewaystable}
-%
+
 \begin{table}[htbp]
 \centering
 \begin{tabular}{|c|c|c|c|}
@@ -327,7 +342,7 @@ A05&Bombardier CRJ1000&2491&100\\
 \caption{Flugzeuge}
 \label{tab:Flugzeuge}
 \end{table}
-%
+
 \begin{table}[htbp]
 \centering
 \begin{tabular}{|c|c|c|c|c|c|}
