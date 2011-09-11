@@ -8,8 +8,7 @@ Die Idee beim Prefiltering ist, dass alle Selektionen zuerst ausgeführt werden u
 
 \section{Postfiltering}
 
-Beim Postfiltering wird ein anderes Verfahren verwendet. Es wird hier zuerst der Join auf dem sicheren Teil der ``GhostDB'' ausgeführt. Im folgenden werden die möglichen Selektionen des unsicheren Bereiches zu den erzeugten Ergebnissen hinzugefügt. Dies geschieht entweder durch das Erzeugen eines Blommfilters aus diesen Daten, der dann für die Filterung der bisherigen Ergebnisse benutzt wird oder genau umgekehrt. Im umgedrehten Fall wird der Bloomfilter aus den vorhandenen Resultaten gebildet und die Daten der Selektion werden mit diesem gefiltert. Die übrig gebliebenen Daten werden dann weiterverabeitet. \textbf{TODO: hier könnte noch mehr kommen}
-
+Beim Postfiltering wird ein anderes Verfahren verwendet. Es wird hier zuerst der Join auf dem sicheren Teil der ``GhostDB'' ausgeführt. Im folgenden werden die möglichen Selektionen des unsicheren Bereiches zu den erzeugten Ergebnissen hinzugefügt. Dies geschieht entweder durch das Erzeugen eines Blommfilters aus diesen Daten, der dann für die Filterung der bisherigen Ergebnisse benutzt wird oder genau umgekehrt. Im umgedrehten Fall wird der Bloomfilter aus den vorhandenen Resultaten gebildet und die Daten der Selektion werden mit diesem gefiltert. Die übrig gebliebenen Daten werden dann weiterverabeitet. 
 Cross-Filtering kann teilweise bessere Ergebnisse erzielen. Es wird versucht die Kardinalität von Zwischenergebnissen des unsicheren Geräts so klein wie möglich zu halten, indem ``Filter'' oder ``Merge''-Operationen mit sicheren Daten so früh wie möglich durchgeführt werden.
 
 Im Nachfolgenden wollen wir anhand eines Beispieles die Funktionsweise der Filter nachvollziehbar machen.
