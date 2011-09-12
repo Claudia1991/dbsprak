@@ -1,4 +1,4 @@
-Die folgenden Beispiele zum Erstellen eines ``Query Execution Plans'' für das Pre- und Postfiltering basieren auf der oben schon vorgestellten Datenbasis und der folgenden Anfrage:
+Die folgenden Beispiele zum Erstellen eines ``Query Execution Plans'' für das ``Pre-'' und ``Postfiltering'' basieren auf der oben schon vorgestellten Datenbasis und der folgenden Anfrage:
 
 \begin{Verbatim}[commandchars=\\\{\}]
 SELECT R.ReisenderID, R.Vorname, R.Name, R.Staatsbuergerschaft
@@ -11,14 +11,14 @@ WHERE R.Geschlecht='M' AND P.Geburtsdatum<1956-08-01 AND G.Gewicht>20
 
 Die genauen Funktionsaufrufe für den gesamten Plan sind jeweils am Ende der Kapitel zu finden.
 \section{Prefiltering}
-Die Idee beim Prefiltering ist, dass alle Selektionen zuerst ausgeführt werden, um die gesamte Datenmenge die bei Joins und Mergeoperationen verwendet werden so gering wie möglich zu halten. Weiterhin wird versucht so viele Selektionen wie möglich auf dem unsicheren Bereich auszuführen, da die Ressourcen hier nicht so beschränkt sind, wie im sicheren Bereich. Selektionen auf Daten die den sicheren Teil der ``GhostDB'' betreffen können allerdings auch nur in diesem ausgeführt werden. Für die Selektionen werden nach Möglichkeit ``Climbing Indices'' verwendet. Die danach folgenden Joins werden dann im sicheren Bereich ausgeführt, hierbei wird meist ein ``Subtree Key Table'' verwendet.
+Die Idee beim ``Prefiltering'' ist, dass alle Selektionen zuerst ausgeführt werden, um die gesamte Datenmenge die bei Joins und Mergeoperationen verwendet werden so gering wie möglich zu halten. Weiterhin wird versucht so viele Selektionen wie möglich auf dem unsicheren Bereich auszuführen, da die Ressourcen hier nicht so beschränkt sind, wie im sicheren Bereich. Selektionen auf Daten die den sicheren Teil der ``GhostDB'' betreffen können allerdings auch nur in diesem ausgeführt werden. Für die Selektionen werden nach Möglichkeit ``Climbing Indices'' verwendet. Die danach folgenden Joins werden dann im sicheren Bereich ausgeführt, hierbei wird meist ein ``Subtree Key Table'' verwendet.
 
 Es wird mit der Auswahl des Gewichts begonnen. Es sollen alle Gepäckstücke gefunden werden, die schwerer als 20kg sind: {G06, G12, G13, G16, G18, G19, G20, G22, G23}. Diese \textit{GepaeckIDs} werden der sicheren Plattform übergeben. Es folgt die Selektion auf den Geburtsdaten der Piloten. Diese Eigenschaft ist versteckt und muss daher auf der sicheren Plattform ausgeführt werden. Es wird ein ``Climbing Index'' verwendet, um \textit{GepaeckIDs} zu erhalten:  \{\{\}, \{G07, G18, G19, G20, G25\}, \{\}, \{\}\}. Die beiden Listen werden mittels Merge zusammengeführt: \{G18, G19, G20\}
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=1\linewidth]{img/Pre1}
-  \caption{Teilergebnis Pre-Filtering 1}
+  \caption{Teilergebnis Prefiltering 1}
   \label{fig:pre1}
 \end{figure}
 
@@ -27,7 +27,7 @@ Von \textit{Piloten} aus wird analog der Weg über \textit{Buchungen} beschritten
 \begin{figure}[H]
   \centering
   \includegraphics[width=1\linewidth]{img/Pre2.pdf}
-  \caption{Teilergebnis Pre-Filtering 2}
+  \caption{Teilergebnis Prefiltering 2}
   \label{fig:pre2}
 \end{figure}
 
@@ -36,7 +36,7 @@ Unter Zuhilfenahme der entsprechenden ``Subtree Key Tables'' wird jeweils die Ve
 \begin{figure}[H]
   \centering
   \includegraphics[width=1\linewidth]{img/Pre3.pdf}
-  \caption{Teilergebnis Pre-Filtering 3}
+  \caption{Teilergebnis Prefiltering 3}
   \label{fig:pre3}
 \end{figure}
 
@@ -45,7 +45,7 @@ Für die entstandene Liste wird ein Bloom-Filter erzeugt. Die noch ausstehende Se
 \begin{figure}[H]
   \centering
   \includegraphics[width=1\linewidth]{img/Pre4.pdf}
-  \caption{Teilergebnis Pre-Filtering 4}
+  \caption{Teilergebnis Prefiltering 4}
   \label{fig:pre4}
 \end{figure}
 
@@ -54,20 +54,20 @@ Mittels MJoin werden die noch verbleibenden Projektionen ausgeführt: \\\{$\langl
 \begin{figure}[H]
   \centering
   \includegraphics[width=1\linewidth]{img/Pre5.pdf}
-  \caption{Teilergebnis Pre-Filtering 5}
+  \caption{Teilergebnis Prefiltering 5}
   \label{fig:pre5}
 \end{figure}
 
-Fügt man die einzelnen Schritte zusammen, entsteht folgender Ausführungsplan für das Prefiltering:
+Fügt man die einzelnen Schritte zusammen, entsteht folgender Ausführungsplan für das ``Prefiltering'':
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=1\linewidth]{img/Pre-Filtering.pdf}
-  \caption{Pre-Filtering QEP}
+  \caption{Prefiltering QEP}
   \label{fig:pre}
 \end{figure}
 
-Unter Verwendung der in \cite{ghostdb1} definierten Operanden, lässt sich der Prefiltering Plan auch wie folgt aufschreiben:
+Unter Verwendung der in \cite{ghostdb1} definierten Operanden, lässt sich der ``Prefiltering'' Plan auch wie folgt aufschreiben:
 
 \begin{enumerate}[1]
 \item Vis(Q,Gepaeck,G.GepaeckID) = \{G06, G12, G13, G16, G18, G19, G20, G22, G23\}
@@ -86,17 +86,17 @@ $\langle$R03,Francis,Chichester$\rangle$, $\langle$R04,Doru,Davidovici$\rangle$,
 \item MJoin(12,11,$\langle$R.ReisenderID,R.Staatsbuergerschaft$\rangle$,8) = \\\{$\langle$R04,Doru,Davidovici,Romänisch$\rangle$\}
 \end{enumerate}
 
-Das Problem an dieser Strategie ist allerdings, dass bei zu geringer Selektivität der sichtbaren Selektionen zu wenige Tupel im Vorfeld aussortiert werden und somit ein großer Vorteil des Prefilterings verschwindet. Eine Alternative, die diesem Effekt entgegen wirkt ist das Postfiltering.
+Das Problem an dieser Strategie ist allerdings, dass bei zu geringer Selektivität der sichtbaren Selektionen zu wenige Tupel im Vorfeld aussortiert werden und somit ein großer Vorteil des ``Prefilterings'' verschwindet. Eine Alternative, die diesem Effekt entgegen wirkt ist das ``Postfiltering''.
 
 \section{Postfiltering}
-Beim Postfiltering werden zuerst alle Selektionen ausgeführt und mittels Joins zusammengefasst, die auf den sicheren Bereich zugreifen. Erst danach werden unter Verwendung von Bloom-Filtern die Selektionen des unsicheren Bereiches hinzugefügt.
+Beim ``Postfiltering'' werden zuerst alle Selektionen ausgeführt und mittels Joins zusammengefasst, die auf den sicheren Bereich zugreifen. Erst danach werden unter Verwendung von Bloom-Filtern die Selektionen des unsicheren Bereiches hinzugefügt.
 
 Für unser Beispiel heißt dies, dass zuerst die Selektion auf dem Geburtsdatum des Piloten ausgeführt wird. Es wird der ``Climbing Index'' verwendet, um \textit{GepackIDs} zu erhalten: \{\{\}, \{G07, G18, G19, G20, G25\}, \{\}, \{\}\}.
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=1\linewidth]{img/Post1.pdf}
-  \caption{Teilergebnis Post-Filtering 1}
+  \caption{Teilergebnis Postfiltering 1}
   \label{fig:post1}
 \end{figure}
 
@@ -105,7 +105,7 @@ Anschließend wird ein ``Subtree Key Table'' genutzt, um passende \textit{Reisend
 \begin{figure}[H]
   \centering
   \includegraphics[width=1\textwidth]{img/Post2.pdf}
-  \caption{Teilergebnis Post-Filtering 2}
+  \caption{Teilergebnis Postfiltering 2}
   \label{fig:post2}
 \end{figure}
 
@@ -114,7 +114,7 @@ Das unsichere Gerät liefert die Gepäckstücke, die schwerer als 20 Kilogramm sind
 \begin{figure}[H]
   \centering
   \includegraphics[width=1\textwidth]{img/Post3.pdf}
-  \caption{Teilergebnis Post-Filtering 3}
+  \caption{Teilergebnis Postfiltering 3}
   \label{fig:post3}
 \end{figure}
 
@@ -123,7 +123,7 @@ Mittels ``Climbing Index'' ist der Schritt von \textit{Pilot.Geburtsdatum} auf \
 \begin{figure}[H]
   \centering
   \includegraphics[width=1\textwidth]{img/Post4.pdf}
-  \caption{Teilergebnis Post-Filtering 4}
+  \caption{Teilergebnis Postfiltering 4}
   \label{fig:post4}
 \end{figure}
 
@@ -132,7 +132,7 @@ Aus dem Durchschnitt beider Listen von \textit{ReisenderIDs} wird ein Bloom-Filt
 \begin{figure}[H]
   \centering
   \includegraphics[width=1\textwidth]{img/Post5.pdf}
-  \caption{Teilergebnis Post-Filtering 5}
+  \caption{Teilergebnis Postfiltering 5}
   \label{fig:post5}
 \end{figure}
 
@@ -141,11 +141,11 @@ Fügt man alle Teile zusammen, erhält man den kompletten Ablaufplan für unsere An
 \begin{figure}[H]
   \centering
   \includegraphics[width=1\textwidth]{img/Post-Filtering.pdf}
-  \caption{Post-Filtering QEP}
+  \caption{Postfiltering QEP}
   \label{fig:post}
 \end{figure}
 
-Unter Verwendung der in \cite{ghostdb1} definierten Operanden, lässt sich der Postfiltering Plan auch wie folgt aufschreiben:
+Unter Verwendung der in \cite{ghostdb1} definierten Operanden, lässt sich der ``Postfiltering'' Plan auch wie folgt aufschreiben:
 
 \begin{enumerate}[1]
 \item CI(P.Geburtsdatum,<1956-08-01,G.GepaeckID) = \{\{\}, \{G07, G18, G19, G20, G25\}, \{\}, \{\}\}
