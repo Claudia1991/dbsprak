@@ -4,7 +4,7 @@ Das System ``GhostDB'' hat das Problem, dass alle Berechnungen die Bezug auf die
 
 \section{Prefiltering}
 
-Die Idee beim Prefiltering ist, dass alle Selektionen zuerst ausgeführt werden um die gesamte Datenmenge die bei Joins und Mergeoperationen verwendet werden so gering wie möglich zu halten. Weiterhin wird versucht so viele Selektionen wie möglich auf dem unsicheren Bereich auszuführen, da die Ressourcen hier nicht so beschränkt sind, wie im sicheren Bereich. Selektionen auf Daten die den sicheren Teil der ``GhostDB'' betreffen können allerdings auch nur in diesem ausgeführt werden. Für die Selektionen werden nach Möglichkeit ``Climbing'' Indizes verwendet. Die danach folgenden Joins werden dann im sicheren Bereich ausgeführt, hierbei wird dann meist ein ``Subtree Key Table'' verwendet.
+Die Idee beim Prefiltering ist, dass alle Selektionen zuerst ausgeführt werden um die gesamte Datenmenge die bei Joins und Mergeoperationen verwendet werden so gering wie möglich zu halten. Weiterhin wird versucht so viele Selektionen wie möglich auf dem unsicheren Bereich auszuführen, da die Ressourcen hier nicht so beschränkt sind, wie im sicheren Bereich. Selektionen auf Daten die den sicheren Teil der ``GhostDB'' betreffen können allerdings auch nur in diesem ausgeführt werden. Für die Selektionen werden nach Möglichkeit ``Climbing Indices''  verwendet. Die danach folgenden Joins werden dann im sicheren Bereich ausgeführt, hierbei wird dann meist ein ``Subtree Key Table'' verwendet.
 
 \section{Postfiltering}
 
