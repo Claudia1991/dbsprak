@@ -22,7 +22,7 @@ Es wird mit der Auswahl des Gewichts begonnen. Es sollen alle Gepäckstücke gefun
   \label{fig:pre1}
 \end{figure}
 
-Von Piloten aus wird analog der Weg über Buchungen beschritten. ``Climbing Index'': \{\{\}, \{B08, B11, B18, B19, B20, B21\}, \{\}, \{\}\}, Merge: \{B08, B11, B18, B19, B20, B21\}.
+Von \textit{Piloten} aus wird analog der Weg über \textit{Buchungen} beschritten. ``Climbing Index'': \{\{\}, \{B08, B11, B18, B19, B20, B21\}, \{\}, \{\}\}, Merge: \{B08, B11, B18, B19, B20, B21\}.
 
 \begin{figure}[H]
   \centering
@@ -58,7 +58,7 @@ Mittels MJoin werden die noch verbleibenden Projektionen ausgeführt: \\\{$\langl
   \label{fig:pre5}
 \end{figure}
 
-Fügt man die einzelnen Schritte zusammen entsteht folgender Ausführungsplan für das Prefiltering:
+Fügt man die einzelnen Schritte zusammen, entsteht folgender Ausführungsplan für das Prefiltering:
 
 \begin{figure}[H]
   \centering
@@ -91,7 +91,7 @@ Das Problem an dieser Strategie ist allerdings, dass bei zu geringer Selektivitä
 \section{Postfiltering}
 Beim Postfiltering werden zuerst alle Selektionen ausgeführt und mittels Joins zusammengefasst, die auf den sicheren Bereich zugreifen. Erst danach werden unter Verwendung von Bloom-Filtern die Selektionen des unsicheren Bereiches hinzugefügt.
 
-Für unser Beispiel heißt dies, dass zuerst die Selektion auf dem Geburtsdatum des Piloten ausgeführt wird. Es wird der ``Climbing Index'' verwendet um \textit{GepackIDs} zu erhalten: \{\{\}, \{G07, G18, G19, G20, G25\}, \{\}, \{\}\}.
+Für unser Beispiel heißt dies, dass zuerst die Selektion auf dem Geburtsdatum des Piloten ausgeführt wird. Es wird der ``Climbing Index'' verwendet, um \textit{GepackIDs} zu erhalten: \{\{\}, \{G07, G18, G19, G20, G25\}, \{\}, \{\}\}.
 
 \begin{figure}[H]
   \centering
@@ -136,7 +136,7 @@ Aus dem Durchschnitt beider Listen von \textit{ReisenderIDs} wird ein Bloom-Filt
   \label{fig:post5}
 \end{figure}
 
-Fügt man alle Teile zusammen erhält man den kompletten Ablaufplan für unsere Anfrage.
+Fügt man alle Teile zusammen, erhält man den kompletten Ablaufplan für unsere Anfrage:
 
 \begin{figure}[H]
   \centering
