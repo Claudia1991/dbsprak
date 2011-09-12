@@ -53,7 +53,7 @@ Mittels MJoin werden die noch verbleibenden Projektionen ausgeführt: \\\{$\langl
 
 \begin{figure}[H]
   \centering
-  \includegraphics[trim = 0mm 80mm 0mm 20mm, clip, width=\textwidth]{img/Pre5.pdf}
+  \includegraphics[trim = 0mm 50mm 0mm 20mm, clip, width=\textwidth]{img/Pre5.pdf}
   \caption{Teilergebnis Prefiltering 5}
   \label{fig:pre5}
 \end{figure}
@@ -162,6 +162,6 @@ Unter Verwendung der in \cite{ghostdb1} definierten Operanden, lässt sich der ``
 \item BuildBF(11) = BF
 \item Vis(Q,Reisende,R.ReisenderID) = \{R02, R03, R04, R05, R06, R08, R09, R10, R13\}
 \item ProbeBF(BF,13) = \{R04\}
-\item Vis(Q,Reisende,$\langle$R.ReisenderID,R.Vorname,R.Name$\rangle$) = \{$\langle$R02,Mike,Bannister$\rangle$, \\$\langle$R03,Francis,Chichester$\rangle$, $\langle$R04,Doru,Davidovici$\rangle$, $\langle$R05,Eugene Burton,Ely$\rangle$, $\langle$R06,Charles,Fern$\rangle$, $\langle$R08,Ernst,Heinkel$\rangle$, $\langle$R09,Tony,Jannus$\rangle$, \\$\langle$R10,Algene,Key$\rangle$, \\$\langle$R13,Charles,Nungesser$\rangle$\}
-\item MJoin(15,14,$\langle$R.ReisenderID,R.Staatsbuergerschaft$\rangle$,11) = \{$\langle$R04,Doru,Davidovici,Romänisch$\rangle$\}
+\item Vis(Q,Reisende,$\langle$R.ReisenderID,R.Vorname,R.Name$\rangle$) = \{$\langle$R02,Mike,Bannister$\rangle$, \\$\langle$R03,Francis,Chichester$\rangle$, $\langle$R04,Doru,Davidovici$\rangle$, $\langle$R05,Eugene Burton,Ely$\rangle$, \\$\langle$R06,Charles,Fern$\rangle$, $\langle$R08,Ernst,Heinkel$\rangle$, $\langle$R09,Tony,Jannus$\rangle$, $\langle$R10,Algene,Key$\rangle$, \\$\langle$R13,Charles,Nungesser$\rangle$\}
+\item MJoin(15,14,$\langle$R.ReisenderID,R.Staatsbuergerschaft$\rangle$,11) = \\\{$\langle$R04,Doru,Davidovici,Romänisch$\rangle$\}
 \end{enumerate}
