@@ -17,7 +17,7 @@ Es wird mit der Auswahl des Gewichts begonnen. Es sollen alle Gepäckstücke gefun
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=1\linewidth]{img/Pre1}
+  \includegraphics[trim = 0mm 10mm 0mm 20mm, clip, width=\textwidth]{img/Pre1}
   \caption{Teilergebnis Prefiltering 1}
   \label{fig:pre1}
 \end{figure}
@@ -26,7 +26,7 @@ Von \textit{Piloten} aus wird analog der Weg über \textit{Buchungen} beschritten
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=1\linewidth]{img/Pre2.pdf}
+  \includegraphics[trim = 0mm 20mm 0mm 10mm, clip, width=\textwidth]{img/Pre2.pdf}
   \caption{Teilergebnis Prefiltering 2}
   \label{fig:pre2}
 \end{figure}
@@ -35,7 +35,7 @@ Unter Zuhilfenahme der entsprechenden ``Subtree Key Tables'' wird jeweils die Ve
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=1\linewidth]{img/Pre3.pdf}
+  \includegraphics[trim = 0mm 10mm 0mm 0mm, clip, width=\textwidth]{img/Pre3.pdf}
   \caption{Teilergebnis Prefiltering 3}
   \label{fig:pre3}
 \end{figure}
@@ -44,7 +44,7 @@ Für die entstandene Liste wird ein Bloom-Filter erzeugt. Die noch ausstehende Se
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=1\linewidth]{img/Pre4.pdf}
+  \includegraphics[trim = 0mm 20mm 0mm 80mm, clip, width=\textwidth]{img/Pre4.pdf}
   \caption{Teilergebnis Prefiltering 4}
   \label{fig:pre4}
 \end{figure}
@@ -53,7 +53,7 @@ Mittels MJoin werden die noch verbleibenden Projektionen ausgeführt: \\\{$\langl
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=1\linewidth]{img/Pre5.pdf}
+  \includegraphics[trim = 0mm 80mm 0mm 20mm, clip, width=\textwidth]{img/Pre5.pdf}
   \caption{Teilergebnis Prefiltering 5}
   \label{fig:pre5}
 \end{figure}
@@ -62,7 +62,7 @@ Fügt man die einzelnen Schritte zusammen, entsteht folgender Ausführungsplan für
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=1\linewidth]{img/Pre-Filtering.pdf}
+  \includegraphics[trim = 0mm 20mm 0mm 0mm, clip, width=\textwidth]{img/Pre-Filtering.pdf}
   \caption{Prefiltering QEP}
   \label{fig:pre}
 \end{figure}
@@ -91,11 +91,11 @@ Das Problem an dieser Strategie ist allerdings, dass bei zu geringer Selektivitä
 \section{Postfiltering}
 Beim ``Postfiltering'' werden zuerst alle Selektionen ausgeführt und mittels Joins zusammengefasst, die auf den sicheren Bereich zugreifen. Erst danach werden unter Verwendung von Bloom-Filtern die Selektionen des unsicheren Bereiches hinzugefügt.
 
-Für unser Beispiel heißt dies, dass zuerst die Selektion auf dem Geburtsdatum des Piloten ausgeführt wird. Es wird der ``Climbing Index'' verwendet, um \textit{GepackIDs} zu erhalten: \{\{\}, \{G07, G18, G19, G20, G25\}, \{\}, \{\}\}.
+Für unser Beispiel heißt dies, dass zuerst die Selektion auf dem Geburtsdatum des Piloten ausgeführt wird. Es wird der ``Climbing Index'' verwendet, um \textit{GepackIDs} zu erhalten: \{\{\}, \{G07, G18, G19, G20, G22, G23\}, \{\}, \{\}\}.
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=1\linewidth]{img/Post1.pdf}
+  \includegraphics[trim = 0mm 20mm 0mm 10mm, clip, width=\textwidth]{img/Post1.pdf}
   \caption{Teilergebnis Postfiltering 1}
   \label{fig:post1}
 \end{figure}
@@ -104,7 +104,7 @@ Anschließend wird ein ``Subtree Key Table'' genutzt, um passende \textit{Reisend
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=1\textwidth]{img/Post2.pdf}
+  \includegraphics[trim = 0mm 20mm 0mm 40mm, clip, width=\textwidth]{img/Post2.pdf}
   \caption{Teilergebnis Postfiltering 2}
   \label{fig:post2}
 \end{figure}
@@ -113,7 +113,7 @@ Das unsichere Gerät liefert die Gepäckstücke, die schwerer als 20 Kilogramm sind
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=1\textwidth]{img/Post3.pdf}
+  \includegraphics[trim = 0mm 10mm 0mm 10mm, clip, width=\textwidth]{img/Post3.pdf}
   \caption{Teilergebnis Postfiltering 3}
   \label{fig:post3}
 \end{figure}
@@ -122,7 +122,7 @@ Mittels ``Climbing Index'' ist der Schritt von \textit{Pilot.Geburtsdatum} auf \
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=1\textwidth]{img/Post4.pdf}
+  \includegraphics[trim = 0mm 10mm 0mm 0mm, clip, width=\textwidth]{img/Post4.pdf}
   \caption{Teilergebnis Postfiltering 4}
   \label{fig:post4}
 \end{figure}
@@ -131,7 +131,7 @@ Aus dem Durchschnitt beider Listen von \textit{ReisenderIDs} wird ein Bloom-Filt
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=1\textwidth]{img/Post5.pdf}
+  \includegraphics[trim = 0mm 10mm 0mm 0mm, clip, width=1\textwidth]{img/Post5.pdf}
   \caption{Teilergebnis Postfiltering 5}
   \label{fig:post5}
 \end{figure}
@@ -140,7 +140,7 @@ Fügt man alle Teile zusammen, erhält man den kompletten Ablaufplan für unsere An
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=1\textwidth]{img/Post-Filtering.pdf}
+  \includegraphics[trim = 0mm 10mm 0mm 0mm, clip, width=\textwidth]{img/Post-Filtering.pdf}
   \caption{Postfiltering QEP}
   \label{fig:post}
 \end{figure}
@@ -149,12 +149,12 @@ Unter Verwendung der in \cite{ghostdb1} definierten Operanden, lässt sich der ``
 
 \begin{enumerate}[1]
 \item CI(P.Geburtsdatum,<1956-08-01,G.GepaeckID) = \{\{\}, \{G07, G18, G19, G20, G25\}, \{\}, \{\}\}
-\item Merge($\bigcup 1$) = \{G07, G18, G19, G20, G22, G23\}
-\item SJoin(2,$\text{SKT}_{\text{Gepaeck}}$,$\langle$G.GepaeckID,R.ReisenderID$\rangle$) = \{$\langle$G07,R11$\rangle$, $\langle$G18,R07$\rangle$, $\langle$G19,R04$\rangle$, $\langle$G20,R04$\rangle$, $\langle$G22,R02$\rangle$, $\langle$G23,R01$\rangle$\}
+\item Merge($\bigcup 1$) = \{G07, G18, G19, G20, G25\}
+\item SJoin(2,$\text{SKT}_{\text{Gepaeck}}$,$\langle$G.GepaeckID,R.ReisenderID$\rangle$) = \{$\langle$G07,R11$\rangle$, $\langle$G18,R07$\rangle$, $\langle$G19,R04$\rangle$, $\langle$G20,R04$\rangle$, $\langle$G25,R13$\rangle$\}
 \item Vis(Q,Gepaeck,G.GepaeckID) = \{G06, G12, G13, G16, G18, G19, G20, G22, G23\}
 \item BuildBF(4) = BF
-\item ProbeBF(BF,3) = \{$\langle$G18,R07$\rangle$, $\langle$G19,R04$\rangle$, $\langle$G20,R04$\rangle$, $\langle$G22,R02$\rangle$, $\langle$G23,R01$\rangle$\}
-\item Project(6,R.ReisenderID) = \{R07, R04, R04, R02, R01$\rangle$\}
+\item ProbeBF(BF,3) = \{$\langle$G18,R07$\rangle$, $\langle$G19,R04$\rangle$, $\langle$G20,R04$\rangle$\}
+\item Project(6,R.ReisenderID) = \{R07, R04, R04, R02, R01\}
 \item CI(P.Geburtsdatum,<1956-08-01,B.BuchungsID) = \{\{\}, \{B08, B11, B18, B19, B20, B21\}, \{\}, \{\}\}
 \item Merge($\bigcup 8$) = \{B08, B11, B18, B19, B20, B21\}
 \item SJoin(9,$\text{SKT}_{\text{Buchungen}}$,R.ReisenderID) = \{R07, R03, R13, R05, R04, R11\}
