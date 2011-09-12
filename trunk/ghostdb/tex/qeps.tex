@@ -22,7 +22,7 @@ Es wird mit der Auswahl des Gewichts begonnen. Es sollen alle Gepäckstücke gefun
   \label{fig:pre1}
 \end{figure}
 
-Von Piloten aus wird analog der Weg über Buchungen Buchungen beschritten. ``Climbing Index'': \{\{\}, \{B08, B11, B18, B19, B20, B21\}, \{\}, \{\}\}, Merge: \{B08, B11, B18, B19, B20, B21\}.
+Von den Piloten aus wird analog der Weg über Buchungen beschritten. ``Climbing Index'': \{\{\}, \{B08, B11, B18, B19, B20, B21\}, \{\}, \{\}\}, Merge: \{B08, B11, B18, B19, B20, B21\}.
 
 \begin{figure}[H]
   \centering
@@ -49,7 +49,8 @@ Für die entstandene Liste wird ein Bloom-Filter erzeugt. Die noch ausstehende Se
   \label{fig:pre4}
 \end{figure}
 
-Mittels MJoin werden die noch verbleibenden Projektionen ausgeführt: \{$\langle$R04,Doru,Davidovici,Romänisch$\rangle$\}.
+Mittels MJoin werden die noch verbleibenden Projektionen ausgeführt: \\
+ \{$\langle$R04,Doru,Davidovici,Romänisch$\rangle$\}.
 
 \begin{figure}[H]
   \centering
@@ -108,7 +109,7 @@ Es wird ein ``Subtree Key Table'' verwendet, um passende \textit{ReisndeIDs} zu 
   \label{fig:post2}
 \end{figure}
 
-Das unsichere Gerät liefert die Gepcäkstücke, die schwerer als 20 Kilogramm sind. Es wir dein Bloom-Filter erzeugt und auf das vorhandene Zwischenergebnis angewendet: \{$\langle$G07,R11$\rangle$, $\langle$G18,R07$\rangle$, $\langle$G19,R04$\rangle$, $\langle$G20,R04$\rangle$, $\langle$G22,R02$\rangle$, $\langle$G23,R01$\rangle$\}. Da die \textit{GepaeckIDs} nicht mehr benötigt werden, werden nur die \textit{ReisendeIDs} aufgehoben: \{R07, R04, R04, R02, R01\}
+Das unsichere Gerät liefert die Gepäckstücke, die schwerer als 20 Kilogramm sind. Es wir dein Bloom-Filter erzeugt und auf das vorhandene Zwischenergebnis angewendet: \{$\langle$G07,R11$\rangle$, $\langle$G18,R07$\rangle$, $\langle$G19,R04$\rangle$, $\langle$G20,R04$\rangle$, $\langle$G22,R02$\rangle$, $\langle$G23,R01$\rangle$\}. Da die \textit{GepaeckIDs} nicht mehr benötigt werden, werden nur die \textit{ReisendeIDs} aufgehoben: \{R07, R04, R04, R02, R01\}
 
 \begin{figure}[H]
   \centering
@@ -126,7 +127,8 @@ Mittels ``Climbing Index'' ist der Schritt von \textit{Pilot.Geburtsdatum} auf \
   \label{fig:post4}
 \end{figure}
 
-Aus dem Durchschnitt beider Lsiten von \textit{ReisendeIDs} wird ein Bloom-Filter erzeugt. Dieser wird auf das übermittelte Zwischenergebnis des unsicheren Geräts (Reisender.Geschlecht='M') angewendet. Durch Verwendung des MJoin-Operators wird das Ergebnis erzeugt: \{$\langle$R04,Doru,Davidovici,Romänisch$\rangle$\}.
+Aus dem Durchschnitt beider Lsiten von \textit{ReisendeIDs} wird ein Bloom-Filter erzeugt. Dieser wird auf das übermittelte Zwischenergebnis des unsicheren Geräts (Reisender.Geschlecht='M') angewendet. Durch Verwendung des MJoin-Operators wird das Ergebnis erzeugt:\\
+ \{$\langle$R04,Doru,Davidovici,Romänisch$\rangle$\}.
 
 \begin{figure}[H]
   \centering
