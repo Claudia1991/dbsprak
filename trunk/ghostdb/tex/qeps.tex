@@ -91,7 +91,7 @@ Das Problem an dieser Strategie ist allerdings, dass bei zu geringer Selektivitä
 \section{Postfiltering}
 Beim ``Postfiltering'' werden zuerst alle Selektionen ausgeführt und mittels Joins zusammengefasst, die auf den sicheren Bereich zugreifen. Erst danach werden unter Verwendung von Bloom-Filtern die Selektionen des unsicheren Bereiches hinzugefügt.
 
-Für unser Beispiel heißt dies, dass zuerst die Selektion auf dem Geburtsdatum des Piloten ausgeführt wird. Es wird der ``Climbing Index'' verwendet, um \textit{GepackIDs} zu erhalten: \{\{\}, \{G07, G18, G19, G20, G22, G23\}, \{\}, \{\}\}.
+Für unser Beispiel heißt dies, dass zuerst die Selektion auf dem Geburtsdatum des Piloten ausgeführt wird. Es wird der ``Climbing Index'' verwendet, um \textit{GepackIDs} zu erhalten: \{\{\}, \{G07, G18, G19, G20, G25\}, \{\}, \{\}\}.
 
 \begin{figure}[H]
   \centering
@@ -100,16 +100,16 @@ Für unser Beispiel heißt dies, dass zuerst die Selektion auf dem Geburtsdatum de
   \label{fig:post1}
 \end{figure}
 
-Anschließend wird ein ``Subtree Key Table'' genutzt, um passende \textit{ReisenderIDs} zu berechnen: \{$\langle$G07,R11$\rangle$, $\langle$G18,R07$\rangle$, $\langle$G19,R04$\rangle$, $\langle$G20,R04$\rangle$, $\langle$G22,R02$\rangle$, $\langle$G23,R01$\rangle$\}
+Anschließend wird ein ``Subtree Key Table'' genutzt, um passende \textit{ReisenderIDs} zu berechnen: \{$\langle$G07,R11$\rangle$, $\langle$G18,R07$\rangle$, $\langle$G19,R04$\rangle$, $\langle$G20,R04$\rangle$, $\langle$G25,R13$\rangle$\}
 
 \begin{figure}[H]
   \centering
-  \includegraphics[trim = 0mm 20mm 0mm 40mm, clip, width=\textwidth]{img/Post2.pdf}
+  \includegraphics[trim = 0mm 10mm 0mm 40mm, clip, width=\textwidth]{img/Post2.pdf}
   \caption{Teilergebnis Postfiltering 2}
   \label{fig:post2}
 \end{figure}
 
-Das unsichere Gerät liefert die Gepäckstücke, die schwerer als 20 Kilogramm sind. Es wird ein Bloom-Filter erzeugt und auf das vorhandene Zwischenergebnis angewendet: \{$\langle$G07,R11$\rangle$, $\langle$G18,R07$\rangle$, $\langle$G19,R04$\rangle$, $\langle$G20,R04$\rangle$, $\langle$G22,R02$\rangle$, $\langle$G23,R01$\rangle$\}. Da die \textit{GepaeckIDs} nicht mehr benötigt werden, werden nur die \textit{ReisenderIDs} aufgehoben: \{R07, R04, R04, R02, R01\}
+Das unsichere Gerät liefert die Gepäckstücke, die schwerer als 20 Kilogramm sind. Es wird ein Bloom-Filter erzeugt und auf das vorhandene Zwischenergebnis angewendet: \{$\langle$G18,R07$\rangle$, $\langle$G19,R04$\rangle$, $\langle$G20,R04$\rangle$\}. Da die \textit{GepaeckIDs} nicht mehr benötigt werden, werden nur die \textit{ReisenderIDs} aufgehoben: \{R07, R04, R04\}
 
 \begin{figure}[H]
   \centering
@@ -162,6 +162,6 @@ Unter Verwendung der in \cite{ghostdb1} definierten Operanden, lässt sich der ``
 \item BuildBF(11) = BF
 \item Vis(Q,Reisende,R.ReisenderID) = \{R02, R03, R04, R05, R06, R08, R09, R10, R13\}
 \item ProbeBF(BF,13) = \{R04\}
-\item Vis(Q,Reisende,$\langle$R.ReisenderID,R.Vorname,R.Name$\rangle$) = \{$\langle$R02,Mike,Bannister$\rangle$, \\$\langle$R03,Francis,Chichester$\rangle$, $\langle$R04,Doru,Davidovici$\rangle$, $\langle$R05,Eugene Burton,Ely$\rangle$, $\langle$R06,Charles,Fern$\rangle$, $\langle$R08,Ernst,Heinkel$\rangle$, $\langle$R09,Tony,Jannus$\rangle$, $\langle$R10,Algene,Key$\rangle$, $\langle$R13,Charles,Nungesser$\rangle$\}
+\item Vis(Q,Reisende,$\langle$R.ReisenderID,R.Vorname,R.Name$\rangle$) = \{$\langle$R02,Mike,Bannister$\rangle$, \\$\langle$R03,Francis,Chichester$\rangle$, $\langle$R04,Doru,Davidovici$\rangle$, $\langle$R05,Eugene Burton,Ely$\rangle$, $\langle$R06,Charles,Fern$\rangle$, $\langle$R08,Ernst,Heinkel$\rangle$, $\langle$R09,Tony,Jannus$\rangle$, \\$\langle$R10,Algene,Key$\rangle$, \\$\langle$R13,Charles,Nungesser$\rangle$\}
 \item MJoin(15,14,$\langle$R.ReisenderID,R.Staatsbuergerschaft$\rangle$,11) = \{$\langle$R04,Doru,Davidovici,Romänisch$\rangle$\}
 \end{enumerate}
